@@ -893,6 +893,18 @@ button:disabled {
   font-weight: 500;
 }
 
+.choice-field {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.choice-field > legend {
+  margin-bottom: 6px;
+  padding: 0;
+  font-weight: 500;
+}
+
 .hint:empty {
   display: none;
 }
@@ -966,6 +978,10 @@ select:disabled {
   font-size: 12px;
   line-height: 1.5;
   color: var(--fg-muted);
+}
+
+.note[hidden] {
+  display: none;
 }
 
 .note .icon {

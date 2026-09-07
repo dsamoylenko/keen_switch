@@ -7,13 +7,22 @@ import {
 } from './lib/keenetic';
 import { installOriginRule } from './lib/dnr';
 import type { Request, Response, SerializedError } from './lib/messages';
-import { hasRouterPermission, loadSettings, type Settings } from './lib/settings';
+import {
+  hasRouterPermission,
+  loadSettings,
+  restrictStorageAccess,
+  type Settings,
+} from './lib/settings';
 
 /**
  * Вся сетевая работа живёт здесь, а не в попапе: попап закрывается по клику
  * «мимо», и незавершённый fetch вместе с ним умирает — а смена политики
  * дополнительно сохраняет конфигурацию роутера и занимает пару секунд.
  */
+
+void restrictStorageAccess().catch(() => {
+  // Старые версии Chrome могут не поддерживать управление уровнем доступа.
+});
 
 function serializeError(error: unknown): SerializedError {
   if (error instanceof KeeneticError) {
@@ -59,8 +68,13 @@ async function handle(request: Request): Promise<unknown> {
     }
     case 'testConnection': {
       const settings = await requireReadySettings(request.settings);
-      const { hosts, whoamiMac } = await fetchOverview(settings);
-      return { realmProduct: new URL(settings.baseUrl).host, hosts, whoamiMac };
+      const { hosts, whoamiMac, credentialsVerified } = await fetchOverview(settings);
+      return {
+        realmProduct: new URL(settings.baseUrl).host,
+        hosts,
+        whoamiMac,
+        credentialsVerified,
+      };
     }
     default: {
       const exhaustive: never = request;

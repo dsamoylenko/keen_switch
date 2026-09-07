@@ -12,6 +12,8 @@ export interface TestConnectionResult {
   realmProduct: string;
   hosts: HostSummary[];
   whoamiMac: string;
+  /** true, если этот тест выполнил challenge-response с введённым паролем. */
+  credentialsVerified: boolean;
 }
 
 export interface ResponseMap {

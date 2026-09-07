@@ -67,9 +67,42 @@
                   title="Показать пароль"
                 ></button>
               </div>
+              <span class="hint">Пароль используется только для входа в ваш роутер.</span>
             </div>
 
-            <p class="note">
+            <fieldset class="field choice-field">
+              <legend>Как запомнить пароль</legend>
+              <div class="choices" role="radiogroup">
+                <label class="choice">
+                  <input
+                    id="password-session"
+                    type="radio"
+                    name="password-storage"
+                    value="session"
+                    checked
+                  />
+                  <span class="choice-body">
+                    <span class="choice-title">Запомнить до закрытия браузера</span>
+                    <span class="hint">Безопаснее. После закрытия браузера пароль удалится.</span>
+                  </span>
+                </label>
+
+                <label class="choice">
+                  <input
+                    id="password-local"
+                    type="radio"
+                    name="password-storage"
+                    value="local"
+                  />
+                  <span class="choice-body">
+                    <span class="choice-title">Запомнить навсегда</span>
+                    <span class="hint">Пароль будет подставляться после перезапуска браузера.</span>
+                  </span>
+                </label>
+              </div>
+            </fieldset>
+
+            <p id="password-warning" class="note" data-tone="warn" hidden>
               <svg
                 viewBox="0 0 24 24"
                 fill="none"
@@ -84,10 +117,9 @@
                 <path d="M7.5 10V7a4.5 4.5 0 0 1 9 0v3" />
               </svg>
               <span>
-                <strong>Пароль хранится в открытом виде</strong>
-                <code>chrome.storage.local</code> доступен любому, у кого есть доступ к вашему профилю
-                Chrome. На роутер пароль уходит только по указанному адресу и только в виде хеша
-                (SHA-256 от challenge).
+                <strong>Это менее безопасно</strong>
+                Пароль сохранится в профиле Chrome без шифрования. Выбирайте этот вариант только
+                на своём защищённом компьютере.
               </span>
             </p>
           </div>

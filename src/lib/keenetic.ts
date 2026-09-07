@@ -46,6 +46,8 @@ export interface HostSummary {
   active: boolean;
 }
 
+export type AuthenticationStatus = 'existing-session' | 'credentials-verified';
+
 export interface DeviceState {
   /** MAC устройства, для которого показываются политики. */
   mac: string;
@@ -99,9 +101,17 @@ async function routerFetch(url: string, init: RequestInit): Promise<Response> {
       credentials: 'include',
       cache: 'no-store',
       referrerPolicy: 'no-referrer',
+      signal: AbortSignal.timeout(15_000),
       ...init,
     });
   } catch (cause) {
+    if (cause instanceof DOMException && cause.name === 'TimeoutError') {
+      throw new KeeneticError(
+        'network',
+        'Роутер не ответил за 15 секунд',
+        'Проверьте адрес роутера и подключение к его сети.',
+      );
+    }
     throw new KeeneticError(
       'network',
       'Роутер недоступен',
@@ -120,11 +130,13 @@ async function routerFetch(url: string, init: RequestInit): Promise<Response> {
  * другой сессии, хеш не сойдётся и роутер ответит 401, неотличимым от
  * настоящего «неверный пароль».
  */
-async function performHandshake(settings: Settings): Promise<'ok' | 'rejected'> {
+async function performHandshake(
+  settings: Settings,
+): Promise<AuthenticationStatus | 'rejected'> {
   const authUrl = `${settings.baseUrl}/auth`;
 
   const probe = await routerFetch(authUrl, { method: 'GET' });
-  if (probe.status === 200) return 'ok';
+  if (probe.status === 200) return 'existing-session';
   if (probe.status !== 401) {
     throw new KeeneticError('auth', `Неожиданный ответ на /auth: HTTP ${probe.status}`);
   }
@@ -168,16 +180,18 @@ async function performHandshake(settings: Settings): Promise<'ok' | 'rejected'> 
       'Браузер не отдаёт сессионную cookie роутера. Проверьте, что для адреса роутера выдано разрешение в настройках расширения.',
     );
   }
-  return 'ok';
+  return 'credentials-verified';
 }
 
-async function performAuthentication(settings: Settings): Promise<void> {
-  if ((await performHandshake(settings)) === 'ok') return;
+async function performAuthentication(settings: Settings): Promise<AuthenticationStatus> {
+  const firstAttempt = await performHandshake(settings);
+  if (firstAttempt !== 'rejected') return firstAttempt;
 
   // Сессию мог перебить чужой `GET /auth` — например, открытая в соседней
   // вкладке веб-панель роутера ходит туда сама. Прежде чем обвинять пароль,
   // пробуем ещё раз с заново взятым challenge.
-  if ((await performHandshake(settings)) === 'ok') return;
+  const secondAttempt = await performHandshake(settings);
+  if (secondAttempt !== 'rejected') return secondAttempt;
 
   throw new KeeneticError(
     'auth',
@@ -186,18 +200,33 @@ async function performAuthentication(settings: Settings): Promise<void> {
   );
 }
 
-let pendingAuth: Promise<void> | null = null;
+let pendingAuth: Promise<AuthenticationStatus> | null = null;
+let pendingAuthKey = '';
 
 /**
  * Гарантирует авторизованную сессию. Идемпотентна и single-flight: параллельные
  * вызовы разделяют один хендшейк, иначе их `GET /auth` перетирают друг другу
  * сессионную cookie.
  */
-export function authenticate(settings: Settings): Promise<void> {
-  pendingAuth ??= performAuthentication(settings).finally(() => {
-    pendingAuth = null;
+export function authenticate(settings: Settings): Promise<AuthenticationStatus> {
+  const key = JSON.stringify([settings.baseUrl, settings.login, settings.password]);
+
+  if (pendingAuth) {
+    if (pendingAuthKey === key) return pendingAuth;
+    // Другие credentials нельзя смешивать с текущим handshake: ждём его
+    // завершения и запускаем отдельную проверку со своими настройками.
+    return pendingAuth.catch(() => undefined).then(() => authenticate(settings));
+  }
+
+  pendingAuthKey = key;
+  const tracked = performAuthentication(settings).finally(() => {
+    if (pendingAuth === tracked) {
+      pendingAuth = null;
+      pendingAuthKey = '';
+    }
   });
-  return pendingAuth;
+  pendingAuth = tracked;
+  return tracked;
 }
 
 /* ------------------------------------------------------------------- rci */
@@ -271,13 +300,21 @@ async function rci(settings: Settings, queries: RciQuery[]): Promise<unknown[]> 
 
 /** Один повтор после переавторизации: сессия роутера живёт недолго. */
 async function rciWithAuth(settings: Settings, queries: RciQuery[]): Promise<unknown[]> {
-  await authenticate(settings);
+  return (await rciWithAuthStatus(settings, queries)).values;
+}
+
+async function rciWithAuthStatus(
+  settings: Settings,
+  queries: RciQuery[],
+): Promise<{ values: unknown[]; credentialsVerified: boolean }> {
+  let credentialsVerified = (await authenticate(settings)) === 'credentials-verified';
   try {
-    return await rci(settings, queries);
+    return { values: await rci(settings, queries), credentialsVerified };
   } catch (error) {
     if (error instanceof KeeneticError && error.kind === 'auth') {
-      await authenticate(settings);
-      return rci(settings, queries);
+      credentialsVerified =
+        (await authenticate(settings)) === 'credentials-verified' || credentialsVerified;
+      return { values: await rci(settings, queries), credentialsVerified };
     }
     throw error;
   }
@@ -386,12 +423,13 @@ function parseWhoami(raw: unknown): { mac: string; ip: string } {
  */
 export async function fetchOverview(
   settings: Settings,
-): Promise<{ hosts: HostSummary[]; whoamiMac: string }> {
-  const [hotspot, whoami] = await rciWithAuth(settings, [
+): Promise<{ hosts: HostSummary[]; whoamiMac: string; credentialsVerified: boolean }> {
+  const { values, credentialsVerified } = await rciWithAuthStatus(settings, [
     { path: PATH_HOTSPOT },
     { path: PATH_WHOAMI },
   ]);
-  return { hosts: parseHosts(hotspot), whoamiMac: parseWhoami(whoami).mac };
+  const [hotspot, whoami] = values;
+  return { hosts: parseHosts(hotspot), whoamiMac: parseWhoami(whoami).mac, credentialsVerified };
 }
 
 /** Один батч, покрывающий всё, что нужно попапу: политики, хосты и whoami. */

@@ -65,15 +65,43 @@ test('параллельные вызовы authenticate делят один х�
   assert.equal(router.challenges.length, 1);
 });
 
+test('параллельные вызовы с другими credentials не делят результат хендшейка', async () => {
+  const router = installFakeRouter({ acceptPasswords: true });
+
+  const [first, second] = await Promise.all([
+    authenticate(settings),
+    authenticate({ ...settings, password: 'другой пароль' }),
+  ]);
+
+  assert.equal(first, 'credentials-verified');
+  assert.equal(second, 'existing-session');
+  assert.equal(router.calls.filter((call) => call.startsWith('POST')).length, 1);
+});
+
 test('после успешного хендшейка повторный вызов не ходит на POST /auth', async () => {
   const router = installFakeRouter({ acceptPasswords: true });
 
-  await authenticate(settings);
+  assert.equal(await authenticate(settings), 'credentials-verified');
   const afterFirst = router.calls.length;
-  await authenticate(settings);
+  assert.equal(await authenticate({ ...settings, password: 'wrong' }), 'existing-session');
 
   assert.equal(router.calls.length, afterFirst + 1);
   assert.equal(router.calls.at(-1), 'GET /auth');
+});
+
+test('сетевой таймаут превращается в понятную ошибку', async () => {
+  globalThis.fetch = (async (_input: string | URL | Request, init?: RequestInit) => {
+    assert.ok(init?.signal, 'каждый запрос должен иметь AbortSignal');
+    throw new DOMException('timed out', 'TimeoutError');
+  }) as typeof fetch;
+
+  await assert.rejects(
+    authenticate(settings),
+    (error: unknown) =>
+      error instanceof KeeneticError &&
+      error.kind === 'network' &&
+      error.message === 'Роутер не ответил за 15 секунд',
+  );
 });
 
 test('отклонённый пароль повторяется один раз и даёт честную ошибку', async () => {

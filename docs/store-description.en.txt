@@ -1,0 +1,55 @@
+KeenSwitch — switch Keenetic connection policies in one click
+
+KeenSwitch lets you quickly change the internet access policy for devices on your home or office network through a Keenetic router. Instead of opening the router's web interface and searching through its settings every time, simply open the extension and select a policy.
+
+The extension is designed for routers that already have connection policies configured—for example, a direct connection, a VPN connection, a different ISP, or a restricted-access profile.
+
+FEATURES
+
+• Switch between connection policies configured on your router.
+• Manage your current computer or any other active device on the network.
+• Automatically detect the current device.
+• Select a device manually when automatic detection is not suitable.
+• Mark frequently used devices as favorites for quick access.
+• See the current policy and receive confirmation after a switch.
+• Remove a device-specific policy and return to the default policy.
+• Save changes to the router's configuration so they persist after a reboot.
+
+GETTING STARTED
+
+1. Make sure the required connection policies are already configured on your Keenetic router.
+2. Open the KeenSwitch settings.
+3. Enter the router's web interface address, username, and password.
+4. Allow the extension to access that address and test the connection.
+5. Save the settings.
+
+You can then open KeenSwitch from the browser toolbar, select a device, and choose the required policy.
+
+REQUIREMENTS
+
+• A Keenetic router with connection policies already configured.
+• KeeneticOS 3.x–5.x.
+• Access to the router's web interface.
+• A router account with permission to change settings.
+• A computer connected to a network from which the router is accessible.
+
+For a Keenetic Mesh network, enter the address of the network controller rather than an extender.
+
+PRIVACY AND PERMISSIONS
+
+KeenSwitch communicates directly from your browser with the router address you provide. The extension does not use an external server to control your router.
+
+Website access is not granted automatically during installation. The extension requests access separately and only for the selected router address. This access is required to authenticate, retrieve devices and policies, and apply the selected policy.
+
+Settings, favorite devices, the username, and the password are stored locally in your Chrome profile. Important: Chrome does not provide extensions with secure credential storage, so these credentials are stored without encryption. Do not use the extension in a browser profile accessible to other people.
+
+The password is not sent over the network as plain text. Authentication uses Keenetic's challenge-and-hash mechanism. When the router uses plain HTTP, however, traffic between the browser and the router is not protected by transport encryption. Connect only through a trusted local network.
+
+IMPORTANT NOTES
+
+• KeenSwitch does not create or configure connection policies. Set them up in the Keenetic web interface first.
+• The extension displays only devices that the router currently reports as active.
+• When using a VPN, proxy, network bridge, or docking station, automatic detection may select the wrong device. Use manual selection in that case.
+• To use the extension outside your local network, the router's web interface must be reachable at the configured address.
+
+KeenSwitch is an independent extension and is not an official Keenetic product.
