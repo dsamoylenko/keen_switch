@@ -41,7 +41,7 @@ KeenSwitch communicates directly from your browser with the router address you p
 
 Website access is not granted automatically during installation. The extension requests access separately and only for the selected router address. This access is required to authenticate, retrieve devices and policies, and apply the selected policy.
 
-Settings, favorite devices, the username, and the password are stored locally in your Chrome profile. Important: Chrome does not provide extensions with secure credential storage, so these credentials are stored without encryption. Do not use the extension in a browser profile accessible to other people.
+Settings, favorite devices, and the username are stored locally in your Chrome profile. By default, the password is kept only for the current browser session and is removed when the browser closes. You can choose to remember it permanently; in that mode Chrome stores it in the profile without encryption, and KeenSwitch shows a warning before you save. Use permanent storage only on your own protected computer.
 
 The password is not sent over the network as plain text. Authentication uses Keenetic's challenge-and-hash mechanism. When the router uses plain HTTP, however, traffic between the browser and the router is not protected by transport encryption. Connect only through a trusted local network.
 
