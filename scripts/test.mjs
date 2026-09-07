@@ -17,6 +17,7 @@ await build({
     'tests/devices.test.ts',
     'tests/manifest.test.ts',
     'tests/settings.test.ts',
+    'tests/demo.test.ts',
   ],
   outdir,
   bundle: true,
