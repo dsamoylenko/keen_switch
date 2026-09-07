@@ -84,5 +84,63 @@
     "message": "No access policies are configured on the router — create one in the Keenetic web interface."
   },
   "deviceBlocked": { "message": "This device is denied internet access in the router settings." },
-  "noRouterConnection": { "message": "No connection to the router" }
+  "noRouterConnection": { "message": "No connection to the router" },
+  "optionsTitle": { "message": "KeenSwitch settings" },
+  "optionsIntro": {
+    "message": "Two steps: connect to the router, then say which device to switch."
+  },
+  "sectionRouterTitle": { "message": "1. Router" },
+  "sectionRouterSub": { "message": "Sign-in details for the Keenetic web interface." },
+  "fieldBaseUrl": { "message": "Web interface address" },
+  "fieldBaseUrlHint": { "message": "The same address you use to open the Keenetic panel." },
+  "fieldLogin": { "message": "Username" },
+  "fieldPassword": { "message": "Password" },
+  "passwordShow": { "message": "Show password" },
+  "passwordHide": { "message": "Hide password" },
+  "passwordWarnTitle": { "message": "The password is stored in plain text" },
+  "passwordWarnBody": {
+    "message": "is readable by anyone with access to your Chrome profile. The password is sent only to the address you specified, and only as a hash (SHA-256 of the challenge)."
+  },
+  "testConnection": { "message": "Test connection" },
+  "sectionDeviceTitle": { "message": "2. My device" },
+  "sectionDeviceSub": { "message": "This is the device whose policy will be switched." },
+  "modeAutoTitle": { "message": "Detect automatically" },
+  "modeAutoHint": {
+    "message": "The router reports the MAC address the request came from (RCI whoami). Works as long as the browser reaches the router directly."
+  },
+  "modeManualTitle": { "message": "Pick manually from the list" },
+  "modeManualHint": {
+    "message": "Needed when auto-detection returns the wrong MAC address (VPN, bridges, docking stations)."
+  },
+  "fieldDevice": { "message": "Device" },
+  "deviceListPlaceholder": { "message": "— the list loads after you test the connection —" },
+  "save": { "message": "Save" },
+  "deviceHintNeedTest": { "message": "Press \"Test connection\" to load devices from the router." },
+  "deviceListEmpty": { "message": "— the router returned no devices —" },
+  "markThisDevice": { "message": "this device" },
+  "markOffline": { "message": "offline" },
+  "permNeedUrl": { "message": "Enter the router address." },
+  "permGranted": {
+    "message": "Access to $url$ is granted.",
+    "placeholders": { "url": { "content": "$1" } }
+  },
+  "permNotGranted": {
+    "message": "Access to $url$ is not granted yet — press \"Test connection\".",
+    "placeholders": { "url": { "content": "$1" } }
+  },
+  "badUrl": { "message": "Cannot read the router address." },
+  "needPassword": { "message": "Enter the router password." },
+  "testing": { "message": "Testing…" },
+  "permDenied": { "message": "Without access to the router address the extension cannot work." },
+  "testOkWhoami": {
+    "message": "Connected. Devices: $count$. This device: $device$.",
+    "placeholders": { "count": { "content": "$1" }, "device": { "content": "$2" } }
+  },
+  "testOkNoWhoami": {
+    "message": "Connected. Devices: $count$. Auto-detection did not work — pick the device manually.",
+    "placeholders": { "count": { "content": "$1" } }
+  },
+  "needDevice": { "message": "Pick a device or turn on auto-detection." },
+  "saving": { "message": "Saving…" },
+  "saved": { "message": "Saved." }
 }

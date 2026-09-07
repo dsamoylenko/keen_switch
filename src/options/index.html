@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="ru">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Настройки KeenSwitch</title>
+    <title data-i18n="optionsTitle">KeenSwitch settings</title>
     <link rel="stylesheet" href="../ui.css" />
   </head>
   <body class="options">
@@ -26,10 +26,10 @@
           <path d="M8.8 6.2a5 5 0 0 1 6.4 0" />
           <path d="M6.2 3.4a9 9 0 0 1 11.6 0" />
         </svg>
-        <h1>Настройки KeenSwitch</h1>
+        <h1 data-i18n="optionsTitle">KeenSwitch settings</h1>
       </div>
-      <p class="page-sub">
-        Два шага: подключиться к роутеру и указать, какое устройство переключать.
+      <p class="page-sub" data-i18n="optionsIntro">
+        Two steps: connect to the router, then say which device to switch.
       </p>
     </header>
 
@@ -37,34 +37,36 @@
       <main>
         <section class="card">
           <div class="card-head">
-            <h2>1. Роутер</h2>
-            <p class="card-sub">Данные для входа в веб-панель Keenetic.</p>
+            <h2 data-i18n="sectionRouterTitle">1. Router</h2>
+            <p class="card-sub" data-i18n="sectionRouterSub">Sign-in details for the Keenetic web interface.</p>
           </div>
 
           <div class="card-body">
             <div class="field">
-              <label for="base-url">Адрес веб-интерфейса</label>
+              <label for="base-url" data-i18n="fieldBaseUrl">Web interface address</label>
               <input id="base-url" type="text" spellcheck="false" placeholder="http://192.168.1.1" />
-              <span class="hint">Тот же адрес, по которому вы открываете панель Keenetic.</span>
+              <span class="hint" data-i18n="fieldBaseUrlHint">The same address you use to open the Keenetic panel.</span>
               <span id="permission-state" class="feedback" role="status" aria-live="polite"></span>
             </div>
 
             <div class="field">
-              <label for="login">Логин</label>
+              <label for="login" data-i18n="fieldLogin">Username</label>
               <input id="login" type="text" spellcheck="false" autocomplete="off" />
             </div>
 
             <div class="field">
-              <label for="password">Пароль</label>
+              <label for="password" data-i18n="fieldPassword">Password</label>
               <div class="input-wrap">
                 <input id="password" type="password" autocomplete="off" />
                 <button
                   id="toggle-password"
                   class="icon-button"
                   type="button"
-                  aria-label="Показать пароль"
+                  data-i18n-aria-label="passwordShow"
+                  data-i18n-title="passwordShow"
+                  aria-label="Show password"
                   aria-pressed="false"
-                  title="Показать пароль"
+                  title="Show password"
                 ></button>
               </div>
             </div>
@@ -84,24 +86,23 @@
                 <path d="M7.5 10V7a4.5 4.5 0 0 1 9 0v3" />
               </svg>
               <span>
-                <strong>Пароль хранится в открытом виде</strong>
-                <code>chrome.storage.local</code> доступен любому, у кого есть доступ к вашему профилю
-                Chrome. На роутер пароль уходит только по указанному адресу и только в виде хеша
-                (SHA-256 от challenge).
+                <strong data-i18n="passwordWarnTitle">The password is stored in plain text</strong>
+                <code>chrome.storage.local</code>
+                <span data-i18n="passwordWarnBody">is readable by anyone with access to your Chrome profile. The password is sent only to the address you specified, and only as a hash (SHA-256 of the challenge).</span>
               </span>
             </p>
           </div>
 
           <div class="card-foot">
-            <button id="test" class="secondary" type="button">Проверить подключение</button>
+            <button id="test" class="secondary" type="button" data-i18n="testConnection">Test connection</button>
             <span id="test-result" class="feedback" role="status" aria-live="polite"></span>
           </div>
         </section>
 
         <section class="card">
           <div class="card-head">
-            <h2 id="device-mode-title">2. Моё устройство</h2>
-            <p class="card-sub">Политику будем переключать именно для него.</p>
+            <h2 id="device-mode-title" data-i18n="sectionDeviceTitle">2. My device</h2>
+            <p class="card-sub" data-i18n="sectionDeviceSub">This is the device whose policy will be switched.</p>
           </div>
 
           <div class="card-body">
@@ -109,10 +110,10 @@
               <label class="choice">
                 <input id="mode-auto" type="radio" name="device-mode" value="auto" />
                 <span class="choice-body">
-                  <span class="choice-title">Определять автоматически</span>
-                  <span class="hint">
-                    Роутер сам сообщает MAC устройства, с которого пришёл запрос (RCI
-                    <code>whoami</code>). Работает, пока браузер ходит к роутеру напрямую.
+                  <span class="choice-title" data-i18n="modeAutoTitle">Detect automatically</span>
+                  <span class="hint" data-i18n="modeAutoHint">
+                    The router reports the MAC address the request came from (RCI whoami). Works as
+                    long as the browser reaches the router directly.
                   </span>
                 </span>
               </label>
@@ -120,18 +121,19 @@
               <label class="choice">
                 <input id="mode-manual" type="radio" name="device-mode" value="manual" />
                 <span class="choice-body">
-                  <span class="choice-title">Выбрать вручную из списка</span>
-                  <span class="hint">
-                    Нужно, если автоопределение даёт не тот MAC (VPN, мосты, докстанции).
+                  <span class="choice-title" data-i18n="modeManualTitle">Pick manually from the list</span>
+                  <span class="hint" data-i18n="modeManualHint">
+                    Needed when auto-detection returns the wrong MAC address (VPN, bridges, docking
+                    stations).
                   </span>
                 </span>
               </label>
             </div>
 
             <div class="field" id="device-field">
-              <label for="device">Устройство</label>
+              <label for="device" data-i18n="fieldDevice">Device</label>
               <select id="device" disabled>
-                <option value="">— список загружается после проверки подключения —</option>
+                <option value="" data-i18n="deviceListPlaceholder">— the list loads after you test the connection —</option>
               </select>
               <span id="device-hint" class="hint"></span>
             </div>
@@ -142,7 +144,7 @@
       <div class="save-bar">
         <div class="save-bar-inner">
           <span id="save-result" class="feedback" role="status" aria-live="polite"></span>
-          <button id="save" class="primary" type="submit">Сохранить</button>
+          <button id="save" class="primary" type="submit" data-i18n="save">Save</button>
         </div>
       </div>
     </form>

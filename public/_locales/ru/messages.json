@@ -84,5 +84,65 @@
     "message": "На роутере не настроено ни одной политики доступа — создайте её в панели Keenetic."
   },
   "deviceBlocked": { "message": "Этому устройству запрещён доступ в интернет в настройках роутера." },
-  "noRouterConnection": { "message": "Нет связи с роутером" }
+  "noRouterConnection": { "message": "Нет связи с роутером" },
+  "optionsTitle": { "message": "Настройки KeenSwitch" },
+  "optionsIntro": {
+    "message": "Два шага: подключиться к роутеру и указать, какое устройство переключать."
+  },
+  "sectionRouterTitle": { "message": "1. Роутер" },
+  "sectionRouterSub": { "message": "Данные для входа в веб-панель Keenetic." },
+  "fieldBaseUrl": { "message": "Адрес веб-интерфейса" },
+  "fieldBaseUrlHint": { "message": "Тот же адрес, по которому вы открываете панель Keenetic." },
+  "fieldLogin": { "message": "Логин" },
+  "fieldPassword": { "message": "Пароль" },
+  "passwordShow": { "message": "Показать пароль" },
+  "passwordHide": { "message": "Скрыть пароль" },
+  "passwordWarnTitle": { "message": "Пароль хранится в открытом виде" },
+  "passwordWarnBody": {
+    "message": "доступен любому, у кого есть доступ к вашему профилю Chrome. На роутер пароль уходит только по указанному адресу и только в виде хеша (SHA-256 от challenge)."
+  },
+  "testConnection": { "message": "Проверить подключение" },
+  "sectionDeviceTitle": { "message": "2. Моё устройство" },
+  "sectionDeviceSub": { "message": "Политику будем переключать именно для него." },
+  "modeAutoTitle": { "message": "Определять автоматически" },
+  "modeAutoHint": {
+    "message": "Роутер сам сообщает MAC устройства, с которого пришёл запрос (RCI whoami). Работает, пока браузер ходит к роутеру напрямую."
+  },
+  "modeManualTitle": { "message": "Выбрать вручную из списка" },
+  "modeManualHint": {
+    "message": "Нужно, если автоопределение даёт не тот MAC (VPN, мосты, докстанции)."
+  },
+  "fieldDevice": { "message": "Устройство" },
+  "deviceListPlaceholder": { "message": "— список загружается после проверки подключения —" },
+  "save": { "message": "Сохранить" },
+  "deviceHintNeedTest": {
+    "message": "Нажмите «Проверить подключение», чтобы загрузить устройства с роутера."
+  },
+  "deviceListEmpty": { "message": "— роутер не вернул ни одного устройства —" },
+  "markThisDevice": { "message": "это устройство" },
+  "markOffline": { "message": "не в сети" },
+  "permNeedUrl": { "message": "Укажите адрес роутера." },
+  "permGranted": {
+    "message": "Доступ к $url$ разрешён.",
+    "placeholders": { "url": { "content": "$1" } }
+  },
+  "permNotGranted": {
+    "message": "Доступ к $url$ ещё не разрешён — нажмите «Проверить подключение».",
+    "placeholders": { "url": { "content": "$1" } }
+  },
+  "badUrl": { "message": "Не понимаю адрес роутера." },
+  "needPassword": { "message": "Введите пароль роутера." },
+  "testing": { "message": "Проверяю…" },
+  "permDenied": { "message": "Без доступа к адресу роутера расширение работать не сможет." },
+  "testOkWhoami": {
+    "message": "Связь есть. Устройств: $count$. Это устройство: $device$.",
+    "placeholders": { "count": { "content": "$1" }, "device": { "content": "$2" } }
+  },
+  "testOkNoWhoami": {
+    "message": "Связь есть. Устройств: $count$. Автоопределение не сработало — выберите устройство вручную.",
+    "placeholders": { "count": { "content": "$1" } }
+  },
+  "needDevice": { "message": "Выберите устройство или включите автоопределение." },
+  "saving": { "message": "Сохраняю…" },
+  "saved": { "message": "Сохранено." }
 }

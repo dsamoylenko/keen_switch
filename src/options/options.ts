@@ -1,4 +1,5 @@
 import { icon, type IconName } from '../lib/icons';
+import { localizeDocument, t } from '../lib/i18n';
 import type { HostSummary } from '../lib/keenetic';
 import { send } from '../lib/messages';
 import {
@@ -87,9 +88,7 @@ function syncDeviceMode(): void {
   deviceField.hidden = modeAuto.checked;
   deviceSelect.disabled = modeAuto.checked || knownHosts.length === 0;
   deviceHint.textContent =
-    !modeAuto.checked && knownHosts.length === 0
-      ? 'Нажмите «Проверить подключение», чтобы загрузить устройства с роутера.'
-      : '';
+    !modeAuto.checked && knownHosts.length === 0 ? t('deviceHintNeedTest') : '';
 }
 
 function renderHosts(hosts: HostSummary[], selectedMac: string, whoamiMac: string): void {
@@ -99,7 +98,7 @@ function renderHosts(hosts: HostSummary[], selectedMac: string, whoamiMac: strin
   if (hosts.length === 0) {
     const option = document.createElement('option');
     option.value = '';
-    option.textContent = '— роутер не вернул ни одного устройства —';
+    option.textContent = t('deviceListEmpty');
     deviceSelect.append(option);
     syncDeviceMode();
     return;
@@ -109,8 +108,8 @@ function renderHosts(hosts: HostSummary[], selectedMac: string, whoamiMac: strin
     const option = document.createElement('option');
     option.value = host.mac;
     const marks = [host.ip, host.mac];
-    if (host.mac === whoamiMac) marks.push('это устройство');
-    else if (!host.active) marks.push('не в сети');
+    if (host.mac === whoamiMac) marks.push(t('markThisDevice'));
+    else if (!host.active) marks.push(t('markOffline'));
     option.textContent = `${host.label} (${marks.filter(Boolean).join(', ')})`;
     deviceSelect.append(option);
   }
@@ -123,15 +122,13 @@ function renderHosts(hosts: HostSummary[], selectedMac: string, whoamiMac: strin
 
 async function refreshPermissionState(baseUrl: string): Promise<void> {
   if (!baseUrl) {
-    setFeedback(permissionState, 'Укажите адрес роутера.', 'muted');
+    setFeedback(permissionState, t('permNeedUrl'), 'muted');
     return;
   }
   const granted = await hasRouterPermission(baseUrl);
   setFeedback(
     permissionState,
-    granted
-      ? `Доступ к ${baseUrl} разрешён.`
-      : `Доступ к ${baseUrl} ещё не разрешён — нажмите «Проверить подключение».`,
+    granted ? t('permGranted', baseUrl) : t('permNotGranted', baseUrl),
     granted ? 'ok' : 'muted',
   );
 }
@@ -140,7 +137,7 @@ async function refreshPermissionState(baseUrl: string): Promise<void> {
 function syncPasswordToggle(visible: boolean): void {
   passwordInput.type = visible ? 'text' : 'password';
   passwordToggle.setAttribute('aria-pressed', String(visible));
-  const label = visible ? 'Скрыть пароль' : 'Показать пароль';
+  const label = t(visible ? 'passwordHide' : 'passwordShow');
   passwordToggle.setAttribute('aria-label', label);
   passwordToggle.title = label;
   passwordToggle.replaceChildren(icon(visible ? 'eye-off' : 'eye'));
@@ -154,12 +151,12 @@ testButton.addEventListener('click', () => {
   const baseUrl = safeBaseUrl();
 
   if (!baseUrl) {
-    setFeedback(testResult, 'Не понимаю адрес роутера.', 'error');
+    setFeedback(testResult, t('badUrl'), 'error');
     baseUrlInput.focus();
     return;
   }
   if (!passwordInput.value) {
-    setFeedback(testResult, 'Введите пароль роутера.', 'error');
+    setFeedback(testResult, t('needPassword'), 'error');
     passwordInput.focus();
     return;
   }
@@ -167,17 +164,13 @@ testButton.addEventListener('click', () => {
   // chrome.permissions.request обязан вызываться прямо в обработчике клика,
   // иначе Chrome считает, что жеста пользователя не было.
   testButton.disabled = true;
-  setPending(testResult, 'Проверяю…');
+  setPending(testResult, t('testing'));
 
   chrome.permissions
     .request({ origins: [originPattern(baseUrl)] })
     .then(async (granted) => {
       if (!granted) {
-        setFeedback(
-          testResult,
-          'Без доступа к адресу роутера расширение работать не сможет.',
-          'error',
-        );
+        setFeedback(testResult, t('permDenied'), 'error');
         return;
       }
       await refreshPermissionState(baseUrl);
@@ -190,8 +183,11 @@ testButton.addEventListener('click', () => {
       setFeedback(
         testResult,
         result.whoamiMac
-          ? `Связь есть. Устройств: ${result.hosts.length}. Это устройство: ${whoamiHost?.label ?? result.whoamiMac}.`
-          : `Связь есть. Устройств: ${result.hosts.length}. Автоопределение не сработало — выберите устройство вручную.`,
+          ? t('testOkWhoami', [
+              String(result.hosts.length),
+              whoamiHost?.label ?? result.whoamiMac,
+            ])
+          : t('testOkNoWhoami', String(result.hosts.length)),
         'ok',
       );
     })
@@ -206,22 +202,22 @@ saveForm.addEventListener('submit', (event) => {
   const settings = readForm();
 
   if (!settings.baseUrl) {
-    setFeedback(saveResult, 'Не понимаю адрес роутера.', 'error');
+    setFeedback(saveResult, t('badUrl'), 'error');
     baseUrlInput.focus();
     return;
   }
   if (!settings.autoDetectDevice && !settings.deviceMac) {
-    setFeedback(saveResult, 'Выберите устройство или включите автоопределение.', 'error');
+    setFeedback(saveResult, t('needDevice'), 'error');
     deviceSelect.focus();
     return;
   }
 
   saveButton.disabled = true;
-  setPending(saveResult, 'Сохраняю…');
+  setPending(saveResult, t('saving'));
 
   saveSettings(settings)
     .then(() => refreshPermissionState(settings.baseUrl))
-    .then(() => setFeedback(saveResult, 'Сохранено.', 'ok'))
+    .then(() => setFeedback(saveResult, t('saved'), 'ok'))
     .catch((error: unknown) => setFeedback(saveResult, describeError(error), 'error'))
     .finally(() => {
       saveButton.disabled = false;
@@ -235,7 +231,7 @@ for (const radio of [modeAuto, modeManual]) {
 baseUrlInput.addEventListener('change', () => {
   const normalized = safeBaseUrl();
   if (!normalized) {
-    setFeedback(permissionState, 'Не понимаю адрес роутера.', 'error');
+    setFeedback(permissionState, t('badUrl'), 'error');
     return;
   }
   baseUrlInput.value = normalized;
@@ -243,6 +239,7 @@ baseUrlInput.addEventListener('change', () => {
 });
 
 async function init(): Promise<void> {
+  localizeDocument();
   syncPasswordToggle(false);
 
   const settings = await loadSettings();
