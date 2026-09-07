@@ -11,7 +11,7 @@ const outdir = '.test-build';
 
 await rm(outdir, { recursive: true, force: true });
 await build({
-  entryPoints: ['tests/keenetic.test.ts', 'tests/auth.test.ts'],
+  entryPoints: ['tests/keenetic.test.ts', 'tests/auth.test.ts', 'tests/manifest.test.ts'],
   outdir,
   bundle: true,
   format: 'esm',
