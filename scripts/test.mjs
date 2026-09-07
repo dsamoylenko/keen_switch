@@ -9,9 +9,14 @@ import { build } from 'esbuild';
 
 const outdir = '.test-build';
 
+// Список тестов читается с диска: иначе новый файл в tests/ молча не запустится.
+const entryPoints = (await readdir('tests'))
+  .filter((name) => name.endsWith('.test.ts'))
+  .map((name) => `tests/${name}`);
+
 await rm(outdir, { recursive: true, force: true });
 await build({
-  entryPoints: ['tests/keenetic.test.ts', 'tests/auth.test.ts'],
+  entryPoints,
   outdir,
   bundle: true,
   format: 'esm',

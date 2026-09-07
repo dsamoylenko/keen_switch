@@ -3,10 +3,11 @@ import pkg from './package.json';
 
 export default defineManifest({
   manifest_version: 3,
+  // Бренд не переводится: название должно совпадать во всех витринах Store.
   name: 'KeenSwitch',
   version: pkg.version,
-  description:
-    'Переключение текущего устройства между политиками доступа (Policy) на роутере Keenetic в один клик.',
+  default_locale: 'en',
+  description: '__MSG_appDesc__',
   icons: {
     16: 'icons/icon-16.png',
     32: 'icons/icon-32.png',
