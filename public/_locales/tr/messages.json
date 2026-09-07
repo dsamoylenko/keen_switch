@@ -1,0 +1,148 @@
+{
+  "appDesc": {
+    "message": "Bu cihazı Keenetic yönlendiricisinin erişim politikaları arasında tek tıkla değiştirir."
+  },
+  "errRouterUnreachable": { "message": "Yönlendiriciye ulaşılamıyor" },
+  "errAuthUnexpectedStatus": {
+    "message": "/auth adresinden beklenmeyen yanıt: HTTP $status$",
+    "placeholders": { "status": { "content": "$1" } }
+  },
+  "errNoChallenge": { "message": "Yönlendirici bir kimlik doğrulama challenge'ı göndermedi" },
+  "errNoChallengeDetail": {
+    "message": "Bu adreste KeeneticOS web arayüzünden başka bir şey yanıt veriyor gibi görünüyor."
+  },
+  "errPasswordNotSet": { "message": "Yönlendirici parolası ayarlanmamış" },
+  "errAuthFailedStatus": {
+    "message": "Kimlik doğrulama başarısız oldu: HTTP $status$",
+    "placeholders": { "status": { "content": "$1" } }
+  },
+  "errSessionNotStored": { "message": "Yönlendirici parolayı kabul etti, ancak oturum kaydedilmedi" },
+  "errSessionNotStoredDetail": {
+    "message": "Tarayıcı yönlendiricinin oturum cookie'sini göndermiyor. Uzantı ayarlarında yönlendirici adresi için izin verildiğini kontrol ediniz."
+  },
+  "errAuthRejected": { "message": "Yönlendirici kullanıcı adını ve parolayı reddetti" },
+  "errAuthRejectedDetail": {
+    "message": "Kimlik bilgileri kesinlikle doğruysa, yönlendiricinin web panelinin sekmesini kapatınız: bu sekme oturumu yeniler ve uzantının oturum açmasını engeller."
+  },
+  "errRciAction": {
+    "message": "$action$: yönlendirici bir hata döndürdü",
+    "placeholders": { "action": { "content": "$1" } }
+  },
+  "actionSetPolicy": { "message": "Politika değiştiriliyor" },
+  "actionSaveConfig": { "message": "Yapılandırma kaydediliyor" },
+  "errSessionExpired": { "message": "Yönlendirici oturumunun süresi doldu" },
+  "errForbidden": { "message": "Yönlendirici isteği reddetti (403)" },
+  "errForbiddenDetail": {
+    "message": "KeeneticOS, /rci/ adresine yalnızca kendi Origin değerini taşıyan istekleri kabul eder. Uzantı bu başlığı bir declarativeNetRequest kuralıyla yeniden yazar — chrome://extensions içinde yönlendirici adresi için izin verildiğini kontrol edip uzantıyı yeniden yükleyiniz."
+  },
+  "errRciHttp": {
+    "message": "Yönlendiriciye istek başarısız oldu: HTTP $status$",
+    "placeholders": { "status": { "content": "$1" } }
+  },
+  "errBadResponse": { "message": "Yönlendiriciden beklenmeyen yanıt biçimi" },
+  "errWhoamiFailed": { "message": "Yönlendirici bu cihazı tanımlayamadı" },
+  "errNoDeviceSelected": { "message": "Ayarlarda bir cihaz seçilmemiş" },
+  "errPolicyNotApplied": { "message": "Yönlendirici yeni politikayı uygulamadı" },
+  "errPolicyNotAppliedDetail": {
+    "message": "“$expected$” bekleniyordu, ancak yazmadan sonra yönlendirici “$actual$” bildiriyor.",
+    "placeholders": { "expected": { "content": "$1" }, "actual": { "content": "$2" } }
+  },
+  "policyNoneInline": { "message": "politika yok" },
+  "errOriginRule": {
+    "message": "Origin değiştirme kuralı yüklenemedi: $reason$",
+    "placeholders": { "reason": { "content": "$1" } }
+  },
+  "errNoBackgroundResponse": { "message": "Uzantının arka plan betiği yanıt vermedi" },
+  "errBaseUrlNotSet": { "message": "Yönlendirici adresi ayarlanmamış" },
+  "errNoPermission": { "message": "Yönlendirici adresine erişim yok" },
+  "errNoPermissionDetail": {
+    "message": "Uzantı ayarlarını açıp $url$ için izin veriniz.",
+    "placeholders": { "url": { "content": "$1" } }
+  },
+  "optionsButton": { "message": "Ayarlar" },
+  "popupConnecting": { "message": "Yönlendiriciye bağlanılıyor…" },
+  "popupPoliciesTitle": { "message": "Erişim politikası" },
+  "openOptions": { "message": "Ayarları aç" },
+  "chipBlocked": { "message": "erişim engellendi" },
+  "chipOffline": { "message": "çevrimdışı" },
+  "chipManual": { "message": "manuel" },
+  "policyNone": { "message": "Politika yok" },
+  "policyDefaultSub": {
+    "message": "varsayılan politika: $policy$",
+    "placeholders": { "policy": { "content": "$1" } }
+  },
+  "policyNoneSub": { "message": "diğer cihazlarla aynı, ortak erişim" },
+  "statusSwitching": {
+    "message": "“$policy$” politikasına geçiliyor…",
+    "placeholders": { "policy": { "content": "$1" } }
+  },
+  "statusSwitched": {
+    "message": "Tamamlandı: “$policy$”",
+    "placeholders": { "policy": { "content": "$1" } }
+  },
+  "noPolicies": {
+    "message": "Yönlendiricide hiçbir erişim politikası yapılandırılmamış — Keenetic web panelinden bir tane oluşturunuz."
+  },
+  "deviceBlocked": { "message": "Bu cihazın internet erişimi yönlendirici ayarlarında engellenmiş." },
+  "noRouterConnection": { "message": "Yönlendiriciyle bağlantı yok" },
+  "optionsTitle": { "message": "KeenSwitch ayarları" },
+  "optionsIntro": {
+    "message": "İki adım: yönlendiriciye bağlanınız, ardından hangi cihazın değiştirileceğini belirtiniz."
+  },
+  "sectionRouterTitle": { "message": "1. Yönlendirici" },
+  "sectionRouterSub": { "message": "Keenetic web arayüzü için oturum açma bilgileri." },
+  "fieldBaseUrl": { "message": "Web arayüzü adresi" },
+  "fieldBaseUrlHint": { "message": "Keenetic panelini açmak için kullandığınız adresin aynısı." },
+  "fieldLogin": { "message": "Kullanıcı adı" },
+  "fieldPassword": { "message": "Parola" },
+  "passwordShow": { "message": "Parolayı göster" },
+  "passwordHide": { "message": "Parolayı gizle" },
+  "passwordWarnTitle": { "message": "Parola düz metin olarak saklanıyor" },
+  "passwordWarnBody": {
+    "message": "Chrome profilinize erişimi olan herkes tarafından okunabilir. Parola yalnızca belirttiğiniz adrese ve yalnızca hash olarak (challenge'ın SHA-256'sı) gönderilir."
+  },
+  "testConnection": { "message": "Bağlantıyı test et" },
+  "sectionDeviceTitle": { "message": "2. Cihazım" },
+  "sectionDeviceSub": { "message": "Politika bu cihaz için değiştirilecek." },
+  "modeAutoTitle": { "message": "Otomatik algıla" },
+  "modeAutoHint": {
+    "message": "Yönlendirici, isteğin geldiği MAC adresini kendisi bildirir (RCI whoami). Tarayıcı yönlendiriciye doğrudan ulaştığı sürece çalışır."
+  },
+  "modeManualTitle": { "message": "Listeden manuel seç" },
+  "modeManualHint": {
+    "message": "Otomatik algılama yanlış MAC adresi döndürdüğünde gereklidir (VPN, köprüler, docking istasyonları)."
+  },
+  "fieldDevice": { "message": "Cihaz" },
+  "deviceListPlaceholder": { "message": "— liste, bağlantı testinden sonra yüklenir —" },
+  "save": { "message": "Kaydet" },
+  "deviceHintNeedTest": {
+    "message": "Yönlendiriciden cihazları yüklemek için “Bağlantıyı test et” düğmesine basınız."
+  },
+  "deviceListEmpty": { "message": "— yönlendirici hiçbir cihaz döndürmedi —" },
+  "markThisDevice": { "message": "bu cihaz" },
+  "markOffline": { "message": "çevrimdışı" },
+  "permNeedUrl": { "message": "Yönlendirici adresini giriniz." },
+  "permGranted": {
+    "message": "$url$ için erişim izni verildi.",
+    "placeholders": { "url": { "content": "$1" } }
+  },
+  "permNotGranted": {
+    "message": "$url$ için erişim izni henüz verilmedi — “Bağlantıyı test et” düğmesine basınız.",
+    "placeholders": { "url": { "content": "$1" } }
+  },
+  "badUrl": { "message": "Yönlendirici adresi okunamıyor." },
+  "needPassword": { "message": "Yönlendirici parolasını giriniz." },
+  "testing": { "message": "Test ediliyor…" },
+  "permDenied": { "message": "Yönlendirici adresine erişim olmadan uzantı çalışamaz." },
+  "testOkWhoami": {
+    "message": "Bağlantı kuruldu. Cihazlar: $count$. Bu cihaz: $device$.",
+    "placeholders": { "count": { "content": "$1" }, "device": { "content": "$2" } }
+  },
+  "testOkNoWhoami": {
+    "message": "Bağlantı kuruldu. Cihazlar: $count$. Otomatik algılama çalışmadı — cihazı manuel seçiniz.",
+    "placeholders": { "count": { "content": "$1" } }
+  },
+  "needDevice": { "message": "Bir cihaz seçiniz veya otomatik algılamayı açınız." },
+  "saving": { "message": "Kaydediliyor…" },
+  "saved": { "message": "Kaydedildi." }
+}

@@ -1,0 +1,146 @@
+{
+  "appDesc": {
+    "message": "Wechselt dieses Gerät mit einem Klick zwischen den Zugriffsrichtlinien des Keenetic-Routers."
+  },
+  "errRouterUnreachable": { "message": "Der Router ist nicht erreichbar" },
+  "errAuthUnexpectedStatus": {
+    "message": "Unerwartete Antwort von /auth: HTTP $status$",
+    "placeholders": { "status": { "content": "$1" } }
+  },
+  "errNoChallenge": { "message": "Der Router hat keinen Authentifizierungs-Challenge gesendet" },
+  "errNoChallengeDetail": {
+    "message": "Unter dieser Adresse scheint nicht die Weboberfläche von KeeneticOS zu antworten."
+  },
+  "errPasswordNotSet": { "message": "Das Router-Passwort ist nicht festgelegt" },
+  "errAuthFailedStatus": {
+    "message": "Anmeldung fehlgeschlagen: HTTP $status$",
+    "placeholders": { "status": { "content": "$1" } }
+  },
+  "errSessionNotStored": { "message": "Der Router hat das Passwort akzeptiert, aber die Sitzung wurde nicht gespeichert" },
+  "errSessionNotStoredDetail": {
+    "message": "Der Browser sendet das Sitzungs-Cookie des Routers nicht. Prüfen Sie, ob die Berechtigung für die Router-Adresse in den Erweiterungseinstellungen erteilt ist."
+  },
+  "errAuthRejected": { "message": "Der Router hat Benutzername und Passwort abgelehnt" },
+  "errAuthRejectedDetail": {
+    "message": "Wenn die Zugangsdaten wirklich stimmen, schließen Sie den Tab mit der Router-Weboberfläche: Er aktualisiert die Sitzung und hindert die Erweiterung an der Anmeldung."
+  },
+  "errRciAction": {
+    "message": "$action$: der Router hat einen Fehler zurückgegeben",
+    "placeholders": { "action": { "content": "$1" } }
+  },
+  "actionSetPolicy": { "message": "Wechseln der Richtlinie" },
+  "actionSaveConfig": { "message": "Speichern der Konfiguration" },
+  "errSessionExpired": { "message": "Die Router-Sitzung ist abgelaufen" },
+  "errForbidden": { "message": "Der Router hat die Anfrage abgelehnt (403)" },
+  "errForbiddenDetail": {
+    "message": "KeeneticOS akzeptiert nur Anfragen an /rci/, die seinen eigenen Origin tragen. Die Erweiterung schreibt den Header mit einer declarativeNetRequest-Regel um — prüfen Sie, ob die Berechtigung für die Router-Adresse in chrome://extensions erteilt ist, und laden Sie die Erweiterung neu."
+  },
+  "errRciHttp": {
+    "message": "Anfrage an den Router fehlgeschlagen: HTTP $status$",
+    "placeholders": { "status": { "content": "$1" } }
+  },
+  "errBadResponse": { "message": "Unerwartetes Antwortformat des Routers" },
+  "errWhoamiFailed": { "message": "Der Router konnte dieses Gerät nicht identifizieren" },
+  "errNoDeviceSelected": { "message": "In den Einstellungen ist kein Gerät ausgewählt" },
+  "errPolicyNotApplied": { "message": "Der Router hat die neue Richtlinie nicht angewendet" },
+  "errPolicyNotAppliedDetail": {
+    "message": "Erwartet wurde „$expected$“, doch nach dem Schreiben meldet der Router „$actual$“.",
+    "placeholders": { "expected": { "content": "$1" }, "actual": { "content": "$2" } }
+  },
+  "policyNoneInline": { "message": "keine Richtlinie" },
+  "errOriginRule": {
+    "message": "Die Origin-Umschreibregel konnte nicht installiert werden: $reason$",
+    "placeholders": { "reason": { "content": "$1" } }
+  },
+  "errNoBackgroundResponse": { "message": "Das Hintergrundskript der Erweiterung hat nicht geantwortet" },
+  "errBaseUrlNotSet": { "message": "Die Router-Adresse ist nicht festgelegt" },
+  "errNoPermission": { "message": "Kein Zugriff auf die Router-Adresse" },
+  "errNoPermissionDetail": {
+    "message": "Öffnen Sie die Erweiterungseinstellungen und erteilen Sie die Berechtigung für $url$.",
+    "placeholders": { "url": { "content": "$1" } }
+  },
+  "optionsButton": { "message": "Einstellungen" },
+  "popupConnecting": { "message": "Verbinde mit dem Router…" },
+  "popupPoliciesTitle": { "message": "Zugriffsrichtlinie" },
+  "openOptions": { "message": "Einstellungen öffnen" },
+  "chipBlocked": { "message": "Zugriff verweigert" },
+  "chipOffline": { "message": "offline" },
+  "chipManual": { "message": "manuell" },
+  "policyNone": { "message": "Keine Richtlinie" },
+  "policyDefaultSub": {
+    "message": "Standardrichtlinie: $policy$",
+    "placeholders": { "policy": { "content": "$1" } }
+  },
+  "policyNoneSub": { "message": "gemeinsamer Zugriff, wie bei anderen Geräten" },
+  "statusSwitching": {
+    "message": "Wechsle zu „$policy$“…",
+    "placeholders": { "policy": { "content": "$1" } }
+  },
+  "statusSwitched": {
+    "message": "Fertig: „$policy$“",
+    "placeholders": { "policy": { "content": "$1" } }
+  },
+  "noPolicies": {
+    "message": "Auf dem Router ist keine Zugriffsrichtlinie eingerichtet — erstellen Sie eine in der Keenetic-Weboberfläche."
+  },
+  "deviceBlocked": { "message": "Diesem Gerät ist der Internetzugriff in den Router-Einstellungen verweigert." },
+  "noRouterConnection": { "message": "Keine Verbindung zum Router" },
+  "optionsTitle": { "message": "KeenSwitch-Einstellungen" },
+  "optionsIntro": {
+    "message": "Zwei Schritte: mit dem Router verbinden, dann festlegen, welches Gerät umgeschaltet werden soll."
+  },
+  "sectionRouterTitle": { "message": "1. Router" },
+  "sectionRouterSub": { "message": "Anmeldedaten für die Keenetic-Weboberfläche." },
+  "fieldBaseUrl": { "message": "Adresse der Weboberfläche" },
+  "fieldBaseUrlHint": { "message": "Dieselbe Adresse, unter der Sie das Keenetic-Panel öffnen." },
+  "fieldLogin": { "message": "Benutzername" },
+  "fieldPassword": { "message": "Passwort" },
+  "passwordShow": { "message": "Passwort anzeigen" },
+  "passwordHide": { "message": "Passwort verbergen" },
+  "passwordWarnTitle": { "message": "Das Passwort wird im Klartext gespeichert" },
+  "passwordWarnBody": {
+    "message": "ist für jeden lesbar, der Zugriff auf Ihr Chrome-Profil hat. Das Passwort geht nur an die angegebene Adresse und nur als Hash (SHA-256 des Challenge)."
+  },
+  "testConnection": { "message": "Verbindung testen" },
+  "sectionDeviceTitle": { "message": "2. Mein Gerät" },
+  "sectionDeviceSub": { "message": "Für dieses Gerät wird die Richtlinie umgeschaltet." },
+  "modeAutoTitle": { "message": "Automatisch erkennen" },
+  "modeAutoHint": {
+    "message": "Der Router meldet die MAC-Adresse, von der die Anfrage kam (RCI whoami). Funktioniert, solange der Browser den Router direkt erreicht."
+  },
+  "modeManualTitle": { "message": "Manuell aus der Liste wählen" },
+  "modeManualHint": {
+    "message": "Nötig, wenn die automatische Erkennung die falsche MAC-Adresse liefert (VPN, Bridges, Dockingstations)."
+  },
+  "fieldDevice": { "message": "Gerät" },
+  "deviceListPlaceholder": { "message": "— die Liste wird nach dem Verbindungstest geladen —" },
+  "save": { "message": "Speichern" },
+  "deviceHintNeedTest": { "message": "Klicken Sie auf „Verbindung testen“, um die Geräte vom Router zu laden." },
+  "deviceListEmpty": { "message": "— der Router hat keine Geräte zurückgegeben —" },
+  "markThisDevice": { "message": "dieses Gerät" },
+  "markOffline": { "message": "offline" },
+  "permNeedUrl": { "message": "Geben Sie die Router-Adresse ein." },
+  "permGranted": {
+    "message": "Der Zugriff auf $url$ ist erteilt.",
+    "placeholders": { "url": { "content": "$1" } }
+  },
+  "permNotGranted": {
+    "message": "Der Zugriff auf $url$ ist noch nicht erteilt — klicken Sie auf „Verbindung testen“.",
+    "placeholders": { "url": { "content": "$1" } }
+  },
+  "badUrl": { "message": "Die Router-Adresse kann nicht gelesen werden." },
+  "needPassword": { "message": "Geben Sie das Router-Passwort ein." },
+  "testing": { "message": "Teste…" },
+  "permDenied": { "message": "Ohne Zugriff auf die Router-Adresse kann die Erweiterung nicht funktionieren." },
+  "testOkWhoami": {
+    "message": "Verbindung steht. Geräte: $count$. Dieses Gerät: $device$.",
+    "placeholders": { "count": { "content": "$1" }, "device": { "content": "$2" } }
+  },
+  "testOkNoWhoami": {
+    "message": "Verbindung steht. Geräte: $count$. Die automatische Erkennung hat nicht funktioniert — wählen Sie das Gerät manuell.",
+    "placeholders": { "count": { "content": "$1" } }
+  },
+  "needDevice": { "message": "Wählen Sie ein Gerät oder aktivieren Sie die automatische Erkennung." },
+  "saving": { "message": "Speichere…" },
+  "saved": { "message": "Gespeichert." }
+}

@@ -1,0 +1,148 @@
+{
+  "appDesc": {
+    "message": "Перемикає цей пристрій між політиками доступу роутера Keenetic в один клік."
+  },
+  "errRouterUnreachable": { "message": "Роутер недоступний" },
+  "errAuthUnexpectedStatus": {
+    "message": "Неочікувана відповідь від /auth: HTTP $status$",
+    "placeholders": { "status": { "content": "$1" } }
+  },
+  "errNoChallenge": { "message": "Роутер не надіслав challenge для автентифікації" },
+  "errNoChallengeDetail": {
+    "message": "Схоже, за цією адресою відповідає не веб-інтерфейс KeeneticOS."
+  },
+  "errPasswordNotSet": { "message": "Пароль роутера не задано" },
+  "errAuthFailedStatus": {
+    "message": "Автентифікація не пройшла: HTTP $status$",
+    "placeholders": { "status": { "content": "$1" } }
+  },
+  "errSessionNotStored": { "message": "Роутер прийняв пароль, але сеанс не зберігся" },
+  "errSessionNotStoredDetail": {
+    "message": "Браузер не надсилає сеансову cookie роутера. Перевірте, чи надано дозвіл для адреси роутера в налаштуваннях розширення."
+  },
+  "errAuthRejected": { "message": "Роутер відхилив логін і пароль" },
+  "errAuthRejectedDetail": {
+    "message": "Якщо логін і пароль точно правильні, закрийте вкладку з веб-панеллю роутера: вона оновлює сеанс і заважає розширенню увійти."
+  },
+  "errRciAction": {
+    "message": "$action$: роутер повернув помилку",
+    "placeholders": { "action": { "content": "$1" } }
+  },
+  "actionSetPolicy": { "message": "Зміна політики" },
+  "actionSaveConfig": { "message": "Збереження конфігурації" },
+  "errSessionExpired": { "message": "Сеанс роутера закінчився" },
+  "errForbidden": { "message": "Роутер відхилив запит (403)" },
+  "errForbiddenDetail": {
+    "message": "KeeneticOS приймає запити до /rci/ лише з власним Origin. Розширення підміняє заголовок правилом declarativeNetRequest — перевірте, чи надано дозвіл на адресу роутера в chrome://extensions, і перезавантажте розширення."
+  },
+  "errRciHttp": {
+    "message": "Запит до роутера не вдався: HTTP $status$",
+    "placeholders": { "status": { "content": "$1" } }
+  },
+  "errBadResponse": { "message": "Неочікуваний формат відповіді роутера" },
+  "errWhoamiFailed": { "message": "Роутер не зміг визначити цей пристрій" },
+  "errNoDeviceSelected": { "message": "У налаштуваннях не вибрано пристрій" },
+  "errPolicyNotApplied": { "message": "Роутер не застосував нову політику" },
+  "errPolicyNotAppliedDetail": {
+    "message": "Очікувалося «$expected$», але після запису роутер повідомляє «$actual$».",
+    "placeholders": { "expected": { "content": "$1" }, "actual": { "content": "$2" } }
+  },
+  "policyNoneInline": { "message": "без політики" },
+  "errOriginRule": {
+    "message": "Не вдалося встановити правило підміни Origin: $reason$",
+    "placeholders": { "reason": { "content": "$1" } }
+  },
+  "errNoBackgroundResponse": { "message": "Фоновий скрипт розширення не відповів" },
+  "errBaseUrlNotSet": { "message": "Адресу роутера не вказано" },
+  "errNoPermission": { "message": "Немає доступу до адреси роутера" },
+  "errNoPermissionDetail": {
+    "message": "Відкрийте налаштування розширення і надайте дозвіл для $url$.",
+    "placeholders": { "url": { "content": "$1" } }
+  },
+  "optionsButton": { "message": "Налаштування" },
+  "popupConnecting": { "message": "Підключаюся до роутера…" },
+  "popupPoliciesTitle": { "message": "Політика доступу" },
+  "openOptions": { "message": "Відкрити налаштування" },
+  "chipBlocked": { "message": "доступ заборонено" },
+  "chipOffline": { "message": "немає в мережі" },
+  "chipManual": { "message": "вручну" },
+  "policyNone": { "message": "Без політики" },
+  "policyDefaultSub": {
+    "message": "політика за замовчуванням: $policy$",
+    "placeholders": { "policy": { "content": "$1" } }
+  },
+  "policyNoneSub": { "message": "спільний доступ, як в інших пристроїв" },
+  "statusSwitching": {
+    "message": "Перемикаю на «$policy$»…",
+    "placeholders": { "policy": { "content": "$1" } }
+  },
+  "statusSwitched": {
+    "message": "Готово: «$policy$»",
+    "placeholders": { "policy": { "content": "$1" } }
+  },
+  "noPolicies": {
+    "message": "На роутері не налаштовано жодної політики доступу — створіть її в панелі Keenetic."
+  },
+  "deviceBlocked": { "message": "Цьому пристрою заборонено доступ до інтернету в налаштуваннях роутера." },
+  "noRouterConnection": { "message": "Немає зв'язку з роутером" },
+  "optionsTitle": { "message": "Налаштування KeenSwitch" },
+  "optionsIntro": {
+    "message": "Два кроки: підключитися до роутера, а потім вказати, який пристрій перемикати."
+  },
+  "sectionRouterTitle": { "message": "1. Роутер" },
+  "sectionRouterSub": { "message": "Дані для входу у веб-панель Keenetic." },
+  "fieldBaseUrl": { "message": "Адреса веб-інтерфейсу" },
+  "fieldBaseUrlHint": { "message": "Та сама адреса, за якою ви відкриваєте панель Keenetic." },
+  "fieldLogin": { "message": "Логін" },
+  "fieldPassword": { "message": "Пароль" },
+  "passwordShow": { "message": "Показати пароль" },
+  "passwordHide": { "message": "Приховати пароль" },
+  "passwordWarnTitle": { "message": "Пароль зберігається у відкритому вигляді" },
+  "passwordWarnBody": {
+    "message": "доступний будь-кому, хто має доступ до вашого профілю Chrome. На роутер пароль надсилається лише на вказану адресу і лише у вигляді хеша (SHA-256 від challenge)."
+  },
+  "testConnection": { "message": "Перевірити підключення" },
+  "sectionDeviceTitle": { "message": "2. Мій пристрій" },
+  "sectionDeviceSub": { "message": "Саме для нього перемикатиметься політика." },
+  "modeAutoTitle": { "message": "Визначати автоматично" },
+  "modeAutoHint": {
+    "message": "Роутер сам повідомляє MAC-адресу пристрою, з якого надійшов запит (RCI whoami). Працює, поки браузер звертається до роутера напряму."
+  },
+  "modeManualTitle": { "message": "Вибрати вручну зі списку" },
+  "modeManualHint": {
+    "message": "Потрібно, якщо автовизначення дає не ту MAC-адресу (VPN, мости, докстанції)."
+  },
+  "fieldDevice": { "message": "Пристрій" },
+  "deviceListPlaceholder": { "message": "— список завантажиться після перевірки підключення —" },
+  "save": { "message": "Зберегти" },
+  "deviceHintNeedTest": {
+    "message": "Натисніть «Перевірити підключення», щоб завантажити пристрої з роутера."
+  },
+  "deviceListEmpty": { "message": "— роутер не повернув жодного пристрою —" },
+  "markThisDevice": { "message": "цей пристрій" },
+  "markOffline": { "message": "не в мережі" },
+  "permNeedUrl": { "message": "Вкажіть адресу роутера." },
+  "permGranted": {
+    "message": "Доступ до $url$ надано.",
+    "placeholders": { "url": { "content": "$1" } }
+  },
+  "permNotGranted": {
+    "message": "Доступ до $url$ ще не надано — натисніть «Перевірити підключення».",
+    "placeholders": { "url": { "content": "$1" } }
+  },
+  "badUrl": { "message": "Не вдається розпізнати адресу роутера." },
+  "needPassword": { "message": "Введіть пароль роутера." },
+  "testing": { "message": "Перевіряю…" },
+  "permDenied": { "message": "Без доступу до адреси роутера розширення не зможе працювати." },
+  "testOkWhoami": {
+    "message": "Зв'язок є. Пристроїв: $count$. Цей пристрій: $device$.",
+    "placeholders": { "count": { "content": "$1" }, "device": { "content": "$2" } }
+  },
+  "testOkNoWhoami": {
+    "message": "Зв'язок є. Пристроїв: $count$. Автовизначення не спрацювало — виберіть пристрій вручну.",
+    "placeholders": { "count": { "content": "$1" } }
+  },
+  "needDevice": { "message": "Виберіть пристрій або увімкніть автовизначення." },
+  "saving": { "message": "Зберігаю…" },
+  "saved": { "message": "Збережено." }
+}
