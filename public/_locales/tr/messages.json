@@ -1,6 +1,6 @@
 {
   "appDesc": {
-    "message": "Bu cihazı Keenetic yönlendiricisinin erişim politikaları arasında tek tıkla değiştirir."
+    "message": "Bu cihazı Keenetic yönlendiricisinin erişim politikaları arasında tek tıkla geçirir."
   },
   "errRouterUnreachable": { "message": "Yönlendiriciye ulaşılamıyor" },
   "errAuthUnexpectedStatus": {
@@ -28,15 +28,15 @@
     "message": "$action$: yönlendirici bir hata döndürdü",
     "placeholders": { "action": { "content": "$1" } }
   },
-  "actionSetPolicy": { "message": "Politika değiştiriliyor" },
-  "actionSaveConfig": { "message": "Yapılandırma kaydediliyor" },
+  "actionSetPolicy": { "message": "Politika değiştirilirken" },
+  "actionSaveConfig": { "message": "Yapılandırma kaydedilirken" },
   "errSessionExpired": { "message": "Yönlendirici oturumunun süresi doldu" },
   "errForbidden": { "message": "Yönlendirici isteği reddetti (403)" },
   "errForbiddenDetail": {
     "message": "KeeneticOS, /rci/ adresine yalnızca kendi Origin değerini taşıyan istekleri kabul eder. Uzantı bu başlığı bir declarativeNetRequest kuralıyla yeniden yazar — chrome://extensions içinde yönlendirici adresi için izin verildiğini kontrol edip uzantıyı yeniden yükleyiniz."
   },
   "errRciHttp": {
-    "message": "Yönlendiriciye istek başarısız oldu: HTTP $status$",
+    "message": "Yönlendiriciye yapılan istek başarısız oldu: HTTP $status$",
     "placeholders": { "status": { "content": "$1" } }
   },
   "errBadResponse": { "message": "Yönlendiriciden beklenmeyen yanıt biçimi" },
@@ -44,7 +44,7 @@
   "errNoDeviceSelected": { "message": "Ayarlarda bir cihaz seçilmemiş" },
   "errPolicyNotApplied": { "message": "Yönlendirici yeni politikayı uygulamadı" },
   "errPolicyNotAppliedDetail": {
-    "message": "“$expected$” bekleniyordu, ancak yazmadan sonra yönlendirici “$actual$” bildiriyor.",
+    "message": "“$expected$” bekleniyordu, ancak yazma işleminden sonra yönlendirici “$actual$” bildiriyor.",
     "placeholders": { "expected": { "content": "$1" }, "actual": { "content": "$2" } }
   },
   "policyNoneInline": { "message": "politika yok" },
@@ -87,7 +87,7 @@
   "noRouterConnection": { "message": "Yönlendiriciyle bağlantı yok" },
   "optionsTitle": { "message": "KeenSwitch ayarları" },
   "optionsIntro": {
-    "message": "İki adım: yönlendiriciye bağlanınız, ardından hangi cihazın değiştirileceğini belirtiniz."
+    "message": "İki adım: yönlendiriciye bağlanınız, ardından hangi cihazın politikalar arasında geçirileceğini belirtiniz."
   },
   "sectionRouterTitle": { "message": "1. Yönlendirici" },
   "sectionRouterSub": { "message": "Keenetic web arayüzü için oturum açma bilgileri." },
@@ -99,7 +99,7 @@
   "passwordHide": { "message": "Parolayı gizle" },
   "passwordWarnTitle": { "message": "Parola düz metin olarak saklanıyor" },
   "passwordWarnBody": {
-    "message": "Chrome profilinize erişimi olan herkes tarafından okunabilir. Parola yalnızca belirttiğiniz adrese ve yalnızca hash olarak (challenge'ın SHA-256'sı) gönderilir."
+    "message": "içeriği, Chrome profilinize erişimi olan herkes tarafından okunabilir. Parola yalnızca belirttiğiniz adrese ve yalnızca hash olarak (challenge'ın SHA-256'sı) gönderilir."
   },
   "testConnection": { "message": "Bağlantıyı test et" },
   "sectionDeviceTitle": { "message": "2. Cihazım" },
@@ -110,7 +110,7 @@
   },
   "modeManualTitle": { "message": "Listeden manuel seç" },
   "modeManualHint": {
-    "message": "Otomatik algılama yanlış MAC adresi döndürdüğünde gereklidir (VPN, köprüler, docking istasyonları)."
+    "message": "Otomatik algılama yanlış MAC adresi döndürdüğünde gereklidir (VPN, köprüler, dok istasyonları)."
   },
   "fieldDevice": { "message": "Cihaz" },
   "deviceListPlaceholder": { "message": "— liste, bağlantı testinden sonra yüklenir —" },

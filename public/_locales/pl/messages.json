@@ -7,7 +7,7 @@
     "message": "Nieoczekiwana odpowiedź z /auth: HTTP $status$",
     "placeholders": { "status": { "content": "$1" } }
   },
-  "errNoChallenge": { "message": "Router nie wysłał challenge uwierzytelniającego" },
+  "errNoChallenge": { "message": "Router nie przysłał challenge do uwierzytelnienia" },
   "errNoChallengeDetail": {
     "message": "Wygląda na to, że pod tym adresem odpowiada coś innego niż interfejs webowy KeeneticOS."
   },
@@ -18,11 +18,11 @@
   },
   "errSessionNotStored": { "message": "Router przyjął hasło, ale sesja nie została zapisana" },
   "errSessionNotStoredDetail": {
-    "message": "Przeglądarka nie wysyła cookie sesji routera. Sprawdźcie, czy dla adresu routera przyznano uprawnienie w ustawieniach rozszerzenia."
+    "message": "Przeglądarka nie wysyła cookie sesji routera. Sprawdź, czy dla adresu routera przyznano uprawnienie w ustawieniach rozszerzenia."
   },
   "errAuthRejected": { "message": "Router odrzucił login i hasło" },
   "errAuthRejectedDetail": {
-    "message": "Jeśli login i hasło na pewno są poprawne, zamknijcie kartę z panelem webowym routera: odświeża ona sesję i uniemożliwia rozszerzeniu zalogowanie się."
+    "message": "Jeśli login i hasło na pewno są poprawne, zamknij kartę z panelem webowym routera: odświeża ona sesję i uniemożliwia rozszerzeniu zalogowanie się."
   },
   "errRciAction": {
     "message": "$action$: router zwrócił błąd",
@@ -33,7 +33,7 @@
   "errSessionExpired": { "message": "Sesja routera wygasła" },
   "errForbidden": { "message": "Router odrzucił żądanie (403)" },
   "errForbiddenDetail": {
-    "message": "KeeneticOS przyjmuje żądania do /rci/ tylko z własnym Origin. Rozszerzenie podmienia ten nagłówek regułą declarativeNetRequest — sprawdźcie, czy w chrome://extensions przyznano uprawnienie dla adresu routera, i przeładujcie rozszerzenie."
+    "message": "KeeneticOS przyjmuje żądania do /rci/ tylko z własnym Origin. Rozszerzenie podmienia ten nagłówek regułą declarativeNetRequest — sprawdź, czy w chrome://extensions przyznano uprawnienie dla adresu routera, i przeładuj rozszerzenie."
   },
   "errRciHttp": {
     "message": "Żądanie do routera nie powiodło się: HTTP $status$",
@@ -71,7 +71,7 @@
     "message": "polityka domyślna: $policy$",
     "placeholders": { "policy": { "content": "$1" } }
   },
-  "policyNoneSub": { "message": "dostęp wspólny, taki sam jak inne urządzenia" },
+  "policyNoneSub": { "message": "dostęp wspólny, taki sam jak w innych urządzeniach" },
   "statusSwitching": {
     "message": "Przełączam na „$policy$”…",
     "placeholders": { "policy": { "content": "$1" } }
@@ -81,25 +81,25 @@
     "placeholders": { "policy": { "content": "$1" } }
   },
   "noPolicies": {
-    "message": "Na routerze nie skonfigurowano żadnej polityki dostępu — utwórzcie ją w panelu Keenetic."
+    "message": "Na routerze nie skonfigurowano żadnej polityki dostępu — utwórz ją w panelu Keenetic."
   },
   "deviceBlocked": { "message": "Temu urządzeniu odmówiono dostępu do internetu w ustawieniach routera." },
   "noRouterConnection": { "message": "Brak połączenia z routerem" },
   "optionsTitle": { "message": "Ustawienia KeenSwitch" },
   "optionsIntro": {
-    "message": "Dwa kroki: połączcie się z routerem, a potem wskażcie, które urządzenie ma być przełączane."
+    "message": "Dwa kroki: połącz się z routerem, a potem wskaż, które urządzenie ma być przełączane."
   },
   "sectionRouterTitle": { "message": "1. Router" },
   "sectionRouterSub": { "message": "Dane logowania do interfejsu webowego Keenetic." },
   "fieldBaseUrl": { "message": "Adres interfejsu webowego" },
-  "fieldBaseUrlHint": { "message": "Ten sam adres, pod którym otwieracie panel Keenetic." },
+  "fieldBaseUrlHint": { "message": "Ten sam adres, pod którym otwierasz panel Keenetic." },
   "fieldLogin": { "message": "Login" },
   "fieldPassword": { "message": "Hasło" },
   "passwordShow": { "message": "Pokaż hasło" },
   "passwordHide": { "message": "Ukryj hasło" },
-  "passwordWarnTitle": { "message": "Hasło jest przechowywane jawnym tekstem" },
+  "passwordWarnTitle": { "message": "Hasło jest przechowywane w postaci jawnej" },
   "passwordWarnBody": {
-    "message": "jest widoczne dla każdego, kto ma dostęp do waszego profilu Chrome. Hasło trafia tylko pod podany adres i tylko jako hash (SHA-256 z challenge)."
+    "message": "jest widoczne dla każdego, kto ma dostęp do twojego profilu Chrome. Hasło trafia tylko pod podany adres i tylko jako hash (SHA-256 z challenge)."
   },
   "testConnection": { "message": "Testuj połączenie" },
   "sectionDeviceTitle": { "message": "2. Moje urządzenie" },
@@ -116,22 +116,22 @@
   "deviceListPlaceholder": { "message": "— lista wczyta się po teście połączenia —" },
   "save": { "message": "Zapisz" },
   "deviceHintNeedTest": {
-    "message": "Naciśnijcie „Testuj połączenie”, aby wczytać urządzenia z routera."
+    "message": "Naciśnij „Testuj połączenie”, aby wczytać urządzenia z routera."
   },
   "deviceListEmpty": { "message": "— router nie zwrócił żadnego urządzenia —" },
   "markThisDevice": { "message": "to urządzenie" },
   "markOffline": { "message": "offline" },
-  "permNeedUrl": { "message": "Podajcie adres routera." },
+  "permNeedUrl": { "message": "Podaj adres routera." },
   "permGranted": {
     "message": "Dostęp do $url$ jest przyznany.",
     "placeholders": { "url": { "content": "$1" } }
   },
   "permNotGranted": {
-    "message": "Dostęp do $url$ nie jest jeszcze przyznany — naciśnijcie „Testuj połączenie”.",
+    "message": "Dostęp do $url$ nie jest jeszcze przyznany — naciśnij „Testuj połączenie”.",
     "placeholders": { "url": { "content": "$1" } }
   },
   "badUrl": { "message": "Nie można odczytać adresu routera." },
-  "needPassword": { "message": "Podajcie hasło routera." },
+  "needPassword": { "message": "Podaj hasło routera." },
   "testing": { "message": "Testowanie…" },
   "permDenied": { "message": "Bez dostępu do adresu routera rozszerzenie nie może działać." },
   "testOkWhoami": {
@@ -139,10 +139,10 @@
     "placeholders": { "count": { "content": "$1" }, "device": { "content": "$2" } }
   },
   "testOkNoWhoami": {
-    "message": "Połączono. Urządzenia: $count$. Automatyczne wykrywanie nie zadziałało — wybierzcie urządzenie ręcznie.",
+    "message": "Połączono. Urządzenia: $count$. Automatyczne wykrywanie nie zadziałało — wybierz urządzenie ręcznie.",
     "placeholders": { "count": { "content": "$1" } }
   },
-  "needDevice": { "message": "Wybierzcie urządzenie albo włączcie automatyczne wykrywanie." },
+  "needDevice": { "message": "Wybierz urządzenie albo włącz automatyczne wykrywanie." },
   "saving": { "message": "Zapisywanie…" },
   "saved": { "message": "Zapisano." }
 }

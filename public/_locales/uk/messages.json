@@ -13,7 +13,7 @@
   },
   "errPasswordNotSet": { "message": "Пароль роутера не задано" },
   "errAuthFailedStatus": {
-    "message": "Автентифікація не пройшла: HTTP $status$",
+    "message": "Не вдалося пройти автентифікацію: HTTP $status$",
     "placeholders": { "status": { "content": "$1" } }
   },
   "errSessionNotStored": { "message": "Роутер прийняв пароль, але сеанс не зберігся" },
@@ -30,7 +30,7 @@
   },
   "actionSetPolicy": { "message": "Зміна політики" },
   "actionSaveConfig": { "message": "Збереження конфігурації" },
-  "errSessionExpired": { "message": "Сеанс роутера закінчився" },
+  "errSessionExpired": { "message": "Термін дії сеансу роутера минув" },
   "errForbidden": { "message": "Роутер відхилив запит (403)" },
   "errForbiddenDetail": {
     "message": "KeeneticOS приймає запити до /rci/ лише з власним Origin. Розширення підміняє заголовок правилом declarativeNetRequest — перевірте, чи надано дозвіл на адресу роутера в chrome://extensions, і перезавантажте розширення."
@@ -68,7 +68,7 @@
   "chipManual": { "message": "вручну" },
   "policyNone": { "message": "Без політики" },
   "policyDefaultSub": {
-    "message": "політика за замовчуванням: $policy$",
+    "message": "політика за умовчанням: $policy$",
     "placeholders": { "policy": { "content": "$1" } }
   },
   "policyNoneSub": { "message": "спільний доступ, як в інших пристроїв" },
@@ -84,7 +84,7 @@
     "message": "На роутері не налаштовано жодної політики доступу — створіть її в панелі Keenetic."
   },
   "deviceBlocked": { "message": "Цьому пристрою заборонено доступ до інтернету в налаштуваннях роутера." },
-  "noRouterConnection": { "message": "Немає зв'язку з роутером" },
+  "noRouterConnection": { "message": "Немає зв’язку з роутером" },
   "optionsTitle": { "message": "Налаштування KeenSwitch" },
   "optionsIntro": {
     "message": "Два кроки: підключитися до роутера, а потім вказати, який пристрій перемикати."
@@ -110,7 +110,7 @@
   },
   "modeManualTitle": { "message": "Вибрати вручну зі списку" },
   "modeManualHint": {
-    "message": "Потрібно, якщо автовизначення дає не ту MAC-адресу (VPN, мости, докстанції)."
+    "message": "Потрібно, якщо автовизначення дає не ту MAC-адресу (VPN, мости, док-станції)."
   },
   "fieldDevice": { "message": "Пристрій" },
   "deviceListPlaceholder": { "message": "— список завантажиться після перевірки підключення —" },
@@ -135,11 +135,11 @@
   "testing": { "message": "Перевіряю…" },
   "permDenied": { "message": "Без доступу до адреси роутера розширення не зможе працювати." },
   "testOkWhoami": {
-    "message": "Зв'язок є. Пристроїв: $count$. Цей пристрій: $device$.",
+    "message": "Зв’язок є. Пристроїв: $count$. Цей пристрій: $device$.",
     "placeholders": { "count": { "content": "$1" }, "device": { "content": "$2" } }
   },
   "testOkNoWhoami": {
-    "message": "Зв'язок є. Пристроїв: $count$. Автовизначення не спрацювало — виберіть пристрій вручну.",
+    "message": "Зв’язок є. Пристроїв: $count$. Автовизначення не спрацювало — виберіть пристрій вручну.",
     "placeholders": { "count": { "content": "$1" } }
   },
   "needDevice": { "message": "Виберіть пристрій або увімкніть автовизначення." },

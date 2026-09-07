@@ -7,7 +7,7 @@
     "message": "Unerwartete Antwort von /auth: HTTP $status$",
     "placeholders": { "status": { "content": "$1" } }
   },
-  "errNoChallenge": { "message": "Der Router hat keinen Authentifizierungs-Challenge gesendet" },
+  "errNoChallenge": { "message": "Der Router hat keine Authentifizierungs-Challenge gesendet" },
   "errNoChallengeDetail": {
     "message": "Unter dieser Adresse scheint nicht die Weboberfläche von KeeneticOS zu antworten."
   },
@@ -25,7 +25,7 @@
     "message": "Wenn die Zugangsdaten wirklich stimmen, schließen Sie den Tab mit der Router-Weboberfläche: Er aktualisiert die Sitzung und hindert die Erweiterung an der Anmeldung."
   },
   "errRciAction": {
-    "message": "$action$: der Router hat einen Fehler zurückgegeben",
+    "message": "$action$: Der Router hat einen Fehler zurückgegeben",
     "placeholders": { "action": { "content": "$1" } }
   },
   "actionSetPolicy": { "message": "Wechseln der Richtlinie" },
@@ -99,7 +99,7 @@
   "passwordHide": { "message": "Passwort verbergen" },
   "passwordWarnTitle": { "message": "Das Passwort wird im Klartext gespeichert" },
   "passwordWarnBody": {
-    "message": "ist für jeden lesbar, der Zugriff auf Ihr Chrome-Profil hat. Das Passwort geht nur an die angegebene Adresse und nur als Hash (SHA-256 des Challenge)."
+    "message": "ist für jeden lesbar, der Zugriff auf Ihr Chrome-Profil hat. Das Passwort geht nur an die angegebene Adresse und nur als Hash (SHA-256 der Challenge)."
   },
   "testConnection": { "message": "Verbindung testen" },
   "sectionDeviceTitle": { "message": "2. Mein Gerät" },
