@@ -418,6 +418,9 @@ function renderPoliciesSkeleton(): void {
 
 /** Блокирует список и показывает спиннер прямо в выбранной строке. */
 function lockPolicies(pending: HTMLButtonElement): void {
+  closeMenu();
+  deviceEl.disabled = true;
+  deviceEl.setAttribute('aria-busy', 'true');
   policiesEl.dataset.busy = 'true';
   for (const button of policiesEl.querySelectorAll('button')) {
     button.disabled = true;
@@ -446,6 +449,7 @@ async function switchPolicy(
     renderPolicies(updated);
     setStatus(`Готово: «${label}»`, 'ok');
   } catch (error) {
+    renderDevice(state);
     renderPolicies(state);
     reportError(error);
   }

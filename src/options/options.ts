@@ -7,6 +7,7 @@ import {
   loadSettings,
   normalizeBaseUrl,
   originPattern,
+  removeUnusedRouterPermissions,
   saveSettings,
   type Settings,
 } from '../lib/settings';
@@ -15,6 +16,9 @@ const baseUrlInput = document.querySelector<HTMLInputElement>('#base-url')!;
 const loginInput = document.querySelector<HTMLInputElement>('#login')!;
 const passwordInput = document.querySelector<HTMLInputElement>('#password')!;
 const passwordToggle = document.querySelector<HTMLButtonElement>('#toggle-password')!;
+const passwordSession = document.querySelector<HTMLInputElement>('#password-session')!;
+const passwordLocal = document.querySelector<HTMLInputElement>('#password-local')!;
+const passwordWarning = document.querySelector<HTMLElement>('#password-warning')!;
 const modeAuto = document.querySelector<HTMLInputElement>('#mode-auto')!;
 const modeManual = document.querySelector<HTMLInputElement>('#mode-manual')!;
 const deviceSelect = document.querySelector<HTMLSelectElement>('#device')!;
@@ -43,10 +47,15 @@ function readForm(): Settings {
     baseUrl: safeBaseUrl(),
     login: loginInput.value.trim() || DEFAULT_SETTINGS.login,
     password: passwordInput.value,
+    passwordStorage: passwordLocal.checked ? 'local' : 'session',
     autoDetectDevice: modeAuto.checked,
     deviceMac: deviceSelect.value,
     deviceLabel: knownHosts.find((host) => host.mac === deviceSelect.value)?.label ?? '',
   };
+}
+
+function syncPasswordStorage(): void {
+  passwordWarning.hidden = !passwordLocal.checked;
 }
 
 type Tone = 'error' | 'ok' | 'muted';
@@ -150,6 +159,10 @@ passwordToggle.addEventListener('click', () => {
   syncPasswordToggle(passwordInput.type === 'password');
 });
 
+for (const radio of [passwordSession, passwordLocal]) {
+  radio.addEventListener('change', syncPasswordStorage);
+}
+
 testButton.addEventListener('click', () => {
   const baseUrl = safeBaseUrl();
 
@@ -187,12 +200,15 @@ testButton.addEventListener('click', () => {
       renderHosts(result.hosts, settings.deviceMac, result.whoamiMac);
 
       const whoamiHost = result.hosts.find((host) => host.mac === result.whoamiMac);
+      const deviceSummary = result.whoamiMac
+        ? `Устройств: ${result.hosts.length}. Это устройство: ${whoamiHost?.label ?? result.whoamiMac}.`
+        : `Устройств: ${result.hosts.length}. Автоопределение не сработало — выберите устройство вручную.`;
       setFeedback(
         testResult,
-        result.whoamiMac
-          ? `Связь есть. Устройств: ${result.hosts.length}. Это устройство: ${whoamiHost?.label ?? result.whoamiMac}.`
-          : `Связь есть. Устройств: ${result.hosts.length}. Автоопределение не сработало — выберите устройство вручную.`,
-        'ok',
+        result.credentialsVerified
+          ? `Связь есть, логин и пароль проверены. ${deviceSummary}`
+          : `Связь есть по уже активной сессии роутера. Введённые логин и пароль не проверялись. ${deviceSummary}`,
+        result.credentialsVerified ? 'ok' : 'muted',
       );
     })
     .catch((error: unknown) => setFeedback(testResult, describeError(error), 'error'))
@@ -220,6 +236,7 @@ saveForm.addEventListener('submit', (event) => {
   setPending(saveResult, 'Сохраняю…');
 
   saveSettings(settings)
+    .then(() => removeUnusedRouterPermissions(settings.baseUrl))
     .then(() => refreshPermissionState(settings.baseUrl))
     .then(() => setFeedback(saveResult, 'Сохранено.', 'ok'))
     .catch((error: unknown) => setFeedback(saveResult, describeError(error), 'error'))
@@ -249,6 +266,9 @@ async function init(): Promise<void> {
   baseUrlInput.value = settings.baseUrl;
   loginInput.value = settings.login;
   passwordInput.value = settings.password;
+  passwordSession.checked = settings.passwordStorage === 'session';
+  passwordLocal.checked = settings.passwordStorage === 'local';
+  syncPasswordStorage();
   modeAuto.checked = settings.autoDetectDevice;
   modeManual.checked = !settings.autoDetectDevice;
 
