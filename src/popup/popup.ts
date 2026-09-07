@@ -1,6 +1,7 @@
 import { icon, type IconName } from '../lib/icons';
 import type { DeviceState } from '../lib/keenetic';
 import { send } from '../lib/messages';
+import { localizeDocument, t } from '../lib/i18n';
 
 const deviceEl = document.querySelector<HTMLElement>('#device')!;
 const policiesEl = document.querySelector<HTMLUListElement>('#policies')!;
@@ -91,12 +92,12 @@ function renderDevice(state: DeviceState): void {
   chip.className = 'chip';
   if (state.blocked) {
     chip.dataset.tone = 'danger';
-    chip.textContent = 'доступ запрещён';
+    chip.textContent = t('chipBlocked');
   } else if (!state.known) {
     chip.dataset.tone = 'warn';
-    chip.textContent = 'нет в сети';
+    chip.textContent = t('chipOffline');
   } else if (state.detectedBy === 'manual') {
-    chip.textContent = 'вручную';
+    chip.textContent = t('chipManual');
   }
   if (chip.textContent) deviceEl.append(chip);
 }
@@ -112,10 +113,8 @@ function renderPolicies(state: DeviceState): void {
   const options: { id: string | null; label: string; sub?: string }[] = [
     {
       id: null,
-      label: 'Без политики',
-      sub: defaultPolicyLabel
-        ? `политика по умолчанию: ${defaultPolicyLabel}`
-        : 'общий доступ, как у остальных устройств',
+      label: t('policyNone'),
+      sub: defaultPolicyLabel ? t('policyDefaultSub', defaultPolicyLabel) : t('policyNoneSub'),
     },
     ...state.policies.map((policy) => ({ id: policy.id as string | null, label: policy.label })),
   ];
@@ -177,7 +176,7 @@ function reportError(error: unknown): void {
   setStatus(message, 'error', detail);
 
   if (kind === 'config' || kind === 'permission') {
-    addStatusAction('Открыть настройки', () => chrome.runtime.openOptionsPage());
+    addStatusAction(t('openOptions'), () => chrome.runtime.openOptionsPage());
   }
 }
 
@@ -190,13 +189,13 @@ async function switchPolicy(
   if (policyId === state.currentPolicyId) return;
 
   lockPolicies(button);
-  setStatus(`Переключаю на «${label}»…`, 'muted');
+  setStatus(t('statusSwitching', label), 'muted');
 
   try {
     const updated = await send({ type: 'setPolicy', mac: state.mac, policyId });
     renderDevice(updated);
     renderPolicies(updated);
-    setStatus(`Готово: «${label}»`, 'ok');
+    setStatus(t('statusSwitched', label), 'ok');
   } catch (error) {
     renderPolicies(state);
     reportError(error);
@@ -211,7 +210,7 @@ function renderEmptyPolicies(): void {
   note.append(icon('info'));
 
   const text = document.createElement('span');
-  text.textContent = 'На роутере не настроено ни одной политики доступа — создайте её в панели Keenetic.';
+  text.textContent = t('noPolicies');
   note.append(text);
 
   item.append(note);
@@ -231,7 +230,7 @@ async function init(): Promise<void> {
     }
 
     if (state.blocked) {
-      setStatus('Этому устройству запрещён доступ в интернет в настройках роутера.', 'error');
+      setStatus(t('deviceBlocked'), 'error');
     }
   } catch (error) {
     deviceEl.removeAttribute('aria-busy');
@@ -245,7 +244,7 @@ async function init(): Promise<void> {
     text.className = 'device-text';
     const name = document.createElement('span');
     name.className = 'device-name';
-    name.textContent = 'Нет связи с роутером';
+    name.textContent = t('noRouterConnection');
     text.append(name);
 
     deviceEl.append(badge, text);
@@ -254,4 +253,7 @@ async function init(): Promise<void> {
   }
 }
 
+// Статическая разметка локализуется до первого запроса к роутеру: скелетон
+// показывается раньше, чем придёт ответ.
+localizeDocument();
 void init();

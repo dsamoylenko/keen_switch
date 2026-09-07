@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ru">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <title>KeenSwitch</title>
@@ -28,7 +28,15 @@
         <h1>KeenSwitch</h1>
       </div>
 
-      <button id="open-options" class="icon-button" type="button" aria-label="Настройки" title="Настройки">
+      <button
+        id="open-options"
+        class="icon-button"
+        type="button"
+        data-i18n-aria-label="optionsButton"
+        data-i18n-title="optionsButton"
+        aria-label="Settings"
+        title="Settings"
+      >
         <svg
           viewBox="0 0 24 24"
           fill="none"
@@ -56,11 +64,11 @@
         <span class="skeleton skeleton-line" style="width: 45%" aria-hidden="true"></span>
         <span class="skeleton skeleton-line" style="width: 70%; height: 8px" aria-hidden="true"></span>
       </span>
-      <span class="visually-hidden">Подключаюсь к роутеру…</span>
+      <span class="visually-hidden" data-i18n="popupConnecting">Connecting to the router…</span>
     </div>
 
     <div class="section-head">
-      <h2 id="policies-title">Политика доступа</h2>
+      <h2 id="policies-title" data-i18n="popupPoliciesTitle">Access policy</h2>
     </div>
 
     <ul id="policies" class="policies" aria-labelledby="policies-title">

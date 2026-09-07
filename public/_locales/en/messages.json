@@ -58,5 +58,31 @@
   "errNoPermissionDetail": {
     "message": "Open the extension settings and grant permission for $url$.",
     "placeholders": { "url": { "content": "$1" } }
-  }
+  },
+  "optionsButton": { "message": "Settings" },
+  "popupConnecting": { "message": "Connecting to the router…" },
+  "popupPoliciesTitle": { "message": "Access policy" },
+  "openOptions": { "message": "Open settings" },
+  "chipBlocked": { "message": "access denied" },
+  "chipOffline": { "message": "offline" },
+  "chipManual": { "message": "manual" },
+  "policyNone": { "message": "No policy" },
+  "policyDefaultSub": {
+    "message": "default policy: $policy$",
+    "placeholders": { "policy": { "content": "$1" } }
+  },
+  "policyNoneSub": { "message": "shared access, same as other devices" },
+  "statusSwitching": {
+    "message": "Switching to \"$policy$\"…",
+    "placeholders": { "policy": { "content": "$1" } }
+  },
+  "statusSwitched": {
+    "message": "Done: \"$policy$\"",
+    "placeholders": { "policy": { "content": "$1" } }
+  },
+  "noPolicies": {
+    "message": "No access policies are configured on the router — create one in the Keenetic web interface."
+  },
+  "deviceBlocked": { "message": "This device is denied internet access in the router settings." },
+  "noRouterConnection": { "message": "No connection to the router" }
 }

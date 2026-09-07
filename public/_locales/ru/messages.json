@@ -58,5 +58,31 @@
   "errNoPermissionDetail": {
     "message": "Откройте настройки расширения и выдайте разрешение для $url$.",
     "placeholders": { "url": { "content": "$1" } }
-  }
+  },
+  "optionsButton": { "message": "Настройки" },
+  "popupConnecting": { "message": "Подключаюсь к роутеру…" },
+  "popupPoliciesTitle": { "message": "Политика доступа" },
+  "openOptions": { "message": "Открыть настройки" },
+  "chipBlocked": { "message": "доступ запрещён" },
+  "chipOffline": { "message": "нет в сети" },
+  "chipManual": { "message": "вручную" },
+  "policyNone": { "message": "Без политики" },
+  "policyDefaultSub": {
+    "message": "политика по умолчанию: $policy$",
+    "placeholders": { "policy": { "content": "$1" } }
+  },
+  "policyNoneSub": { "message": "общий доступ, как у остальных устройств" },
+  "statusSwitching": {
+    "message": "Переключаю на «$policy$»…",
+    "placeholders": { "policy": { "content": "$1" } }
+  },
+  "statusSwitched": {
+    "message": "Готово: «$policy$»",
+    "placeholders": { "policy": { "content": "$1" } }
+  },
+  "noPolicies": {
+    "message": "На роутере не настроено ни одной политики доступа — создайте её в панели Keenetic."
+  },
+  "deviceBlocked": { "message": "Этому устройству запрещён доступ в интернет в настройках роутера." },
+  "noRouterConnection": { "message": "Нет связи с роутером" }
 }
