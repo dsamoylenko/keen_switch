@@ -81,11 +81,13 @@ test('отклонённый пароль повторяется один раз
 
   await assert.rejects(
     authenticate(settings),
+    // Ассерт по ключу, а не по формулировке: текст живёт в _locales и меняется
+    // без участия теста, идентичность ошибки — нет.
     (error: unknown) =>
       error instanceof KeeneticError &&
       error.kind === 'auth' &&
-      error.message === 'Роутер отклонил логин и пароль' &&
-      String(error.detail).includes('веб-панель'),
+      error.key === 'errAuthRejected' &&
+      error.detail === 'errAuthRejectedDetail',
   );
 
   assert.equal(router.calls.filter((call) => call.startsWith('POST')).length, 2);

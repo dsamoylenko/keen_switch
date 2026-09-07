@@ -1,5 +1,6 @@
 import type { DeviceState, ErrorKind, HostSummary } from './keenetic';
 import type { Settings } from './settings';
+import { t } from './i18n';
 
 export type Request =
   | { type: 'getState' }
@@ -33,7 +34,7 @@ export async function send<T extends Request['type']>(
 ): Promise<ResponseMap[T]> {
   const response = (await chrome.runtime.sendMessage(request)) as Response<ResponseMap[T]> | undefined;
   if (!response) {
-    throw new Error('Фоновый скрипт расширения не ответил');
+    throw new Error(t('errNoBackgroundResponse'));
   }
   if (!response.ok) {
     const error = new Error(response.error.message) as Error & SerializedError;

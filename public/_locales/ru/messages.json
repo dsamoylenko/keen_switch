@@ -1,5 +1,62 @@
 {
   "appDesc": {
     "message": "Переключение текущего устройства между политиками доступа (Policy) на роутере Keenetic в один клик."
+  },
+  "errRouterUnreachable": { "message": "Роутер недоступен" },
+  "errAuthUnexpectedStatus": {
+    "message": "Неожиданный ответ на /auth: HTTP $status$",
+    "placeholders": { "status": { "content": "$1" } }
+  },
+  "errNoChallenge": { "message": "Роутер не прислал challenge для авторизации" },
+  "errNoChallengeDetail": {
+    "message": "Похоже, по этому адресу отвечает не веб-интерфейс KeeneticOS."
+  },
+  "errPasswordNotSet": { "message": "Не задан пароль роутера" },
+  "errAuthFailedStatus": {
+    "message": "Авторизация не прошла: HTTP $status$",
+    "placeholders": { "status": { "content": "$1" } }
+  },
+  "errSessionNotStored": { "message": "Роутер принял пароль, но сессия не сохранилась" },
+  "errSessionNotStoredDetail": {
+    "message": "Браузер не отдаёт сессионную cookie роутера. Проверьте, что для адреса роутера выдано разрешение в настройках расширения."
+  },
+  "errAuthRejected": { "message": "Роутер отклонил логин и пароль" },
+  "errAuthRejectedDetail": {
+    "message": "Если логин и пароль точно верные, закройте вкладку с веб-панелью роутера: она обновляет сессию и мешает расширению авторизоваться."
+  },
+  "errRciAction": {
+    "message": "$action$: роутер вернул ошибку",
+    "placeholders": { "action": { "content": "$1" } }
+  },
+  "actionSetPolicy": { "message": "Смена политики" },
+  "actionSaveConfig": { "message": "Сохранение конфигурации" },
+  "errSessionExpired": { "message": "Сессия роутера истекла" },
+  "errForbidden": { "message": "Роутер отклонил запрос (403)" },
+  "errForbiddenDetail": {
+    "message": "KeeneticOS пропускает запросы к /rci/ только со своим собственным Origin. Расширение подменяет заголовок правилом declarativeNetRequest — проверьте, что в chrome://extensions выдано разрешение на адрес роутера, и перезагрузите расширение."
+  },
+  "errRciHttp": {
+    "message": "Запрос к роутеру не прошёл: HTTP $status$",
+    "placeholders": { "status": { "content": "$1" } }
+  },
+  "errBadResponse": { "message": "Неожиданный формат ответа роутера" },
+  "errWhoamiFailed": { "message": "Роутер не смог определить это устройство" },
+  "errNoDeviceSelected": { "message": "Устройство не выбрано в настройках" },
+  "errPolicyNotApplied": { "message": "Роутер не применил новую политику" },
+  "errPolicyNotAppliedDetail": {
+    "message": "Ожидалось «$expected$», после записи роутер сообщает «$actual$».",
+    "placeholders": { "expected": { "content": "$1" }, "actual": { "content": "$2" } }
+  },
+  "policyNoneInline": { "message": "без политики" },
+  "errOriginRule": {
+    "message": "Не удалось установить правило подмены Origin: $reason$",
+    "placeholders": { "reason": { "content": "$1" } }
+  },
+  "errNoBackgroundResponse": { "message": "Фоновый скрипт расширения не ответил" },
+  "errBaseUrlNotSet": { "message": "Не указан адрес роутера" },
+  "errNoPermission": { "message": "Нет доступа к адресу роутера" },
+  "errNoPermissionDetail": {
+    "message": "Откройте настройки расширения и выдайте разрешение для $url$.",
+    "placeholders": { "url": { "content": "$1" } }
   }
 }

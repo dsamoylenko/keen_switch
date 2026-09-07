@@ -1,5 +1,62 @@
 {
   "appDesc": {
     "message": "Switch this device between Keenetic router access policies in one click."
+  },
+  "errRouterUnreachable": { "message": "The router is unreachable" },
+  "errAuthUnexpectedStatus": {
+    "message": "Unexpected response from /auth: HTTP $status$",
+    "placeholders": { "status": { "content": "$1" } }
+  },
+  "errNoChallenge": { "message": "The router did not send an authentication challenge" },
+  "errNoChallengeDetail": {
+    "message": "This address appears to serve something other than the KeeneticOS web interface."
+  },
+  "errPasswordNotSet": { "message": "The router password is not set" },
+  "errAuthFailedStatus": {
+    "message": "Authentication failed: HTTP $status$",
+    "placeholders": { "status": { "content": "$1" } }
+  },
+  "errSessionNotStored": { "message": "The router accepted the password, but the session was not stored" },
+  "errSessionNotStoredDetail": {
+    "message": "The browser is not sending the router's session cookie. Check that permission for the router address is granted in the extension settings."
+  },
+  "errAuthRejected": { "message": "The router rejected the username and password" },
+  "errAuthRejectedDetail": {
+    "message": "If the credentials are definitely correct, close the router web interface tab: it refreshes the session and stops the extension from signing in."
+  },
+  "errRciAction": {
+    "message": "$action$: the router returned an error",
+    "placeholders": { "action": { "content": "$1" } }
+  },
+  "actionSetPolicy": { "message": "Switching the policy" },
+  "actionSaveConfig": { "message": "Saving the configuration" },
+  "errSessionExpired": { "message": "The router session has expired" },
+  "errForbidden": { "message": "The router rejected the request (403)" },
+  "errForbiddenDetail": {
+    "message": "KeeneticOS only accepts requests to /rci/ that carry its own Origin. The extension rewrites the header with a declarativeNetRequest rule — check that permission for the router address is granted in chrome://extensions and reload the extension."
+  },
+  "errRciHttp": {
+    "message": "Request to the router failed: HTTP $status$",
+    "placeholders": { "status": { "content": "$1" } }
+  },
+  "errBadResponse": { "message": "Unexpected response format from the router" },
+  "errWhoamiFailed": { "message": "The router could not identify this device" },
+  "errNoDeviceSelected": { "message": "No device is selected in the settings" },
+  "errPolicyNotApplied": { "message": "The router did not apply the new policy" },
+  "errPolicyNotAppliedDetail": {
+    "message": "Expected \"$expected$\", but after the write the router reports \"$actual$\".",
+    "placeholders": { "expected": { "content": "$1" }, "actual": { "content": "$2" } }
+  },
+  "policyNoneInline": { "message": "no policy" },
+  "errOriginRule": {
+    "message": "Could not install the Origin rewrite rule: $reason$",
+    "placeholders": { "reason": { "content": "$1" } }
+  },
+  "errNoBackgroundResponse": { "message": "The extension background script did not respond" },
+  "errBaseUrlNotSet": { "message": "The router address is not set" },
+  "errNoPermission": { "message": "No access to the router address" },
+  "errNoPermissionDetail": {
+    "message": "Open the extension settings and grant permission for $url$.",
+    "placeholders": { "url": { "content": "$1" } }
   }
 }

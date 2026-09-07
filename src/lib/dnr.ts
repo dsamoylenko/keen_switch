@@ -17,6 +17,8 @@
  * Трафик открытой в соседней вкладке веб-панели роутера правило не трогает.
  */
 
+import { t } from './i18n';
+
 const RULE_ID = 1;
 
 /** tabs.TAB_ID_NONE: запросы, не принадлежащие ни одной вкладке. */
@@ -62,7 +64,7 @@ async function updateRules(options: chrome.declarativeNetRequest.UpdateRuleOptio
     await chrome.declarativeNetRequest.updateSessionRules(options);
   } catch (cause) {
     throw new Error(
-      `Не удалось установить правило подмены Origin: ${cause instanceof Error ? cause.message : String(cause)}`,
+      t('errOriginRule', cause instanceof Error ? cause.message : String(cause)),
     );
   }
 }

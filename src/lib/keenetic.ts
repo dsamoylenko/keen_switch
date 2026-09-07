@@ -18,18 +18,40 @@
  */
 
 import { md5Hex } from './md5';
+import { t } from './i18n';
 import type { Settings } from './settings';
 
 export type ErrorKind = 'config' | 'permission' | 'network' | 'auth' | 'rci';
 
+export interface KeeneticErrorOptions {
+  /** Подстановки в основное сообщение. */
+  subs?: string | string[];
+  /** Ключ каталога для пояснения. */
+  detailKey?: string;
+  /** Подстановки в пояснение. */
+  detailSubs?: string | string[];
+  /** Готовое пояснение от роутера или браузера — диагностика, она не переводится. */
+  detailText?: string;
+}
+
+/**
+ * Ошибка несёт ключ каталога, а не готовый текст: `key` — машинная
+ * идентичность ошибки, по ней ассертят тесты и ветвится UI, а формулировка
+ * живёт в _locales и меняется независимо.
+ */
 export class KeeneticError extends Error {
+  readonly detail?: string;
+
   constructor(
     readonly kind: ErrorKind,
-    message: string,
-    readonly detail?: string,
+    readonly key: string,
+    options: KeeneticErrorOptions = {},
   ) {
-    super(message);
+    super(t(key, options.subs));
     this.name = 'KeeneticError';
+    this.detail =
+      options.detailText ??
+      (options.detailKey ? t(options.detailKey, options.detailSubs) : undefined);
   }
 }
 
@@ -98,11 +120,9 @@ async function routerFetch(url: string, init: RequestInit): Promise<Response> {
       ...init,
     });
   } catch (cause) {
-    throw new KeeneticError(
-      'network',
-      'Роутер недоступен',
-      cause instanceof Error ? cause.message : String(cause),
-    );
+    throw new KeeneticError('network', 'errRouterUnreachable', {
+      detailText: cause instanceof Error ? cause.message : String(cause),
+    });
   }
 }
 
@@ -122,21 +142,17 @@ async function performHandshake(settings: Settings): Promise<'ok' | 'rejected'> 
   const probe = await routerFetch(authUrl, { method: 'GET' });
   if (probe.status === 200) return 'ok';
   if (probe.status !== 401) {
-    throw new KeeneticError('auth', `Неожиданный ответ на /auth: HTTP ${probe.status}`);
+    throw new KeeneticError('auth', 'errAuthUnexpectedStatus', { subs: String(probe.status) });
   }
 
   const realm = probe.headers.get('X-NDM-Realm');
   const challenge = probe.headers.get('X-NDM-Challenge');
   if (!realm || !challenge) {
-    throw new KeeneticError(
-      'auth',
-      'Роутер не прислал challenge для авторизации',
-      'Похоже, по этому адресу отвечает не веб-интерфейс KeeneticOS.',
-    );
+    throw new KeeneticError('auth', 'errNoChallenge', { detailKey: 'errNoChallengeDetail' });
   }
 
   if (!settings.password) {
-    throw new KeeneticError('config', 'Не задан пароль роутера');
+    throw new KeeneticError('config', 'errPasswordNotSet');
   }
 
   const hashedPassword = await sha256Hex(
@@ -151,18 +167,16 @@ async function performHandshake(settings: Settings): Promise<'ok' | 'rejected'> 
 
   if (response.status === 401 || response.status === 403) return 'rejected';
   if (!response.ok) {
-    throw new KeeneticError('auth', `Авторизация не прошла: HTTP ${response.status}`);
+    throw new KeeneticError('auth', 'errAuthFailedStatus', { subs: String(response.status) });
   }
 
   // Проверяем, что сессионная cookie действительно сохранилась в браузере:
   // без этого следующие запросы к /rci/ молча вернут 401.
   const verify = await routerFetch(authUrl, { method: 'GET' });
   if (verify.status !== 200) {
-    throw new KeeneticError(
-      'auth',
-      'Роутер принял пароль, но сессия не сохранилась',
-      'Браузер не отдаёт сессионную cookie роутера. Проверьте, что для адреса роутера выдано разрешение в настройках расширения.',
-    );
+    throw new KeeneticError('auth', 'errSessionNotStored', {
+      detailKey: 'errSessionNotStoredDetail',
+    });
   }
   return 'ok';
 }
@@ -175,11 +189,7 @@ async function performAuthentication(settings: Settings): Promise<void> {
   // пробуем ещё раз с заново взятым challenge.
   if ((await performHandshake(settings)) === 'ok') return;
 
-  throw new KeeneticError(
-    'auth',
-    'Роутер отклонил логин и пароль',
-    'Если логин и пароль точно верные, закройте вкладку с веб-панелью роутера: она обновляет сессию и мешает расширению авторизоваться.',
-  );
+  throw new KeeneticError('auth', 'errAuthRejected', { detailKey: 'errAuthRejectedDetail' });
 }
 
 let pendingAuth: Promise<void> | null = null;
@@ -219,7 +229,7 @@ export function extractByPath(response: unknown, path: string): unknown {
 }
 
 /** Ищет в ответе RCI записи `status` с уровнем `error` и превращает их в исключение. */
-export function assertNoRciError(value: unknown, action: string): void {
+export function assertNoRciError(value: unknown, actionKey: string): void {
   if (value === null || typeof value !== 'object') return;
   const status = (value as Record<string, unknown>).status;
   if (!Array.isArray(status)) return;
@@ -233,7 +243,7 @@ export function assertNoRciError(value: unknown, action: string): void {
   const message = failures
     .map((entry) => String(entry.message ?? entry.code ?? 'unknown error'))
     .join('; ');
-  throw new KeeneticError('rci', `${action}: роутер вернул ошибку`, message);
+  throw new KeeneticError('rci', 'errRciAction', { subs: t(actionKey), detailText: message });
 }
 
 async function rci(settings: Settings, queries: RciQuery[]): Promise<unknown[]> {
@@ -244,22 +254,18 @@ async function rci(settings: Settings, queries: RciQuery[]): Promise<unknown[]> 
   });
 
   if (response.status === 401) {
-    throw new KeeneticError('auth', 'Сессия роутера истекла');
+    throw new KeeneticError('auth', 'errSessionExpired');
   }
   if (response.status === 403) {
-    throw new KeeneticError(
-      'rci',
-      'Роутер отклонил запрос (403)',
-      'KeeneticOS пропускает запросы к /rci/ только со своим собственным Origin. Расширение подменяет заголовок правилом declarativeNetRequest — проверьте, что в chrome://extensions выдано разрешение на адрес роутера, и перезагрузите расширение.',
-    );
+    throw new KeeneticError('rci', 'errForbidden', { detailKey: 'errForbiddenDetail' });
   }
   if (!response.ok) {
-    throw new KeeneticError('rci', `Запрос к роутеру не прошёл: HTTP ${response.status}`);
+    throw new KeeneticError('rci', 'errRciHttp', { subs: String(response.status) });
   }
 
   const body: unknown = await response.json().catch(() => null);
   if (!Array.isArray(body) || body.length !== queries.length) {
-    throw new KeeneticError('rci', 'Неожиданный формат ответа роутера');
+    throw new KeeneticError('rci', 'errBadResponse');
   }
 
   return queries.map((query, index) => extractByPath(body[index], query.path));
@@ -414,9 +420,7 @@ export async function fetchDeviceState(settings: Settings): Promise<DeviceState>
   if (!mac) {
     throw new KeeneticError(
       'config',
-      settings.autoDetectDevice
-        ? 'Роутер не смог определить это устройство'
-        : 'Устройство не выбрано в настройках',
+      settings.autoDetectDevice ? 'errWhoamiFailed' : 'errNoDeviceSelected',
     );
   }
 
@@ -457,18 +461,20 @@ export async function setDevicePolicy(
     { path: PATH_SAVE_CONFIG },
   ]);
 
-  assertNoRciError(writeResult, 'Смена политики');
-  assertNoRciError(saveResult, 'Сохранение конфигурации');
+  assertNoRciError(writeResult, 'actionSetPolicy');
+  assertNoRciError(saveResult, 'actionSaveConfig');
 
   // Перечитываем состояние с роутера: единственный честный способ убедиться,
   // что политика действительно применилась.
   const state = await fetchDeviceState(settings);
   if (state.currentPolicyId !== policyId) {
-    throw new KeeneticError(
-      'rci',
-      'Роутер не применил новую политику',
-      `Ожидалось «${policyId ?? 'без политики'}», после записи роутер сообщает «${state.currentPolicyId ?? 'без политики'}».`,
-    );
+    throw new KeeneticError('rci', 'errPolicyNotApplied', {
+      detailKey: 'errPolicyNotAppliedDetail',
+      detailSubs: [
+        policyId ?? t('policyNoneInline'),
+        state.currentPolicyId ?? t('policyNoneInline'),
+      ],
+    });
   }
   return state;
 }

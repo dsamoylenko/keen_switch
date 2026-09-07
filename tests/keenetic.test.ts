@@ -36,11 +36,21 @@ test('extractByPath достаёт полезную нагрузку и не п�
 });
 
 test('assertNoRciError различает ошибки и предупреждения', () => {
-  assert.doesNotThrow(() => assertNoRciError({ status: [{ status: 'message', message: 'ok' }] }, 'x'));
+  assert.doesNotThrow(() =>
+    assertNoRciError({ status: [{ status: 'message', message: 'ok' }] }, 'actionSetPolicy'),
+  );
   assert.throws(
-    () => assertNoRciError({ status: [{ status: 'error', message: 'policy not found' }] }, 'Смена политики'),
+    () =>
+      assertNoRciError(
+        { status: [{ status: 'error', message: 'policy not found' }] },
+        'actionSetPolicy',
+      ),
+    // detail — сырой текст роутера, он не переводится и проходит насквозь.
     (error: unknown) =>
-      error instanceof KeeneticError && error.kind === 'rci' && error.detail === 'policy not found',
+      error instanceof KeeneticError &&
+      error.kind === 'rci' &&
+      error.key === 'errRciAction' &&
+      error.detail === 'policy not found',
   );
 });
 

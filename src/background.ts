@@ -27,17 +27,16 @@ async function requireReadySettings(override?: Settings): Promise<Settings> {
   const settings = override ?? (await loadSettings());
 
   if (!settings.baseUrl) {
-    throw new KeeneticError('config', 'Не указан адрес роутера');
+    throw new KeeneticError('config', 'errBaseUrlNotSet');
   }
   if (!settings.password) {
-    throw new KeeneticError('config', 'Не указан пароль роутера');
+    throw new KeeneticError('config', 'errPasswordNotSet');
   }
   if (!(await hasRouterPermission(settings.baseUrl))) {
-    throw new KeeneticError(
-      'permission',
-      'Нет доступа к адресу роутера',
-      `Откройте настройки расширения и выдайте разрешение для ${settings.baseUrl}.`,
-    );
+    throw new KeeneticError('permission', 'errNoPermission', {
+      detailKey: 'errNoPermissionDetail',
+      detailSubs: settings.baseUrl,
+    });
   }
 
   // Без подмены Origin роутер отвечает 403 на каждый запрос к /rci/.
