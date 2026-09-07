@@ -15,6 +15,14 @@ const run = promisify(execFile);
 const pkg = JSON.parse(await readFile('package.json', 'utf8'));
 const manifest = JSON.parse(await readFile('dist/manifest.json', 'utf8'));
 
+const RELEASE_NAME = 'KeenSwitch';
+
+if (manifest.name !== RELEASE_NAME) {
+  throw new Error(
+    `В dist/ dev-сборка ("${manifest.name}"), а не "${RELEASE_NAME}". Пересоберите: npm run build:release`
+  );
+}
+
 if (manifest.version !== pkg.version) {
   throw new Error(`Версии разошлись: package.json ${pkg.version}, dist/manifest.json ${manifest.version}. Пересоберите: npm run build`);
 }
