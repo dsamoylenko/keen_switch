@@ -82,3 +82,13 @@ test('старый пароль мигрирует из settings в отдель
   assert.equal((local.settings as Values).password, undefined);
   assert.equal(local.routerPassword, 'old-secret');
 });
+
+test('существующая сохранённая настройка считается завершённой без нового флага', async () => {
+  local.settings = {
+    baseUrl: 'http://192.168.1.1',
+    login: 'admin',
+    passwordStorage: 'session',
+  };
+
+  assert.equal((await loadSettings()).setupComplete, true);
+});

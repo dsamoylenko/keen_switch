@@ -6,6 +6,7 @@ import {
   setDevicePolicy,
 } from './lib/keenetic';
 import { installOriginRule } from './lib/dnr';
+import { DEMO_HOSTS, fetchDemoPopupState, setDemoDevicePolicy } from './lib/demo';
 import type { Request, Response, SerializedError } from './lib/messages';
 import {
   hasRouterPermission,
@@ -58,13 +59,20 @@ async function requireReadySettings(override?: Settings): Promise<Settings> {
 async function handle(request: Request): Promise<unknown> {
   switch (request.type) {
     case 'getState': {
-      return fetchPopupState(await requireReadySettings(), request.mac);
+      const settings = await loadSettings();
+      return settings.demoMode
+        ? fetchDemoPopupState(request.mac)
+        : fetchPopupState(await requireReadySettings(settings), request.mac);
     }
     case 'setPolicy': {
-      return setDevicePolicy(await requireReadySettings(), request.mac, request.policyId);
+      const settings = await loadSettings();
+      return settings.demoMode
+        ? setDemoDevicePolicy(request.mac, request.policyId)
+        : setDevicePolicy(await requireReadySettings(settings), request.mac, request.policyId);
     }
     case 'listHosts': {
-      return fetchHosts(await requireReadySettings(request.settings));
+      const settings = request.settings ?? (await loadSettings());
+      return settings.demoMode ? DEMO_HOSTS : fetchHosts(await requireReadySettings(settings));
     }
     case 'testConnection': {
       const settings = await requireReadySettings(request.settings);

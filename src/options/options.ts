@@ -7,6 +7,7 @@ import {
   loadSettings,
   normalizeBaseUrl,
   originPattern,
+  removeAllRouterPermissions,
   removeUnusedRouterPermissions,
   saveSettings,
   type Settings,
@@ -30,8 +31,14 @@ const testResult = document.querySelector<HTMLSpanElement>('#test-result')!;
 const saveForm = document.querySelector<HTMLFormElement>('#settings-form')!;
 const saveButton = document.querySelector<HTMLButtonElement>('#save')!;
 const saveResult = document.querySelector<HTMLSpanElement>('#save-result')!;
+const demoActive = document.querySelector<HTMLElement>('#demo-active')!;
+const demoEntry = document.querySelector<HTMLElement>('#demo-entry')!;
+const startDemoButton = document.querySelector<HTMLButtonElement>('#start-demo')!;
+const leaveDemoButton = document.querySelector<HTMLButtonElement>('#leave-demo')!;
+const demoResult = document.querySelector<HTMLSpanElement>('#demo-result')!;
 
 let knownHosts: HostSummary[] = [];
+let connectionVerified = false;
 
 /** Возвращает '' вместо исключения, если в поле адреса что-то нечитаемое. */
 function safeBaseUrl(): string {
@@ -51,6 +58,8 @@ function readForm(): Settings {
     autoDetectDevice: modeAuto.checked,
     deviceMac: deviceSelect.value,
     deviceLabel: knownHosts.find((host) => host.mac === deviceSelect.value)?.label ?? '',
+    demoMode: false,
+    setupComplete: connectionVerified,
   };
 }
 
@@ -210,10 +219,38 @@ testButton.addEventListener('click', () => {
           : `Связь есть по уже активной сессии роутера. Введённые логин и пароль не проверялись. ${deviceSummary}`,
         result.credentialsVerified ? 'ok' : 'muted',
       );
+      connectionVerified = true;
+      demoEntry.hidden = true;
     })
     .catch((error: unknown) => setFeedback(testResult, describeError(error), 'error'))
     .finally(() => {
       testButton.disabled = false;
+    });
+});
+
+startDemoButton.addEventListener('click', () => {
+  startDemoButton.disabled = true;
+  setPending(demoResult, 'Запускаю демо…');
+
+  saveSettings({ ...DEFAULT_SETTINGS, demoMode: true, setupComplete: true })
+    .then(() => removeAllRouterPermissions())
+    .then(() => {
+      saveForm.hidden = true;
+      demoActive.hidden = false;
+    })
+    .catch((error: unknown) => setFeedback(demoResult, describeError(error), 'error'))
+    .finally(() => {
+      startDemoButton.disabled = false;
+    });
+});
+
+leaveDemoButton.addEventListener('click', () => {
+  leaveDemoButton.disabled = true;
+  saveSettings({ ...DEFAULT_SETTINGS, demoMode: false, setupComplete: false })
+    .then(() => location.reload())
+    .catch((error: unknown) => {
+      leaveDemoButton.disabled = false;
+      window.alert(describeError(error));
     });
 });
 
@@ -263,6 +300,13 @@ async function init(): Promise<void> {
   syncPasswordToggle(false);
 
   const settings = await loadSettings();
+  connectionVerified = settings.setupComplete;
+  if (settings.demoMode) {
+    saveForm.hidden = true;
+    demoActive.hidden = false;
+    return;
+  }
+  demoEntry.hidden = connectionVerified;
   baseUrlInput.value = settings.baseUrl;
   loginInput.value = settings.login;
   passwordInput.value = settings.password;

@@ -11,6 +11,10 @@ export interface Settings {
   deviceMac: string;
   /** Человекочитаемое имя выбранного устройства — только для отображения. */
   deviceLabel: string;
+  /** true — попап работает на локальных фиктивных данных, без доступа к сети. */
+  demoMode: boolean;
+  /** Скрывает вход в демо после завершения первичной настройки. */
+  setupComplete: boolean;
 }
 
 export type PasswordStorage = 'session' | 'local';
@@ -23,6 +27,8 @@ export const DEFAULT_SETTINGS: Settings = {
   autoDetectDevice: true,
   deviceMac: '',
   deviceLabel: '',
+  demoMode: false,
+  setupComplete: false,
 };
 
 const STORAGE_KEY = 'settings';
@@ -48,6 +54,13 @@ export async function loadSettings(): Promise<Settings> {
       ? ((local[PASSWORD_KEY] as string | undefined) ?? legacyPassword)
       : ((session[PASSWORD_KEY] as string | undefined) ?? '');
   const { password: _legacyPassword, ...settingsWithoutLegacyPassword } = stored;
+  // До появления setupComplete сам факт сохранённого объекта означал, что
+  // пользователь уже прошёл первичную настройку. Так кнопка демо не появится
+  // внезапно у существующих пользователей после обновления.
+  const setupComplete =
+    typeof stored.setupComplete === 'boolean'
+      ? stored.setupComplete
+      : Object.keys(stored).length > 0;
 
   // Одноразовая миграция: пароль больше не лежит внутри общего объекта настроек.
   if (hasLegacyPassword) {
@@ -63,6 +76,7 @@ export async function loadSettings(): Promise<Settings> {
     ...settingsWithoutLegacyPassword,
     password,
     passwordStorage,
+    setupComplete,
   };
 }
 
@@ -133,4 +147,12 @@ export async function removeUnusedRouterPermissions(baseUrl: string): Promise<bo
   );
   if (staleOrigins.length === 0) return false;
   return chrome.permissions.remove({ origins: staleOrigins });
+}
+
+/** Отзывает все ранее выданные адреса роутеров при переходе в автономное демо. */
+export async function removeAllRouterPermissions(): Promise<boolean> {
+  const granted = await chrome.permissions.getAll();
+  const origins = (granted.origins ?? []).filter((pattern) => /^https?:\/\//.test(pattern));
+  if (origins.length === 0) return false;
+  return chrome.permissions.remove({ origins });
 }

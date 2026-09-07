@@ -3,11 +3,13 @@ import { loadFavorites, toggleFavorite } from '../lib/favorites';
 import { icon, type IconName } from '../lib/icons';
 import type { DeviceState, HostSummary } from '../lib/keenetic';
 import { send } from '../lib/messages';
+import { loadSettings } from '../lib/settings';
 
 const deviceEl = document.querySelector<HTMLButtonElement>('#device')!;
 const menuEl = document.querySelector<HTMLElement>('#device-menu')!;
 const policiesEl = document.querySelector<HTMLUListElement>('#policies')!;
 const statusEl = document.querySelector<HTMLParagraphElement>('#status')!;
+const demoBadge = document.querySelector<HTMLElement>('#demo-badge')!;
 
 document.querySelector<HTMLButtonElement>('#open-options')!.addEventListener('click', () => {
   chrome.runtime.openOptionsPage();
@@ -523,7 +525,9 @@ async function selectDevice(mac: string): Promise<void> {
 }
 
 async function init(): Promise<void> {
-  favorites = await loadFavorites();
+  const [settings, storedFavorites] = await Promise.all([loadSettings(), loadFavorites()]);
+  demoBadge.hidden = !settings.demoMode;
+  favorites = storedFavorites;
   await loadState();
 }
 

@@ -1,0 +1,9 @@
+KeenSwitch normally requires access to a Keenetic router on the user's local network.
+
+To review the complete interface without router hardware:
+1. Open the extension options page.
+2. Click “Start demo without a router”.
+3. Click the KeenSwitch toolbar icon.
+4. Select a device and switch between access policies.
+
+Demo mode uses only fictional local data. It requires no credentials, host permissions, or network access.

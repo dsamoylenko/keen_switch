@@ -33,6 +33,26 @@
       </p>
     </header>
 
+    <main id="demo-active" hidden>
+      <section class="card">
+        <div class="card-head">
+          <h2>Демонстрационный режим</h2>
+          <p class="card-sub">KeenSwitch работает на примере локальной сети без подключения к роутеру.</p>
+        </div>
+        <div class="card-body">
+          <p class="note">
+            <span>
+              Откройте KeenSwitch в панели Chrome, чтобы выбирать тестовые устройства и
+              переключать их политики. Все данные вымышлены и остаются в браузере.
+            </span>
+          </p>
+        </div>
+        <div class="card-foot">
+          <button id="leave-demo" class="secondary" type="button">Подключить настоящий роутер</button>
+        </div>
+      </section>
+    </main>
+
     <form id="settings-form" novalidate>
       <main>
         <section class="card">
@@ -127,6 +147,17 @@
           <div class="card-foot">
             <button id="test" class="secondary" type="button">Проверить подключение</button>
             <span id="test-result" class="feedback" role="status" aria-live="polite"></span>
+          </div>
+        </section>
+
+        <section id="demo-entry" class="card">
+          <div class="card-head">
+            <h2>Нет роутера под рукой?</h2>
+            <p class="card-sub">Посмотрите интерфейс на безопасных тестовых данных.</p>
+          </div>
+          <div class="card-foot">
+            <button id="start-demo" class="secondary" type="button">Запустить демо без роутера</button>
+            <span id="demo-result" class="feedback" role="status" aria-live="polite"></span>
           </div>
         </section>
 

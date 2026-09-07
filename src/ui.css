@@ -827,12 +827,29 @@ button:disabled {
   color: var(--fg-muted);
 }
 
+.mode-badge {
+  padding: 2px 7px;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.4;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
 .options main {
   max-width: 640px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: 16px;
+}
+
+.options main[hidden] {
+  display: none;
 }
 
 .card {
