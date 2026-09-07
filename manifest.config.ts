@@ -6,7 +6,7 @@ export default defineManifest({
   name: 'KeenSwitch',
   version: pkg.version,
   description:
-    'Переключение текущего устройства между политиками доступа (Policy) на роутере Keenetic в один клик.',
+    'Переключение устройств сети между политиками доступа (Policy) на роутере Keenetic в один клик.',
   icons: {
     16: 'icons/icon-16.png',
     32: 'icons/icon-32.png',

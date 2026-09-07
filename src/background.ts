@@ -1,7 +1,7 @@
 import {
-  fetchDeviceState,
   fetchHosts,
   fetchOverview,
+  fetchPopupState,
   KeeneticError,
   setDevicePolicy,
 } from './lib/keenetic';
@@ -49,7 +49,7 @@ async function requireReadySettings(override?: Settings): Promise<Settings> {
 async function handle(request: Request): Promise<unknown> {
   switch (request.type) {
     case 'getState': {
-      return fetchDeviceState(await requireReadySettings());
+      return fetchPopupState(await requireReadySettings(), request.mac);
     }
     case 'setPolicy': {
       return setDevicePolicy(await requireReadySettings(), request.mac, request.policyId);

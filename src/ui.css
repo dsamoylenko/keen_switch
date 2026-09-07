@@ -373,14 +373,185 @@ button:disabled {
   font-size: 14px;
 }
 
-/* Карточка устройства */
+/* Карточка устройства — она же кнопка, открывающая список */
+.device-picker {
+  position: relative;
+}
+
 .device {
   display: flex;
   align-items: center;
   gap: 10px;
+  width: 100%;
   padding: 12px 14px;
-  background: var(--bg-sunken);
+  border: 0;
   border-bottom: 1px solid var(--line);
+  background: var(--bg-sunken);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--dur) var(--ease);
+}
+
+.device:hover:not(:disabled) {
+  background: var(--surface-hover);
+}
+
+.device:disabled {
+  cursor: default;
+  opacity: 1;
+}
+
+/* Стрелка вниз: доворачивается, когда список раскрыт. */
+.device-caret {
+  flex: none;
+  color: var(--fg-subtle);
+  transition: transform var(--dur) var(--ease);
+}
+
+.device[aria-expanded='true'] .device-caret {
+  transform: rotate(180deg);
+}
+
+/* Выпадающий список устройств */
+.device-menu {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% - 1px);
+  right: 8px;
+  left: 8px;
+  max-height: 264px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 6px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  box-shadow: var(--shadow-md);
+}
+
+.device-menu[hidden] {
+  display: none;
+}
+
+.device-menu .note {
+  border: 0;
+  background: none;
+}
+
+.device-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.device-group {
+  padding: 8px 8px 4px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--fg-subtle);
+}
+
+.device-group:first-child {
+  padding-top: 4px;
+}
+
+.device-row {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.device-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+  padding: 7px 8px;
+  border: 1px solid transparent;
+  border-radius: var(--r-sm);
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background var(--dur) var(--ease),
+    border-color var(--dur) var(--ease);
+}
+
+.device-option:hover {
+  background: var(--surface-hover);
+}
+
+.device-option[aria-current='true'] {
+  border-color: var(--accent-line);
+  background: var(--accent-soft);
+}
+
+.device-option[aria-current='true'] .device-name {
+  color: var(--accent);
+}
+
+.device-option .device-icon {
+  width: 26px;
+  height: 26px;
+  border-radius: var(--r-sm);
+}
+
+.device-option .device-icon .icon {
+  width: 14px;
+  height: 14px;
+}
+
+.device-option .chip {
+  font-size: 10px;
+  padding: 1px 6px;
+}
+
+/* Звезда «в избранное» */
+.star-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  flex: none;
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-sm);
+  background: none;
+  color: var(--fg-subtle);
+  cursor: pointer;
+  transition:
+    background var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+}
+
+.star-button .icon {
+  width: 15px;
+  height: 15px;
+}
+
+.star-button:hover {
+  background: var(--surface-hover);
+  color: var(--fg);
+}
+
+.star-button.is-favorite {
+  color: var(--warn);
+}
+
+/* Заливка отличает избранное даже там, где цвет не читается. */
+.star-button.is-favorite .icon {
+  fill: currentColor;
 }
 
 .device-icon {

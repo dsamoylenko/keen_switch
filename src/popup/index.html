@@ -50,13 +50,26 @@
     </header>
 
     <!-- Первый кадр: скелетон вместо пустоты, пока идёт запрос к роутеру. -->
-    <div id="device" class="device" aria-busy="true">
-      <span class="device-icon skeleton" aria-hidden="true"></span>
-      <span class="device-text">
-        <span class="skeleton skeleton-line" style="width: 45%" aria-hidden="true"></span>
-        <span class="skeleton skeleton-line" style="width: 70%; height: 8px" aria-hidden="true"></span>
-      </span>
-      <span class="visually-hidden">Подключаюсь к роутеру…</span>
+    <div class="device-picker">
+      <button
+        id="device"
+        class="device"
+        type="button"
+        aria-haspopup="true"
+        aria-expanded="false"
+        aria-controls="device-menu"
+        aria-busy="true"
+        disabled
+      >
+        <span class="device-icon skeleton" aria-hidden="true"></span>
+        <span class="device-text">
+          <span class="skeleton skeleton-line" style="width: 45%" aria-hidden="true"></span>
+          <span class="skeleton skeleton-line" style="width: 70%; height: 8px" aria-hidden="true"></span>
+        </span>
+        <span class="visually-hidden">Подключаюсь к роутеру…</span>
+      </button>
+
+      <div id="device-menu" class="device-menu" aria-label="Выбор устройства" hidden></div>
     </div>
 
     <div class="section-head">

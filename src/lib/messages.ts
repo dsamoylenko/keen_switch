@@ -1,8 +1,9 @@
-import type { DeviceState, ErrorKind, HostSummary } from './keenetic';
+import type { DeviceState, ErrorKind, HostSummary, PopupState } from './keenetic';
 import type { Settings } from './settings';
 
 export type Request =
-  | { type: 'getState' }
+  /** `mac` — устройство, выбранное в списке попапа; без него берётся то, что задано настройками. */
+  | { type: 'getState'; mac?: string }
   | { type: 'setPolicy'; mac: string; policyId: string | null }
   | { type: 'listHosts'; settings?: Settings }
   | { type: 'testConnection'; settings: Settings };
@@ -14,7 +15,7 @@ export interface TestConnectionResult {
 }
 
 export interface ResponseMap {
-  getState: DeviceState;
+  getState: PopupState;
   setPolicy: DeviceState;
   listHosts: HostSummary[];
   testConnection: TestConnectionResult;
