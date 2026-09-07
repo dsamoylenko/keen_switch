@@ -56,7 +56,7 @@
   "errBaseUrlNotSet": { "message": "Nie ustawiono adresu routera" },
   "errNoPermission": { "message": "Brak dostępu do adresu routera" },
   "errNoPermissionDetail": {
-    "message": "Otwórzcie ustawienia rozszerzenia i przyznajcie uprawnienie dla $url$.",
+    "message": "Otwórz ustawienia rozszerzenia i przyznaj uprawnienie dla $url$.",
     "placeholders": { "url": { "content": "$1" } }
   },
   "optionsButton": { "message": "Ustawienia" },
