@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <title>KeenSwitch</title>
+    <link rel="stylesheet" href="../ui.css" />
+  </head>
+  <body class="popup">
+    <header class="app-bar">
+      <div class="brand">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.75"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="icon"
+          aria-hidden="true"
+        >
+          <rect x="2" y="13" width="20" height="8" rx="2.5" />
+          <path d="M6.5 17h.01" />
+          <path d="M10 17h.01" />
+          <path d="M12 10V7.5" />
+          <path d="M8.8 6.2a5 5 0 0 1 6.4 0" />
+          <path d="M6.2 3.4a9 9 0 0 1 11.6 0" />
+        </svg>
+        <h1>KeenSwitch</h1>
+      </div>
+
+      <button id="open-options" class="icon-button" type="button" aria-label="Настройки" title="Настройки">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.75"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="icon"
+          aria-hidden="true"
+        >
+          <path d="M3 6h9" />
+          <path d="M17 6h4" />
+          <circle cx="14.5" cy="6" r="2.5" />
+          <path d="M3 18h4" />
+          <path d="M12 18h9" />
+          <circle cx="9.5" cy="18" r="2.5" />
+        </svg>
+      </button>
+    </header>
+
+    <!-- Первый кадр: скелетон вместо пустоты, пока идёт запрос к роутеру. -->
+    <div id="device" class="device" aria-busy="true">
+      <span class="device-icon skeleton" aria-hidden="true"></span>
+      <span class="device-text">
+        <span class="skeleton skeleton-line" style="width: 45%" aria-hidden="true"></span>
+        <span class="skeleton skeleton-line" style="width: 70%; height: 8px" aria-hidden="true"></span>
+      </span>
+      <span class="visually-hidden">Подключаюсь к роутеру…</span>
+    </div>
+
+    <div class="section-head">
+      <h2 id="policies-title">Политика доступа</h2>
+    </div>
+
+    <ul id="policies" class="policies" aria-labelledby="policies-title">
+      <li><span class="skeleton skeleton-row" aria-hidden="true"></span></li>
+      <li><span class="skeleton skeleton-row" aria-hidden="true"></span></li>
+      <li><span class="skeleton skeleton-row" aria-hidden="true"></span></li>
+    </ul>
+
+    <p id="status" class="status" role="status" aria-live="polite" hidden></p>
+
+    <script type="module" src="./popup.ts"></script>
+  </body>
+</html>

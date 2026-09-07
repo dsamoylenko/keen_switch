@@ -1,0 +1,958 @@
+/* =============================================================================
+   KeenSwitch — дизайн-система интерфейса.
+
+   Токены → примитивы → компоненты popup → компоненты Options.
+   Цвета задаются только семантическими токенами (никаких hex в компонентах),
+   светлая и тёмная темы описаны парой и проверены на контраст 4.5:1.
+   ========================================================================== */
+
+/* ------------------------------------------------------------------ токены */
+
+:root {
+  color-scheme: light dark;
+
+  /* Поверхности */
+  --bg: #ffffff;
+  --bg-sunken: #f5f6f8;
+  --surface: #ffffff;
+  --surface-hover: #f2f4f7;
+  --line: #e4e7ec;
+  --line-strong: #d0d5dd;
+
+  /* Текст */
+  --fg: #10151f;
+  --fg-muted: #5b6577;
+  --fg-subtle: #66707f;
+
+  /* Акцент */
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --accent-fg: #ffffff;
+  --accent-soft: #eef4ff;
+  --accent-line: #bcd2fd;
+
+  /* Статусы */
+  --ok: #0a7f4f;
+  --ok-soft: #e9f9f0;
+  --ok-line: #a9e5c6;
+  --danger: #b42318;
+  --danger-soft: #fef3f2;
+  --danger-line: #fbcfca;
+  --warn: #9a5b06;
+  --warn-soft: #fff8ec;
+  --warn-line: #f5d9a8;
+
+  /* Форма */
+  --r-sm: 6px;
+  --r-md: 9px;
+  --r-lg: 14px;
+  --r-pill: 999px;
+
+  --shadow-sm: 0 1px 2px rgb(16 21 31 / 0.06);
+  --shadow-md: 0 1px 3px rgb(16 21 31 / 0.08), 0 6px 16px -8px rgb(16 21 31 / 0.14);
+
+  /* Движение */
+  --dur: 160ms;
+  --ease: cubic-bezier(0.2, 0, 0.13, 1);
+
+  --focus: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #14161b;
+    --bg-sunken: #0f1115;
+    --surface: #1b1e25;
+    --surface-hover: #23272f;
+    --line: #2b3038;
+    --line-strong: #3b414c;
+
+    --fg: #f0f2f6;
+    --fg-muted: #a2abba;
+    --fg-subtle: #8b94a3;
+
+    --accent: #7ba7ff;
+    --accent-hover: #9dbcff;
+    --accent-fg: #0d1830;
+    --accent-soft: #1d2635;
+    --accent-line: #2f4370;
+
+    --ok: #6fdda0;
+    --ok-soft: #16251d;
+    --ok-line: #27452f;
+    --danger: #ff9c92;
+    --danger-soft: #2a1a19;
+    --danger-line: #532f2c;
+    --warn: #f2c164;
+    --warn-soft: #26200f;
+    --warn-line: #4a3c1d;
+
+    --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+    --shadow-md: 0 2px 4px rgb(0 0 0 / 0.4), 0 12px 24px -12px rgb(0 0 0 / 0.6);
+  }
+}
+
+/* -------------------------------------------------------------- примитивы */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font: 13px/1.5
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+code,
+.mono {
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, monospace;
+  font-size: 0.92em;
+  font-variant-numeric: tabular-nums;
+}
+
+.icon {
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+
+.muted {
+  color: var(--fg-muted);
+}
+
+:where(button, input, select, a):focus-visible {
+  outline: none;
+  box-shadow: var(--focus);
+}
+
+/* Кнопка-иконка (настройки, показать пароль) */
+.icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-md);
+  background: none;
+  color: var(--fg-muted);
+  cursor: pointer;
+  transition:
+    background var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+}
+
+.icon-button .icon {
+  width: 17px;
+  height: 17px;
+}
+
+.icon-button:hover {
+  background: var(--surface-hover);
+  color: var(--fg);
+}
+
+.icon-button:active {
+  background: var(--line);
+}
+
+/* Текстовая кнопка-ссылка */
+.link-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: 0;
+  padding: 0;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.link-button:hover {
+  color: var(--accent-hover);
+  text-decoration: underline;
+}
+
+/* Кнопки действий */
+button.primary,
+button.secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 0 14px;
+  border-radius: var(--r-md);
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background var(--dur) var(--ease),
+    border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+}
+
+button.primary {
+  border: 1px solid transparent;
+  background: var(--accent);
+  color: var(--accent-fg);
+}
+
+button.primary:hover:not(:disabled) {
+  background: var(--accent-hover);
+}
+
+button.secondary {
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--fg);
+}
+
+button.secondary:hover:not(:disabled) {
+  background: var(--surface-hover);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* Плашка-статус рядом с кнопкой / под полем */
+.feedback {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 6px;
+  min-height: 18px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--fg-muted);
+}
+
+.feedback .icon {
+  width: 14px;
+  height: 14px;
+  margin-top: 1px;
+}
+
+.feedback[data-tone='ok'] {
+  color: var(--ok);
+}
+
+.feedback[data-tone='error'] {
+  color: var(--danger);
+}
+
+.feedback:empty {
+  display: none;
+}
+
+/* Значок-состояние */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  background: var(--bg-sunken);
+  color: var(--fg-muted);
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.chip[data-tone='warn'] {
+  border-color: var(--warn-line);
+  background: var(--warn-soft);
+  color: var(--warn);
+}
+
+.chip[data-tone='danger'] {
+  border-color: var(--danger-line);
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+/* Скелетон загрузки */
+.skeleton {
+  border-radius: var(--r-sm);
+  background: linear-gradient(90deg, var(--line) 25%, var(--surface-hover) 50%, var(--line) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  opacity: 0.85;
+  animation: spin 0.7s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .spinner {
+    animation: none;
+    border-top-color: currentColor;
+    opacity: 0.4;
+  }
+}
+
+/* ==================================================================== popup */
+
+.popup {
+  width: 320px;
+  background: var(--bg);
+}
+
+.app-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 12px 10px 14px;
+  border-bottom: 1px solid var(--line);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.brand .icon {
+  width: 18px;
+  height: 18px;
+  color: var(--accent);
+}
+
+.brand h1 {
+  font-size: 14px;
+}
+
+/* Карточка устройства */
+.device {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  background: var(--bg-sunken);
+  border-bottom: 1px solid var(--line);
+}
+
+.device-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex: none;
+  border-radius: var(--r-md);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--fg-muted);
+}
+
+.device-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.device-name {
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.device-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  font-size: 11px;
+  color: var(--fg-muted);
+}
+
+/* Разделитель — в конце строки, чтобы при переносе не начинать строку с точки. */
+.device-meta > *:not(:last-child)::after {
+  content: '·';
+  margin: 0 5px;
+  color: var(--fg-subtle);
+}
+
+/* Заголовок списка политик */
+.section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px 14px 6px;
+}
+
+.section-head h2 {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--fg-subtle);
+}
+
+/* Список политик */
+.policies {
+  list-style: none;
+  margin: 0;
+  padding: 0 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.policy {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 42px;
+  padding: 8px 10px;
+  border: 1px solid transparent;
+  border-radius: var(--r-md);
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background var(--dur) var(--ease),
+    border-color var(--dur) var(--ease);
+}
+
+.policy:hover:not(:disabled) {
+  background: var(--surface-hover);
+}
+
+.policy[aria-current='true'] {
+  border-color: var(--accent-line);
+  background: var(--accent-soft);
+}
+
+.policy:disabled {
+  cursor: default;
+}
+
+.policies[data-busy='true'] .policy:not([data-pending='true']) {
+  opacity: 0.45;
+}
+
+.policy-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  flex: none;
+  border: 1.5px solid var(--line-strong);
+  border-radius: 50%;
+  color: var(--accent-fg);
+}
+
+.policy-mark .icon {
+  width: 12px;
+  height: 12px;
+  stroke-width: 3;
+  opacity: 0;
+  transform: scale(0.6);
+  transition:
+    opacity var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
+}
+
+.policy[aria-current='true'] .policy-mark {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+.policy[aria-current='true'] .policy-mark .icon {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.policy-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+  flex: 1;
+}
+
+.policy-label {
+  font-weight: 500;
+}
+
+.policy[aria-current='true'] .policy-label {
+  color: var(--accent);
+}
+
+.policy-sub {
+  font-size: 11px;
+  line-height: 1.35;
+  color: var(--fg-muted);
+}
+
+.policy .spinner {
+  color: var(--accent);
+}
+
+.policy[data-pending='true'] .policy-mark {
+  border-color: transparent;
+  background: none;
+}
+
+/* Строка статуса внизу popup */
+.status {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0;
+  padding: 10px 14px;
+  border-top: 1px solid var(--line);
+  background: var(--bg-sunken);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.status[hidden] {
+  display: none;
+}
+
+.status .icon {
+  margin-top: 1px;
+  color: var(--fg-subtle);
+}
+
+.status[data-tone='error'] {
+  background: var(--danger-soft);
+  border-top-color: var(--danger-line);
+  color: var(--danger);
+}
+
+.status[data-tone='error'] .icon {
+  color: var(--danger);
+}
+
+.status[data-tone='ok'] {
+  background: var(--ok-soft);
+  border-top-color: var(--ok-line);
+  color: var(--ok);
+}
+
+.status[data-tone='ok'] .icon {
+  color: var(--ok);
+}
+
+.status-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.status-detail {
+  color: var(--fg-muted);
+  word-break: break-word;
+}
+
+.status[data-tone='error'] .status-detail {
+  color: inherit;
+  opacity: 0.85;
+}
+
+.status .link-button {
+  align-self: flex-start;
+  font-size: 12px;
+  color: inherit;
+  text-decoration: underline;
+}
+
+/* Скелетоны popup */
+.skeleton-line {
+  height: 10px;
+}
+
+.policies .skeleton-row {
+  height: 42px;
+  border-radius: var(--r-md);
+}
+
+/* ================================================================== options */
+
+.options {
+  background: var(--bg-sunken);
+  padding: 0 20px 24px;
+}
+
+.page-head {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 32px 0 20px;
+}
+
+.page-head .brand .icon {
+  width: 22px;
+  height: 22px;
+}
+
+.page-head h1 {
+  font-size: 19px;
+}
+
+.page-sub {
+  margin: 8px 0 0;
+  color: var(--fg-muted);
+}
+
+.options main {
+  max-width: 640px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.card {
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.card-head {
+  padding: 16px 20px 0;
+}
+
+.card-head h2 {
+  font-size: 14px;
+}
+
+.card-sub {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: var(--fg-muted);
+}
+
+.card-body {
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.card-foot {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 12px 20px;
+  border-top: 1px solid var(--line);
+  background: var(--bg-sunken);
+}
+
+.card-foot .feedback {
+  flex-basis: 100%;
+}
+
+/* Поля */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field[hidden] {
+  display: none;
+}
+
+.field > label {
+  font-weight: 500;
+}
+
+.hint:empty {
+  display: none;
+}
+
+.hint {
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--fg-muted);
+}
+
+input[type='text'],
+input[type='password'],
+select {
+  width: 100%;
+  min-height: 36px;
+  padding: 7px 11px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-md);
+  background: var(--bg);
+  color: var(--fg);
+  font: inherit;
+  transition:
+    border-color var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease);
+}
+
+input[type='text']:hover:not(:disabled),
+input[type='password']:hover:not(:disabled),
+select:hover:not(:disabled) {
+  border-color: var(--fg-subtle);
+}
+
+input:focus-visible,
+select:focus-visible {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+select:disabled {
+  background: var(--bg-sunken);
+  color: var(--fg-subtle);
+  cursor: default;
+}
+
+.input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-wrap input {
+  padding-right: 40px;
+}
+
+.input-wrap .icon-button {
+  position: absolute;
+  right: 3px;
+  width: 30px;
+  height: 30px;
+}
+
+/* Информационная плашка */
+.note {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--bg-sunken);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--fg-muted);
+}
+
+.note .icon {
+  margin-top: 1px;
+  color: var(--fg-subtle);
+}
+
+.note[data-tone='warn'] {
+  border-color: var(--warn-line);
+  background: var(--warn-soft);
+  color: var(--warn);
+}
+
+.note[data-tone='warn'] .icon {
+  color: var(--warn);
+}
+
+.note strong {
+  display: block;
+  margin-bottom: 2px;
+  color: inherit;
+}
+
+.note code {
+  padding: 1px 4px;
+  border-radius: 4px;
+  background: rgb(128 128 128 / 0.16);
+}
+
+/* Выбор режима определения устройства — карточки-радио */
+.choices {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.choice {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--bg);
+  cursor: pointer;
+  transition:
+    border-color var(--dur) var(--ease),
+    background var(--dur) var(--ease);
+}
+
+.choice:hover {
+  border-color: var(--line-strong);
+  background: var(--surface-hover);
+}
+
+.choice:has(input:checked) {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.choice:has(input:focus-visible) {
+  box-shadow: var(--focus);
+}
+
+.choice input[type='radio'] {
+  margin: 1px 0 0;
+  width: 15px;
+  height: 15px;
+  flex: none;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.choice-body {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.choice-title {
+  font-weight: 500;
+}
+
+/* Панель сохранения */
+form {
+  margin: 0;
+}
+
+/* Плавающая панель действия: шириной колонки, липнет, пока ниже есть контент. */
+.save-bar {
+  position: sticky;
+  bottom: 12px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  max-width: 640px;
+  margin: 16px auto 0;
+  padding: 10px 14px 10px 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-md);
+}
+
+.save-bar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  width: 100%;
+}
+
+@media (max-width: 520px) {
+  .options {
+    padding: 0 14px 20px;
+  }
+
+  .card-body,
+  .card-head,
+  .card-foot {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+}
+
+/* --------------------------------------------------------- служебные класcы */
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.skeleton-line,
+.policies .skeleton-row,
+.device-icon.skeleton {
+  display: block;
+}
+
+.device-icon.skeleton {
+  border-color: transparent;
+}
+
+.policies .note {
+  margin: 2px;
+}
+
+/* Спиннер внутри строки-обратной связи выравнивается по тексту */
+.feedback .spinner {
+  width: 12px;
+  height: 12px;
+  margin-top: 2px;
+}

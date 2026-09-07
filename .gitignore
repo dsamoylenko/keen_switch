@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.test-build/
+.preview/
+*.log
+.DS_Store
+keen-switch-*.zip

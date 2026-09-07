@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Настройки KeenSwitch</title>
+    <link rel="stylesheet" href="../ui.css" />
+  </head>
+  <body class="options">
+    <header class="page-head">
+      <div class="brand">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.75"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="icon"
+          aria-hidden="true"
+        >
+          <rect x="2" y="13" width="20" height="8" rx="2.5" />
+          <path d="M6.5 17h.01" />
+          <path d="M10 17h.01" />
+          <path d="M12 10V7.5" />
+          <path d="M8.8 6.2a5 5 0 0 1 6.4 0" />
+          <path d="M6.2 3.4a9 9 0 0 1 11.6 0" />
+        </svg>
+        <h1>Настройки KeenSwitch</h1>
+      </div>
+      <p class="page-sub">
+        Два шага: подключиться к роутеру и указать, какое устройство переключать.
+      </p>
+    </header>
+
+    <form id="settings-form" novalidate>
+      <main>
+        <section class="card">
+          <div class="card-head">
+            <h2>1. Роутер</h2>
+            <p class="card-sub">Данные для входа в веб-панель Keenetic.</p>
+          </div>
+
+          <div class="card-body">
+            <div class="field">
+              <label for="base-url">Адрес веб-интерфейса</label>
+              <input id="base-url" type="text" spellcheck="false" placeholder="http://192.168.1.1" />
+              <span class="hint">Тот же адрес, по которому вы открываете панель Keenetic.</span>
+              <span id="permission-state" class="feedback" role="status" aria-live="polite"></span>
+            </div>
+
+            <div class="field">
+              <label for="login">Логин</label>
+              <input id="login" type="text" spellcheck="false" autocomplete="off" />
+            </div>
+
+            <div class="field">
+              <label for="password">Пароль</label>
+              <div class="input-wrap">
+                <input id="password" type="password" autocomplete="off" />
+                <button
+                  id="toggle-password"
+                  class="icon-button"
+                  type="button"
+                  aria-label="Показать пароль"
+                  aria-pressed="false"
+                  title="Показать пароль"
+                ></button>
+              </div>
+            </div>
+
+            <p class="note">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="icon"
+                aria-hidden="true"
+              >
+                <rect x="3.5" y="10" width="17" height="10.5" rx="2.5" />
+                <path d="M7.5 10V7a4.5 4.5 0 0 1 9 0v3" />
+              </svg>
+              <span>
+                <strong>Пароль хранится в открытом виде</strong>
+                <code>chrome.storage.local</code> доступен любому, у кого есть доступ к вашему профилю
+                Chrome. На роутер пароль уходит только по указанному адресу и только в виде хеша
+                (SHA-256 от challenge).
+              </span>
+            </p>
+          </div>
+
+          <div class="card-foot">
+            <button id="test" class="secondary" type="button">Проверить подключение</button>
+            <span id="test-result" class="feedback" role="status" aria-live="polite"></span>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-head">
+            <h2 id="device-mode-title">2. Моё устройство</h2>
+            <p class="card-sub">Политику будем переключать именно для него.</p>
+          </div>
+
+          <div class="card-body">
+            <div class="choices" role="radiogroup" aria-labelledby="device-mode-title">
+              <label class="choice">
+                <input id="mode-auto" type="radio" name="device-mode" value="auto" />
+                <span class="choice-body">
+                  <span class="choice-title">Определять автоматически</span>
+                  <span class="hint">
+                    Роутер сам сообщает MAC устройства, с которого пришёл запрос (RCI
+                    <code>whoami</code>). Работает, пока браузер ходит к роутеру напрямую.
+                  </span>
+                </span>
+              </label>
+
+              <label class="choice">
+                <input id="mode-manual" type="radio" name="device-mode" value="manual" />
+                <span class="choice-body">
+                  <span class="choice-title">Выбрать вручную из списка</span>
+                  <span class="hint">
+                    Нужно, если автоопределение даёт не тот MAC (VPN, мосты, докстанции).
+                  </span>
+                </span>
+              </label>
+            </div>
+
+            <div class="field" id="device-field">
+              <label for="device">Устройство</label>
+              <select id="device" disabled>
+                <option value="">— список загружается после проверки подключения —</option>
+              </select>
+              <span id="device-hint" class="hint"></span>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <div class="save-bar">
+        <div class="save-bar-inner">
+          <span id="save-result" class="feedback" role="status" aria-live="polite"></span>
+          <button id="save" class="primary" type="submit">Сохранить</button>
+        </div>
+      </div>
+    </form>
+
+    <script type="module" src="./options.ts"></script>
+  </body>
+</html>
