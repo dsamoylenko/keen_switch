@@ -12,7 +12,7 @@
   "scripts": {
     "dev": "vite",
     "build": "npm run typecheck && vite build",
-    "build:release": "npm run typecheck && vite build --mode release",
+    "build:release": "npm run typecheck && vite build --mode release && rm -rf dist/icons-dev",
     "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.tests.json",
     "test": "node scripts/test.mjs",
     "package": "npm run build:release && node scripts/package.mjs",

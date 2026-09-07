@@ -24,7 +24,7 @@ if (manifest.name !== RELEASE_NAME) {
 }
 
 if (manifest.version !== pkg.version) {
-  throw new Error(`Версии разошлись: package.json ${pkg.version}, dist/manifest.json ${manifest.version}. Пересоберите: npm run build`);
+  throw new Error(`Версии разошлись: package.json ${pkg.version}, dist/manifest.json ${manifest.version}. Пересоберите: npm run build:release`);
 }
 if (manifest.description.length > 132) {
   throw new Error(`Описание длиннее 132 символов (${manifest.description.length}) — Chrome Web Store его не примет`);
