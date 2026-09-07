@@ -1,75 +1,102 @@
-# Различение dev/prod сборок расширения — Implementation Plan
+# Distinguishing development and production extension builds — Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task by task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Сделать так, чтобы dev-сборка (unpacked из `dist/`) визуально отличалась от prod-сборки (Chrome Web Store) именем и иконкой, а единственным способом получить настоящий prod-артефакт остался `npm run package`.
+**Goal:** Make the development build (unpacked from `dist/`) visually distinct
+from the production build (Chrome Web Store) by name and icon, while keeping
+`npm run package` as the only way to create a genuine production artifact.
 
-**Architecture:** `manifest.config.ts` превращается из статического объекта в функцию `createManifest(mode)`, которая по значению `mode` (переданному из `vite.config.ts` через функциональную форму `defineConfig`) выбирает имя и набор иконок. По умолчанию (любой `mode`, кроме кастомного `'release'`) — dev-вид; `release` получается только через `vite build --mode release`, на который переключается `npm run package`. Dev-иконки — статические файлы, один раз сгенерированные скриптом на `sharp` и закоммиченные. `scripts/package.mjs` дополнительно проверяет итоговый `manifest.json` перед архивацией.
+**Architecture:** Convert `manifest.config.ts` from a static object into a
+`createManifest(mode)` function that selects the name and icon set based on the
+`mode` passed from `vite.config.ts` through the functional `defineConfig` form.
+Every mode except the custom `'release'` uses the development appearance by
+default. The `release` mode is produced only by `vite build --mode release`, used
+by `npm run package`. Development icons are static files generated once with a
+`sharp` script and committed. Before archiving, `scripts/package.mjs` additionally
+validates the resulting `manifest.json`.
 
-**Tech Stack:** TypeScript, Vite 6, `@crxjs/vite-plugin`, Node.js встроенный `--test`, `sharp` (новая devDependency, только для генерации иконок).
+**Tech stack:** TypeScript, Vite 6, `@crxjs/vite-plugin`, Node.js built-in
+`--test`, and `sharp` as a new development dependency used only for icon
+generation.
 
-## Global Constraints
+## Global constraints
 
-- Сравнение режима должно быть именно с `'release'`, а не с `'production'` — иначе дефолтный `production`-mode обычного `vite build` тоже станет «релизом», и вся защита теряет смысл.
-- `npm run dev` и обычный `npm run build` должны ВСЕГДА давать dev-вид (имя `KeenSwitch Dev`, иконки из `icons-dev/`) — это самый частый путь, и он должен быть «безопасным» по умолчанию.
-- `npm run package` — единственный npm-скрипт, который производит prod-артефакт; он обязан пересобирать `dist/` сам (`build:release`), а не полагаться на то, что там уже лежит.
-- `scripts/package.mjs` обязан отказаться архивировать `dist/`, если `manifest.json` там не prod-вида.
-- Dev-иконки — обычные закоммиченные PNG в `public/icons-dev/`, не генерируются на каждой сборке; `sharp` нужен только при явном перезапуске генератора.
+- Compare the mode specifically with `'release'`, not `'production'`; otherwise
+  the default `production` mode of an ordinary `vite build` would also become a
+  release and defeat the safeguard.
+- `npm run dev` and an ordinary `npm run build` must ALWAYS produce the development
+  appearance (`KeenSwitch Dev`, with icons from `icons-dev/`). This is the most
+  common path and must be safe by default.
+- `npm run package` must be the only npm script that produces a production
+  artifact. It must rebuild `dist/` itself with `build:release` instead of relying
+  on existing contents.
+- `scripts/package.mjs` must refuse to archive `dist/` when `manifest.json` does
+  not describe the production variant.
+- Development icons are regular committed PNGs under `public/icons-dev/`. They are
+  not generated on every build; `sharp` is required only when the generator is
+  explicitly rerun.
 
 ---
 
-## Файлы
+## Files
 
-- `manifest.config.ts` — было: статический экспорт объекта. Станет: `export function createManifest(mode: string)`.
-- `vite.config.ts` — переход на функциональную форму `defineConfig(({ mode }) => ...)`.
-- `tests/manifest.test.ts` — новый, проверяет `createManifest` для release/dev режимов.
-- `scripts/test.mjs` — добавить `tests/manifest.test.ts` в `entryPoints`.
-- `scripts/generate-dev-icons.mjs` — новый, генерирует `public/icons-dev/*.png` через `sharp`.
-- `public/icons-dev/icon-{16,32,48,128}.png` — новые сгенерированные и закоммиченные файлы.
-- `package.json` — новая devDependency `sharp`, новые скрипты `build:release` и `icons:dev`, скрипт `package` переключается на `build:release`.
-- `scripts/package.mjs` — добавить проверку prod-имени перед архивацией.
-- `README.md` — обновить раздел «Сборка и установка» и таблицу «Скрипты».
+- `manifest.config.ts`—change from a static object export to
+  `export function createManifest(mode: string)`.
+- `vite.config.ts`—adopt the functional `defineConfig(({ mode }) => ...)` form.
+- `tests/manifest.test.ts`—new tests for `createManifest` in release and
+  development modes.
+- `scripts/test.mjs`—add `tests/manifest.test.ts` to `entryPoints`.
+- `scripts/generate-dev-icons.mjs`—new script that generates
+  `public/icons-dev/*.png` with `sharp`.
+- `public/icons-dev/icon-{16,32,48,128}.png`—new generated and committed files.
+- `package.json`—add the `sharp` development dependency, add `build:release` and
+  `icons:dev`, and switch `package` to `build:release`.
+- `scripts/package.mjs`—add a production-name check before archiving.
+- `README.md`—update **Build and installation** and the **Scripts** table.
 
 ---
 
-### Task 1: Генерация dev-иконок
+### Task 1: Generate development icons
 
 **Files:**
-- Modify: `package.json` (devDependencies + скрипт `icons:dev`)
+- Modify: `package.json` (development dependency and `icons:dev` script)
 - Create: `scripts/generate-dev-icons.mjs`
-- Create: `public/icons-dev/icon-16.png`, `icon-32.png`, `icon-48.png`, `icon-128.png`
+- Create: `public/icons-dev/icon-16.png`, `icon-32.png`, `icon-48.png`,
+  `icon-128.png`
 
 **Interfaces:**
-- Produces: каталог `public/icons-dev/icon-{16,32,48,128}.png` — используется в Task 2 (`manifest.config.ts` ссылается на эти пути в dev-режиме).
+- Produces the `public/icons-dev/icon-{16,32,48,128}.png` directory consumed by
+  Task 2, where `manifest.config.ts` references these paths in development mode.
 
-- [ ] **Step 1: Добавить `sharp` в devDependencies и скрипт `icons:dev`**
+- [ ] **Step 1: Add `sharp` to development dependencies and add `icons:dev`**
 
-В `package.json` добавить в `"devDependencies"` (сохранив остальные строки как есть):
+Add the following to `"devDependencies"` in `package.json`, preserving all other
+lines:
 
 ```json
 "sharp": "^0.35.4",
 ```
 
-и в `"scripts"` добавить строку:
+Add this line to `"scripts"`:
 
 ```json
 "icons:dev": "node scripts/generate-dev-icons.mjs",
 ```
 
-Установить зависимость:
+Install the dependency:
 
 ```bash
 npm install
 ```
 
-- [ ] **Step 2: Написать `scripts/generate-dev-icons.mjs`**
+- [ ] **Step 2: Write `scripts/generate-dev-icons.mjs`**
 
 ```js
 /**
- * Генерирует dev-варианты иконок: те же PNG из public/icons/, но с оранжевым
- * треугольником-бейджем в углу — чтобы dev-сборку нельзя было спутать с
- * прод-версией из Chrome Web Store. Запускать вручную (npm run icons:dev),
- * когда меняются исходные иконки — результат коммитится в репозиторий.
+ * Generates development icon variants: the same PNGs from public/icons/, with
+ * an orange triangular corner badge so the development build cannot be confused
+ * with the production version from the Chrome Web Store. Run manually with
+ * `npm run icons:dev` when the source icons change and commit the results.
  */
 import { mkdir } from 'node:fs/promises';
 import sharp from 'sharp';
@@ -98,13 +125,13 @@ for (const size of sizes) {
 }
 ```
 
-- [ ] **Step 3: Запустить генератор**
+- [ ] **Step 3: Run the generator**
 
 ```bash
 npm run icons:dev
 ```
 
-Ожидается вывод четырёх путей:
+Expected output:
 
 ```
 public/icons-dev/icon-16.png
@@ -113,7 +140,7 @@ public/icons-dev/icon-48.png
 public/icons-dev/icon-128.png
 ```
 
-- [ ] **Step 4: Проверить размеры и что бейдж действительно наложен**
+- [ ] **Step 4: Verify dimensions and confirm that the badge was applied**
 
 ```bash
 node -e '
@@ -135,7 +162,7 @@ for (const size of sizes) {
 '
 ```
 
-Ожидается: `icon-16.png OK (16x16)`, `icon-32.png OK (32x32)`, `icon-48.png OK (48x48)`, `icon-128.png OK (128x128)`, без ошибок.
+Expected: four `icon-*.png OK` messages with the correct dimensions and no errors.
 
 - [ ] **Step 5: Commit**
 
@@ -146,7 +173,7 @@ git commit -m "feat: add dev icon badge generator and generated dev icons"
 
 ---
 
-### Task 2: `createManifest(mode)` — переключение имени и иконок
+### Task 2: `createManifest(mode)`—switch names and icons
 
 **Files:**
 - Modify: `manifest.config.ts`
@@ -155,10 +182,13 @@ git commit -m "feat: add dev icon badge generator and generated dev icons"
 - Modify: `scripts/test.mjs`
 
 **Interfaces:**
-- Consumes: `public/icons-dev/icon-{16,32,48,128}.png` из Task 1 (пути на них зашиваются в манифест; для юнит-теста в этой задаче сами файлы не нужны — сравниваются только строки путей).
-- Produces: `createManifest(mode: string)` — именованный экспорт из `manifest.config.ts`, используется в `vite.config.ts` и в тестах.
+- Consumes the `public/icons-dev/icon-{16,32,48,128}.png` files from Task 1.
+  The unit test compares only path strings, so the actual files are unnecessary
+  for that test.
+- Produces the named `createManifest(mode: string)` export used by
+  `vite.config.ts` and the tests.
 
-- [ ] **Step 1: Написать падающий тест `tests/manifest.test.ts`**
+- [ ] **Step 1: Write the failing `tests/manifest.test.ts` test**
 
 ```ts
 import assert from 'node:assert/strict';
@@ -172,7 +202,7 @@ interface ManifestShape {
   action?: { default_title?: string; default_icon?: Record<number, string> };
 }
 
-test('createManifest: release-режим — прод-имя и прод-иконки', () => {
+test('createManifest: release mode uses production name and icons', () => {
   const manifest = createManifest('release') as ManifestShape;
   assert.equal(manifest.name, 'KeenSwitch');
   assert.equal(manifest.action?.default_title, 'KeenSwitch');
@@ -180,7 +210,7 @@ test('createManifest: release-режим — прод-имя и прод-ико�
   assert.equal(manifest.action?.default_icon?.[16], 'icons/icon-16.png');
 });
 
-test('createManifest: любой другой режим — dev-имя и dev-иконки', () => {
+test('createManifest: every other mode uses development name and icons', () => {
   for (const mode of ['development', 'production', 'test', '']) {
     const manifest = createManifest(mode) as ManifestShape;
     assert.equal(manifest.name, 'KeenSwitch Dev');
@@ -191,27 +221,29 @@ test('createManifest: любой другой режим — dev-имя и dev-�
 });
 ```
 
-- [ ] **Step 2: Подключить новый тестовый файл к раннеру**
+- [ ] **Step 2: Add the new test file to the runner**
 
-В `scripts/test.mjs` изменить `entryPoints` в вызове `build({...})`:
+Change `entryPoints` in the `build({...})` call in `scripts/test.mjs`:
 
 ```js
 entryPoints: ['tests/keenetic.test.ts', 'tests/auth.test.ts', 'tests/manifest.test.ts'],
 ```
 
-(остальной файл `scripts/test.mjs` не меняется).
+Leave the rest of `scripts/test.mjs` unchanged.
 
-- [ ] **Step 3: Убедиться, что тест падает (манифест ещё статический)**
+- [ ] **Step 3: Confirm that the test fails while the manifest is still static**
 
 ```bash
 npm test
 ```
 
-Ожидается: сборка тестов падает с ошибкой TypeScript/esbuild вида `"createManifest" is not exported by "manifest.config.ts"` (или аналогичной) — потому что `manifest.config.ts` пока экспортирует объект по умолчанию, а не функцию `createManifest`.
+Expected: test compilation fails with a TypeScript/esbuild error such as
+`"createManifest" is not exported by "manifest.config.ts"`, because the manifest
+still exports a default object rather than a `createManifest` function.
 
-- [ ] **Step 4: Переписать `manifest.config.ts` на `createManifest(mode)`**
+- [ ] **Step 4: Rewrite `manifest.config.ts` to use `createManifest(mode)`**
 
-Полное содержимое файла:
+Full file contents:
 
 ```ts
 import { defineManifest } from '@crxjs/vite-plugin';
@@ -233,7 +265,7 @@ export function createManifest(mode: string) {
     name,
     version: pkg.version,
     description:
-      'Переключение текущего устройства между политиками доступа (Policy) на роутере Keenetic в один клик.',
+      'Switch the current device between access policies (Policy) on a Keenetic router with one click.',
     icons,
     action: {
       default_popup: 'src/popup/index.html',
@@ -246,16 +278,16 @@ export function createManifest(mode: string) {
       type: 'module',
     },
     permissions: ['storage', 'declarativeNetRequestWithHostAccess'],
-    // Конкретный origin роутера запрашивается в рантайме из Options page,
-    // поэтому расширение не получает постоянного доступа ко всему вебу.
+    // The specific router origin is requested at runtime from the Options page,
+    // so the extension never receives permanent access to the entire web.
     optional_host_permissions: ['http://*/*', 'https://*/*'],
   });
 }
 ```
 
-- [ ] **Step 5: Обновить `vite.config.ts` на функциональную форму `defineConfig`**
+- [ ] **Step 5: Convert `vite.config.ts` to functional `defineConfig` form**
 
-Полное содержимое файла:
+Full file contents:
 
 ```ts
 import { defineConfig } from 'vite';
@@ -275,13 +307,15 @@ export default defineConfig(({ mode }) => ({
 }));
 ```
 
-- [ ] **Step 6: Прогнать тесты и typecheck**
+- [ ] **Step 6: Run tests and type checking**
 
 ```bash
 npm run typecheck && npm test
 ```
 
-Ожидается: оба падающих ранее теста из `tests/manifest.test.ts` проходят, остальные (`keenetic.test.ts`, `auth.test.ts`) не сломались, `typecheck` без ошибок.
+Expected: both formerly failing tests from `tests/manifest.test.ts` pass, the
+existing `keenetic.test.ts` and `auth.test.ts` tests remain green, and type
+checking reports no errors.
 
 - [ ] **Step 7: Commit**
 
@@ -292,18 +326,21 @@ git commit -m "feat: parametrize manifest by build mode (dev vs release)"
 
 ---
 
-### Task 3: npm-скрипт `build:release` и переключение `package`
+### Task 3: Add `build:release` and update `package`
 
 **Files:**
 - Modify: `package.json`
 
 **Interfaces:**
-- Consumes: `createManifest(mode)` из Task 2 — вызывается через `vite build --mode release`.
-- Produces: команды `npm run build:release` (release-сборка в `dist/`) и обновлённый `npm run package`, на них полагается Task 4.
+- Consumes `createManifest(mode)` from Task 2 through
+  `vite build --mode release`.
+- Produces `npm run build:release` (a release build in `dist/`) and an updated
+  `npm run package`, on which Task 4 depends.
 
-- [ ] **Step 1: Добавить скрипт `build:release` и переключить `package`**
+- [ ] **Step 1: Add `build:release` and update `package`**
 
-В `package.json`, в блоке `"scripts"`, заменить текущие строки `"build"` и `"package"` и добавить `"build:release"` — итоговый блок `scripts`:
+Replace the current `"build"` and `"package"` entries in the `"scripts"` block
+of `package.json`, add `"build:release"`, and make the final block:
 
 ```json
 "scripts": {
@@ -317,7 +354,7 @@ git commit -m "feat: parametrize manifest by build mode (dev vs release)"
 }
 ```
 
-- [ ] **Step 2: Проверить, что обычный `build` остаётся dev-видом**
+- [ ] **Step 2: Verify that an ordinary `build` keeps the development appearance**
 
 ```bash
 npm run build
@@ -330,9 +367,9 @@ console.log("OK:", manifest.name, manifest.icons["16"]);
 '
 ```
 
-Ожидается: `OK: KeenSwitch Dev icons-dev/icon-16.png`.
+Expected: `OK: KeenSwitch Dev icons-dev/icon-16.png`.
 
-- [ ] **Step 3: Проверить, что `build:release` даёт prod-вид**
+- [ ] **Step 3: Verify that `build:release` produces the production appearance**
 
 ```bash
 npm run build:release
@@ -345,7 +382,7 @@ console.log("OK:", manifest.name, manifest.icons["16"]);
 '
 ```
 
-Ожидается: `OK: KeenSwitch icons/icon-16.png`.
+Expected: `OK: KeenSwitch icons/icon-16.png`.
 
 - [ ] **Step 4: Commit**
 
@@ -356,54 +393,62 @@ git commit -m "feat: add build:release script, package now builds in release mod
 
 ---
 
-### Task 4: Страховка в `scripts/package.mjs`
+### Task 4: Add a safety check to `scripts/package.mjs`
 
 **Files:**
 - Modify: `scripts/package.mjs`
 
 **Interfaces:**
-- Consumes: `dist/manifest.json`, произведённый Task 3 (`npm run build` для dev-сценария теста, `npm run build:release` для успешного сценария).
+- Consumes the `dist/manifest.json` produced by Task 3: `npm run build` for the
+  development failure scenario and `npm run build:release` for the successful
+  scenario.
 
-- [ ] **Step 1: Добавить проверку prod-имени перед архивацией**
+- [ ] **Step 1: Add a production-name check before archiving**
 
-В `scripts/package.mjs`, сразу после строки
+Immediately after this line in `scripts/package.mjs`:
 
 ```js
 const manifest = JSON.parse(await readFile('dist/manifest.json', 'utf8'));
 ```
 
-добавить:
+add:
 
 ```js
 const RELEASE_NAME = 'KeenSwitch';
 
 if (manifest.name !== RELEASE_NAME) {
   throw new Error(
-    `В dist/ dev-сборка ("${manifest.name}"), а не "${RELEASE_NAME}". Пересоберите: npm run build:release`
+    `dist/ contains a development build ("${manifest.name}"), not "${RELEASE_NAME}". Rebuild it with: npm run build:release`
   );
 }
 ```
 
-(остальной файл, включая проверку версии и описания, остаётся без изменений).
+Leave the rest of the file, including version and description checks, unchanged.
 
-- [ ] **Step 2: Проверить, что скрипт отказывается архивировать dev-сборку**
+- [ ] **Step 2: Verify that the script refuses to archive a development build**
 
 ```bash
 npm run build
 node scripts/package.mjs
 ```
 
-Ожидается: процесс падает (ненулевой код выхода) с сообщением, содержащим `dev-сборка ("KeenSwitch Dev")` и `npm run build:release`. Архив `keen-switch-*.zip` не создаётся.
+Expected: the process exits with a nonzero code and a message containing
+`development build ("KeenSwitch Dev")` and `npm run build:release`. No
+`keen-switch-*.zip` archive is created.
 
-- [ ] **Step 3: Проверить, что полный `npm run package` всё ещё работает**
+- [ ] **Step 3: Verify that the full `npm run package` still works**
 
 ```bash
 npm run package
 ```
 
-Ожидается: скрипт сам пересобирает `dist/` в release-режиме (см. Task 3) и успешно создаёт `keen-switch-<версия>.zip`, печатая `Готово: keen-switch-<версия>.zip`.
+Expected: the script rebuilds `dist/` in release mode as described in Task 3 and
+successfully creates `keen-switch-<version>.zip`, printing
+`Done: keen-switch-<version>.zip`.
 
-- [ ] **Step 4: Убрать тестовый архив (он не коммитится, но и оставлять мусор не нужно)**
+- [ ] **Step 4: Remove the test archive**
+
+The archive is not committed and should not remain as workspace clutter:
 
 ```bash
 rm -f keen-switch-*.zip
@@ -418,81 +463,54 @@ git commit -m "fix: refuse to package a dev build into the store zip"
 
 ---
 
-### Task 5: Документация в README
+### Task 5: Update README documentation
 
 **Files:**
 - Modify: `README.md`
 
 **Interfaces:**
-- Consumes: имена npm-скриптов из Task 1 и Task 3 (`icons:dev`, `build:release`, обновлённый `package`).
+- Consumes the npm script names introduced in Tasks 1 and 3 (`icons:dev`,
+  `build:release`, and the updated `package`).
 
-- [ ] **Step 1: Обновить раздел «Сборка и установка»**
+- [ ] **Step 1: Update the Build and installation section**
 
-В `README.md` заменить блок (строки 20–31 в текущей версии):
+Replace the existing block in `README.md` with:
 
-```markdown
-## Сборка и установка
-
-```bash
-npm install
-npm run build
-```
-
-Сборка кладёт готовое расширение в `dist/`. Дальше:
-
-1. Откройте `chrome://extensions`.
-2. Включите **Режим разработчика**.
-3. **Загрузить распакованное расширение** → выберите папку `dist`.
-```
-
-на:
-
-```markdown
-## Сборка и установка
+````markdown
+## Build and installation
 
 ```bash
 npm install
 npm run build
 ```
 
-Сборка кладёт готовое расширение в `dist/`. Это **dev-сборка**: в
-`chrome://extensions` и в тулбаре она называется `KeenSwitch Dev` и её иконка
-помечена оранжевым уголком — чтобы не перепутать с версией из Chrome Web
-Store. Дальше:
+The build places the ready-to-use extension in `dist/`. This is a **development
+build**: in `chrome://extensions` and the toolbar it is named `KeenSwitch Dev`,
+and its icon has an orange corner badge so it cannot be confused with the Chrome
+Web Store version. Then:
 
-1. Откройте `chrome://extensions`.
-2. Включите **Режим разработчика**.
-3. **Загрузить распакованное расширение** → выберите папку `dist`.
+1. Open `chrome://extensions`.
+2. Enable **Developer mode**.
+3. Click **Load unpacked** and select the `dist` directory.
 
-Настоящую сборку для публикации (имя `KeenSwitch`, без бейджа) даёт только
-`npm run package` — см. таблицу «Скрипты» ниже.
-```
+Only `npm run package` creates the actual publication build (named `KeenSwitch`,
+without the badge); see the Scripts table below.
+````
 
-- [ ] **Step 2: Обновить таблицу «Скрипты»**
+- [ ] **Step 2: Update the Scripts table**
 
-Заменить текущую таблицу (строки 192–197):
-
-```markdown
-| Команда | Что делает |
-| --- | --- |
-| `npm run build` | типы + сборка в `dist/` |
-| `npm run dev` | Vite в watch-режиме (HMR для попапа и настроек) |
-| `npm test` | тесты разбора ответов роутера и MD5 |
-| `npm run typecheck` | только проверка типов |
-```
-
-на:
+Replace the existing table with:
 
 ```markdown
-| Команда | Что делает |
+| Command | Description |
 | --- | --- |
-| `npm run build` | типы + dev-сборка в `dist/` (имя `KeenSwitch Dev`, иконка с бейджем) — для локальной проверки |
-| `npm run build:release` | типы + prod-сборка в `dist/` (имя `KeenSwitch`, обычная иконка) |
-| `npm run package` | prod-сборка (`build:release`) + ZIP для Chrome Web Store — единственный способ получить артефакт для публикации |
-| `npm run dev` | Vite в watch-режиме (HMR для попапа и настроек), dev-вид |
-| `npm run icons:dev` | перегенерировать `public/icons-dev/*.png` из `public/icons/*.png` (нужно только после смены исходных иконок) |
-| `npm test` | тесты разбора ответов роутера, MD5 и выбора манифеста |
-| `npm run typecheck` | только проверка типов |
+| `npm run build` | Type checking plus a development build in `dist/` (`KeenSwitch Dev` with a badged icon), for local testing |
+| `npm run build:release` | Type checking plus a production build in `dist/` (`KeenSwitch` with the regular icon) |
+| `npm run package` | Production build (`build:release`) plus a Chrome Web Store ZIP; the only way to create a publication artifact |
+| `npm run dev` | Vite in watch mode (HMR for popup and settings), using the development appearance |
+| `npm run icons:dev` | Regenerate `public/icons-dev/*.png` from `public/icons/*.png`; needed only after source icons change |
+| `npm test` | Tests for router-response parsing, MD5, and manifest selection |
+| `npm run typecheck` | Type checking only |
 ```
 
 - [ ] **Step 3: Commit**

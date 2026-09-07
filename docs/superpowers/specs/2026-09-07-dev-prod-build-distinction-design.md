@@ -1,70 +1,69 @@
-# Различение dev- и prod-сборок расширения
+# Distinguishing development and production extension builds
 
-Дата: 2026-09-07
+Date: 2026-09-07
 
-## Проблема
+## Problem
 
-Расширение существует в двух видах на одной машине одновременно:
+Two versions of the extension can exist on the same machine at the same time:
 
-* **prod** — установлено из Chrome Web Store.
-* **dev** — распакованная сборка из `dist/`, загруженная вручную для разработки
-  и локальной проверки перед публикацией.
+* **production**—installed from the Chrome Web Store;
+* **development**—an unpacked build from `dist/`, loaded manually for development
+  and local testing before publication.
 
-Обе версии сейчас называются `KeenSwitch` и используют одинаковые иконки, поэтому
-в `chrome://extensions`, в тулбаре и в тултипе их нельзя отличить друг от друга —
-легко перепутать, с какой версией сейчас работаешь.
+Both versions are currently named `KeenSwitch` and use the same icons, making them
+indistinguishable in `chrome://extensions`, the toolbar, and the tooltip. It is easy
+to mistake one version for the other.
 
-Дополнительное ограничение: у Vite команда `build` всегда выставляет
-`NODE_ENV=production`, независимо от того, зачем её вызвали — собрать `dist/`
-для локальной проверки (`npm run build`) или подготовить ZIP для стора
-(`npm run package`). Значит различать dev/prod по `NODE_ENV` нельзя: обе команды
-дают одно и то же значение.
+There is an additional constraint: Vite's `build` command always sets
+`NODE_ENV=production`, whether it was invoked to create `dist/` for local testing
+(`npm run build`) or to prepare a store ZIP (`npm run package`). Therefore,
+development and production cannot be distinguished through `NODE_ENV`: both
+commands produce the same value.
 
-## Подход
+## Approach
 
-Различение строится на Vite `--mode`, а не на `NODE_ENV`, и по умолчанию
-**«безопасно» = dev-вид**. Настоящий prod-вид (то, что реально уходит в стор)
-получается только по явному флагу `--mode release`, которым пользуется
-исключительно команда публикации.
+The distinction is based on Vite's `--mode` rather than `NODE_ENV`, and the safe
+default is the **development appearance**. The real production appearance—the one
+submitted to the store—is produced only by the explicit `--mode release` flag,
+which is used exclusively by the publication command.
 
-| Команда | Как вызывается | `mode` | Результат |
+| Command | Invocation | `mode` | Result |
 | --- | --- | --- | --- |
-| `npm run dev` | `vite` | `development` (дефолт) | dev-вид |
-| `npm run build` | `vite build` | `production` (дефолт для build) | dev-вид (сравниваем не с `production`, а с кастомным `release`) |
-| `npm run build:release` (новый) | `vite build --mode release` | `release` | prod-вид |
-| `npm run package` | `npm run build:release && node scripts/package.mjs` | `release` | prod-вид, попадает в ZIP |
+| `npm run dev` | `vite` | `development` (default) | Development appearance |
+| `npm run build` | `vite build` | `production` (build default) | Development appearance, because the comparison is against custom `release`, not `production` |
+| `npm run build:release` (new) | `vite build --mode release` | `release` | Production appearance |
+| `npm run package` | `npm run build:release && node scripts/package.mjs` | `release` | Production appearance included in the ZIP |
 
-Таким образом обычный локальный `npm run build`, которым разработчик пользуется
-для проверки на своей машине, **всегда** остаётся dev-видом — его нельзя
-случайно принять за то, что уйдёт в стор. Prod-вид производит только один явный
-путь — `npm run package`.
+Consequently, the ordinary local `npm run build` used by developers for testing
+**always** keeps the development appearance and cannot be mistaken for the store
+build. Only one explicit path, `npm run package`, produces the production version.
 
-### Отличия dev-вида от prod-вида
+### Differences between development and production
 
-* **Имя** (`manifest.name`) и `action.default_title`: prod — `KeenSwitch`,
-  dev — `KeenSwitch Dev`.
-* **Иконка**: prod — как сейчас (`public/icons/icon-*.png`), dev — те же иконки
-  с наложенным непрозрачным оранжевым треугольником-уголком в правом нижнем углу
-  (~40% площади), узнаваемым даже на 16px. Хранятся как отдельные статические
-  файлы в `public/icons-dev/icon-*.png`.
+* **Name** (`manifest.name`) and `action.default_title`: production uses
+  `KeenSwitch`; development uses `KeenSwitch Dev`.
+* **Icon**: production uses the existing `public/icons/icon-*.png`; development
+  uses the same icons with an opaque orange triangular corner badge at the bottom
+  right (about 40% of the area), recognizable even at 16 px. These are stored as
+  separate static files in `public/icons-dev/icon-*.png`.
 
-## Реализация
+## Implementation
 
-### 1. Генерация dev-иконок
+### 1. Generate development icons
 
-Одноразовый скрипт `scripts/generate-dev-icons.mjs` на `sharp` (новая
-devDependency) берёт `public/icons/icon-{16,32,48,128}.png`, накладывает
-оранжевый треугольник-бейдж и сохраняет результат в
-`public/icons-dev/icon-{16,32,48,128}.png`. Файлы коммитятся в репозиторий как
-обычные статические ассеты — перегенерировать нужно только если поменяются
-исходные иконки, вручную запуская этот скрипт. Во время обычной разработки
-(`npm run dev` / `npm run build`) `sharp` не требуется.
+A one-off `scripts/generate-dev-icons.mjs` script using `sharp` (a new development
+dependency) reads `public/icons/icon-{16,32,48,128}.png`, overlays an orange
+triangular badge, and writes the result to
+`public/icons-dev/icon-{16,32,48,128}.png`. The files are committed as ordinary
+static assets. They need to be regenerated manually only when the source icons
+change. `sharp` is not required during normal development (`npm run dev` or
+`npm run build`).
 
-### 2. `manifest.config.ts` и `vite.config.ts`
+### 2. `manifest.config.ts` and `vite.config.ts`
 
-`manifest.config.ts` экспортирует функцию `createManifest(mode: string)` вместо
-статического объекта. `vite.config.ts` переходит на функциональную форму
-`defineConfig(({ mode }) => ...)` и передаёт `mode` в `createManifest`.
+`manifest.config.ts` exports a `createManifest(mode: string)` function instead of
+a static object. `vite.config.ts` adopts the functional
+`defineConfig(({ mode }) => ...)` form and passes `mode` to `createManifest`.
 
 ```ts
 // manifest.config.ts
@@ -86,14 +85,14 @@ export function createManifest(mode: string) {
       default_title: isRelease ? 'KeenSwitch' : 'KeenSwitch Dev',
       default_icon: icons,
     },
-    // остальное без изменений
+    // Everything else remains unchanged.
   });
 }
 ```
 
-`isRelease` намеренно сравнивается с `'release'`, а не с `'production'` — иначе
-дефолтный `production`-режим обычного `vite build` тоже посчитался бы релизом,
-и вся схема потеряла бы смысл (см. «Проблема» выше).
+`isRelease` deliberately compares the value with `'release'`, not `'production'`.
+Otherwise, the default `production` mode of an ordinary `vite build` would also be
+treated as a release and defeat the entire scheme (see Problem above).
 
 ### 3. `package.json`
 
@@ -114,46 +113,51 @@ export function createManifest(mode: string) {
 }
 ```
 
-### 4. Страховка в `scripts/package.mjs`
+### 4. Safety check in `scripts/package.mjs`
 
-Перед архивацией скрипт дополнительно проверяет, что `dist/manifest.json`
-содержит prod-имя и prod-иконки:
+Before creating the archive, the script additionally verifies that
+`dist/manifest.json` contains the production name and production icons:
 
 ```js
 if (manifest.name !== 'KeenSwitch') {
   throw new Error(
-    `В dist/ dev-сборка ("${manifest.name}"). Пересоберите: npm run build:release`
+    `dist/ contains a development build ("${manifest.name}"). Rebuild it with: npm run build:release`
   );
 }
 ```
 
-Это защищает от ситуации, когда в `dist/` случайно оказалась dev-сборка (например,
-`package.mjs` запущен напрямую, в обход `npm run package`), и не даёт заархивировать
-не тот вариант.
+This protects against accidentally leaving a development build in `dist/`, such
+as when `package.mjs` is run directly instead of through `npm run package`, and
+prevents the wrong variant from being archived.
 
-### 5. Документация
+### 5. Documentation
 
-`README.md`:
+Update `README.md` as follows:
 
-* раздел «Сборка и установка» — уточнить, что `npm run build` даёт dev-вид
-  (имя с суффиксом `Dev`, иконка с оранжевым уголком) для локальной проверки;
-* таблица «Скрипты» — добавить строки `build:release` и `icons:dev`, уточнить,
-  что `npm run package` — единственный путь получить prod-ZIP для стора.
+* Clarify in **Build and installation** that `npm run build` produces the
+  development appearance (`Dev` name suffix and orange corner badge) for local
+  testing.
+* Add `build:release` and `icons:dev` to the **Scripts** table and clarify that
+  `npm run package` is the only way to create a production ZIP for the store.
 
-## Проверка
+## Verification
 
-* `npm run dev` → в `chrome://extensions` после загрузки `dist/` видно
-  `KeenSwitch Dev` и иконку с уголком.
-* `npm run build` → тот же результат (dev-вид) без сборки для стора.
-* `npm run build:release` → `dist/manifest.json` содержит `"name": "KeenSwitch"`
-  и ссылки на `icons/`, без `Dev` и без `icons-dev/`.
-* `npm run package` на чистом `dist/` из `build:release` → архив собирается.
-* `npm run package`, если руками подсунуть в `dist/` результат обычного
-  `npm run build` (dev-вид) → падает с понятной ошибкой до архивации.
+* `npm run dev` → after loading `dist/` in `chrome://extensions`, `KeenSwitch Dev`
+  and the corner-badged icon are visible.
+* `npm run build` → produces the same development appearance without creating a
+  store build.
+* `npm run build:release` → `dist/manifest.json` contains `"name": "KeenSwitch"`
+  and paths under `icons/`, with neither `Dev` nor `icons-dev/`.
+* `npm run package` on a clean `dist/` produced by `build:release` → creates the
+  archive successfully.
+* Running `npm run package` after manually placing the result of an ordinary
+  `npm run build` (development appearance) in `dist/` → fails with a clear error
+  before creating an archive.
 
-## Не входит в объём
+## Out of scope
 
-* Раздельные ID/ключи расширения для dev и prod — не требуется: unpacked-сборка
-  и store-сборка и так получают разные extension ID от Chrome независимо от
-  имени и иконки.
-* Автоматизация публикации в Chrome Web Store (upload API) — вне рамок этой задачи.
+* Separate extension IDs or keys for development and production are unnecessary:
+  unpacked and store builds receive different Chrome extension IDs regardless of
+  their names and icons.
+* Automating publication to the Chrome Web Store through its upload API is outside
+  this task's scope.
