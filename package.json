@@ -12,9 +12,10 @@
   "scripts": {
     "dev": "vite",
     "build": "npm run typecheck && vite build",
+    "build:release": "npm run typecheck && vite build --mode release",
     "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.tests.json",
     "test": "node scripts/test.mjs",
-    "package": "npm run build && node scripts/package.mjs",
+    "package": "npm run build:release && node scripts/package.mjs",
     "icons:dev": "node scripts/generate-dev-icons.mjs"
   },
   "devDependencies": {
