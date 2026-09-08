@@ -1,19 +1,29 @@
 import {
-  fetchDeviceState,
   fetchHosts,
   fetchOverview,
+  fetchPopupState,
   KeeneticError,
   setDevicePolicy,
 } from './lib/keenetic';
 import { installOriginRule } from './lib/dnr';
+import { DEMO_HOSTS, fetchDemoPopupState, setDemoDevicePolicy } from './lib/demo';
 import type { Request, Response, SerializedError } from './lib/messages';
-import { hasRouterPermission, loadSettings, type Settings } from './lib/settings';
+import {
+  hasRouterPermission,
+  loadSettings,
+  restrictStorageAccess,
+  type Settings,
+} from './lib/settings';
 
 /**
  * Вся сетевая работа живёт здесь, а не в попапе: попап закрывается по клику
  * «мимо», и незавершённый fetch вместе с ним умирает — а смена политики
  * дополнительно сохраняет конфигурацию роутера и занимает пару секунд.
  */
+
+void restrictStorageAccess().catch(() => {
+  // Старые версии Chrome могут не поддерживать управление уровнем доступа.
+});
 
 function serializeError(error: unknown): SerializedError {
   if (error instanceof KeeneticError) {
@@ -48,18 +58,30 @@ async function requireReadySettings(override?: Settings): Promise<Settings> {
 async function handle(request: Request): Promise<unknown> {
   switch (request.type) {
     case 'getState': {
-      return fetchDeviceState(await requireReadySettings());
+      const settings = await loadSettings();
+      return settings.demoMode
+        ? fetchDemoPopupState(request.mac)
+        : fetchPopupState(await requireReadySettings(settings), request.mac);
     }
     case 'setPolicy': {
-      return setDevicePolicy(await requireReadySettings(), request.mac, request.policyId);
+      const settings = await loadSettings();
+      return settings.demoMode
+        ? setDemoDevicePolicy(request.mac, request.policyId)
+        : setDevicePolicy(await requireReadySettings(settings), request.mac, request.policyId);
     }
     case 'listHosts': {
-      return fetchHosts(await requireReadySettings(request.settings));
+      const settings = request.settings ?? (await loadSettings());
+      return settings.demoMode ? DEMO_HOSTS : fetchHosts(await requireReadySettings(settings));
     }
     case 'testConnection': {
       const settings = await requireReadySettings(request.settings);
-      const { hosts, whoamiMac } = await fetchOverview(settings);
-      return { realmProduct: new URL(settings.baseUrl).host, hosts, whoamiMac };
+      const { hosts, whoamiMac, credentialsVerified } = await fetchOverview(settings);
+      return {
+        realmProduct: new URL(settings.baseUrl).host,
+        hosts,
+        whoamiMac,
+        credentialsVerified,
+      };
     }
     default: {
       const exhaustive: never = request;

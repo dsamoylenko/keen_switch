@@ -1,9 +1,10 @@
-import type { DeviceState, ErrorKind, HostSummary } from './keenetic';
+import type { DeviceState, ErrorKind, HostSummary, PopupState } from './keenetic';
 import type { Settings } from './settings';
 import { t } from './i18n';
 
 export type Request =
-  | { type: 'getState' }
+  /** `mac` — устройство, выбранное в списке попапа; без него берётся то, что задано настройками. */
+  | { type: 'getState'; mac?: string }
   | { type: 'setPolicy'; mac: string; policyId: string | null }
   | { type: 'listHosts'; settings?: Settings }
   | { type: 'testConnection'; settings: Settings };
@@ -12,10 +13,12 @@ export interface TestConnectionResult {
   realmProduct: string;
   hosts: HostSummary[];
   whoamiMac: string;
+  /** true, если этот тест выполнил challenge-response с введённым паролем. */
+  credentialsVerified: boolean;
 }
 
 export interface ResponseMap {
-  getState: DeviceState;
+  getState: PopupState;
   setPolicy: DeviceState;
   listHosts: HostSummary[];
   testConnection: TestConnectionResult;

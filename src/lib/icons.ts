@@ -17,7 +17,9 @@ export type IconName =
   | 'lock'
   | 'eye'
   | 'eye-off'
-  | 'shield-off';
+  | 'shield-off'
+  | 'chevron-down'
+  | 'star';
 
 const PATHS: Record<IconName, string> = {
   router:
@@ -36,6 +38,9 @@ const PATHS: Record<IconName, string> = {
   eye: '<path d="M2 12s3.7-6.5 10-6.5S22 12 22 12s-3.7 6.5-10 6.5S2 12 2 12Z"/><circle cx="12" cy="12" r="2.8"/>',
   'eye-off':
     '<path d="M10.6 5.7A10.6 10.6 0 0 1 12 5.5c6.3 0 10 6.5 10 6.5a17.5 17.5 0 0 1-3.4 4.1"/><path d="M6.3 6.8A17.4 17.4 0 0 0 2 12s3.7 6.5 10 6.5a10.5 10.5 0 0 0 4.1-.8"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/><path d="M3 3l18 18"/>',
+  'chevron-down': '<path d="m6 9.5 6 6 6-6"/>',
+  // Заливка включается классом .is-favorite — контур и звезда рисуются одним путём.
+  star: '<path d="m12 2.9 2.85 5.78 6.38.93-4.62 4.5 1.09 6.35L12 17.46l-5.7 3-1.09-6.35-4.62-4.5 6.38-.93Z"/>',
   'shield-off':
     '<path d="M19.7 14A11 11 0 0 0 20 11.5V5.8l-8-2.8-3.4 1.2"/><path d="M4 6.6v4.9c0 5 3.6 8.1 8 9.5a13 13 0 0 0 4.3-2.3"/><path d="M3 3l18 18"/>',
 };

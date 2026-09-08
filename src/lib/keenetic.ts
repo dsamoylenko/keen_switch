@@ -17,6 +17,7 @@
  * полагаемся на cookie jar браузера (`credentials: 'include'` + host permission).
  */
 
+import { selectableHosts } from './devices';
 import { md5Hex } from './md5';
 import { t } from './i18n';
 import type { Settings } from './settings';
@@ -67,6 +68,8 @@ export interface HostSummary {
   active: boolean;
 }
 
+export type AuthenticationStatus = 'existing-session' | 'credentials-verified';
+
 export interface DeviceState {
   /** MAC устройства, для которого показываются политики. */
   mac: string;
@@ -74,8 +77,11 @@ export interface DeviceState {
   ip: string;
   /** Роутер знает это устройство (есть в списке хостов). */
   known: boolean;
-  /** Как определён MAC: через RCI whoami или задан вручную в настройках. */
-  detectedBy: 'whoami' | 'manual';
+  /**
+   * Как выбран MAC: роутер узнал устройство сам (`whoami`), оно задано вручную
+   * в настройках (`manual`) или выбрано в списке попапа (`picked`).
+   */
+  detectedBy: 'whoami' | 'manual' | 'picked';
   policies: Policy[];
   /** Политика, действующая на устройства без явной привязки. */
   defaultPolicyId: string | null;
@@ -109,6 +115,8 @@ async function sha256Hex(input: string): Promise<string> {
     .join('');
 }
 
+const ROUTER_TIMEOUT_MS = 15_000;
+
 async function routerFetch(url: string, init: RequestInit): Promise<Response> {
   try {
     // no-referrer: KeeneticOS отвечает 403, если Referer не совпадает с ним самим,
@@ -117,9 +125,16 @@ async function routerFetch(url: string, init: RequestInit): Promise<Response> {
       credentials: 'include',
       cache: 'no-store',
       referrerPolicy: 'no-referrer',
+      signal: AbortSignal.timeout(ROUTER_TIMEOUT_MS),
       ...init,
     });
   } catch (cause) {
+    if (cause instanceof DOMException && cause.name === 'TimeoutError') {
+      throw new KeeneticError('network', 'errRouterTimeout', {
+        detailKey: 'errRouterTimeoutDetail',
+        detailSubs: String(ROUTER_TIMEOUT_MS / 1000),
+      });
+    }
     throw new KeeneticError('network', 'errRouterUnreachable', {
       detailText: cause instanceof Error ? cause.message : String(cause),
     });
@@ -136,11 +151,13 @@ async function routerFetch(url: string, init: RequestInit): Promise<Response> {
  * другой сессии, хеш не сойдётся и роутер ответит 401, неотличимым от
  * настоящего «неверный пароль».
  */
-async function performHandshake(settings: Settings): Promise<'ok' | 'rejected'> {
+async function performHandshake(
+  settings: Settings,
+): Promise<AuthenticationStatus | 'rejected'> {
   const authUrl = `${settings.baseUrl}/auth`;
 
   const probe = await routerFetch(authUrl, { method: 'GET' });
-  if (probe.status === 200) return 'ok';
+  if (probe.status === 200) return 'existing-session';
   if (probe.status !== 401) {
     throw new KeeneticError('auth', 'errAuthUnexpectedStatus', { subs: String(probe.status) });
   }
@@ -178,32 +195,49 @@ async function performHandshake(settings: Settings): Promise<'ok' | 'rejected'> 
       detailKey: 'errSessionNotStoredDetail',
     });
   }
-  return 'ok';
+  return 'credentials-verified';
 }
 
-async function performAuthentication(settings: Settings): Promise<void> {
-  if ((await performHandshake(settings)) === 'ok') return;
+async function performAuthentication(settings: Settings): Promise<AuthenticationStatus> {
+  const firstAttempt = await performHandshake(settings);
+  if (firstAttempt !== 'rejected') return firstAttempt;
 
   // Сессию мог перебить чужой `GET /auth` — например, открытая в соседней
   // вкладке веб-панель роутера ходит туда сама. Прежде чем обвинять пароль,
   // пробуем ещё раз с заново взятым challenge.
-  if ((await performHandshake(settings)) === 'ok') return;
+  const secondAttempt = await performHandshake(settings);
+  if (secondAttempt !== 'rejected') return secondAttempt;
 
   throw new KeeneticError('auth', 'errAuthRejected', { detailKey: 'errAuthRejectedDetail' });
 }
 
-let pendingAuth: Promise<void> | null = null;
+let pendingAuth: Promise<AuthenticationStatus> | null = null;
+let pendingAuthKey = '';
 
 /**
  * Гарантирует авторизованную сессию. Идемпотентна и single-flight: параллельные
  * вызовы разделяют один хендшейк, иначе их `GET /auth` перетирают друг другу
  * сессионную cookie.
  */
-export function authenticate(settings: Settings): Promise<void> {
-  pendingAuth ??= performAuthentication(settings).finally(() => {
-    pendingAuth = null;
+export function authenticate(settings: Settings): Promise<AuthenticationStatus> {
+  const key = JSON.stringify([settings.baseUrl, settings.login, settings.password]);
+
+  if (pendingAuth) {
+    if (pendingAuthKey === key) return pendingAuth;
+    // Другие credentials нельзя смешивать с текущим handshake: ждём его
+    // завершения и запускаем отдельную проверку со своими настройками.
+    return pendingAuth.catch(() => undefined).then(() => authenticate(settings));
+  }
+
+  pendingAuthKey = key;
+  const tracked = performAuthentication(settings).finally(() => {
+    if (pendingAuth === tracked) {
+      pendingAuth = null;
+      pendingAuthKey = '';
+    }
   });
-  return pendingAuth;
+  pendingAuth = tracked;
+  return tracked;
 }
 
 /* ------------------------------------------------------------------- rci */
@@ -273,13 +307,21 @@ async function rci(settings: Settings, queries: RciQuery[]): Promise<unknown[]> 
 
 /** Один повтор после переавторизации: сессия роутера живёт недолго. */
 async function rciWithAuth(settings: Settings, queries: RciQuery[]): Promise<unknown[]> {
-  await authenticate(settings);
+  return (await rciWithAuthStatus(settings, queries)).values;
+}
+
+async function rciWithAuthStatus(
+  settings: Settings,
+  queries: RciQuery[],
+): Promise<{ values: unknown[]; credentialsVerified: boolean }> {
+  let credentialsVerified = (await authenticate(settings)) === 'credentials-verified';
   try {
-    return await rci(settings, queries);
+    return { values: await rci(settings, queries), credentialsVerified };
   } catch (error) {
     if (error instanceof KeeneticError && error.kind === 'auth') {
-      await authenticate(settings);
-      return rci(settings, queries);
+      credentialsVerified =
+        (await authenticate(settings)) === 'credentials-verified' || credentialsVerified;
+      return { values: await rci(settings, queries), credentialsVerified };
     }
     throw error;
   }
@@ -388,34 +430,61 @@ function parseWhoami(raw: unknown): { mac: string; ip: string } {
  */
 export async function fetchOverview(
   settings: Settings,
-): Promise<{ hosts: HostSummary[]; whoamiMac: string }> {
-  const [hotspot, whoami] = await rciWithAuth(settings, [
+): Promise<{ hosts: HostSummary[]; whoamiMac: string; credentialsVerified: boolean }> {
+  const { values, credentialsVerified } = await rciWithAuthStatus(settings, [
     { path: PATH_HOTSPOT },
     { path: PATH_WHOAMI },
   ]);
-  return { hosts: parseHosts(hotspot), whoamiMac: parseWhoami(whoami).mac };
+  const [hotspot, whoami] = values;
+  return { hosts: parseHosts(hotspot), whoamiMac: parseWhoami(whoami).mac, credentialsVerified };
 }
 
-export async function fetchDeviceState(settings: Settings): Promise<DeviceState> {
-  const queries: RciQuery[] = [
-    { path: PATH_POLICIES },
-    { path: PATH_HOST_CONFIG },
-    { path: PATH_DEFAULT_POLICY },
-    { path: PATH_HOTSPOT },
-  ];
-  if (settings.autoDetectDevice) {
-    queries.push({ path: PATH_WHOAMI });
-  }
+/** Один батч, покрывающий всё, что нужно попапу: политики, хосты и whoami. */
+const STATE_QUERIES: RciQuery[] = [
+  { path: PATH_POLICIES },
+  { path: PATH_HOST_CONFIG },
+  { path: PATH_DEFAULT_POLICY },
+  { path: PATH_HOTSPOT },
+  { path: PATH_WHOAMI },
+];
 
+export interface RawState {
+  policies: Policy[];
+  hostConfigs: unknown;
+  defaultPolicyId: string | null;
+  hosts: HostSummary[];
+  whoamiMac: string;
+}
+
+async function fetchRawState(settings: Settings): Promise<RawState> {
   const [rawPolicies, rawHostConfig, rawDefaultPolicy, rawHotspot, rawWhoami] = await rciWithAuth(
     settings,
-    queries,
+    STATE_QUERIES,
   );
 
-  const detectedBy: DeviceState['detectedBy'] = settings.autoDetectDevice ? 'whoami' : 'manual';
-  const mac = settings.autoDetectDevice
-    ? normalizeMac((rawWhoami as Record<string, unknown> | undefined)?.mac)
-    : normalizeMac(settings.deviceMac);
+  return {
+    policies: parsePolicies(rawPolicies),
+    hostConfigs: rawHostConfig,
+    defaultPolicyId: readPolicyId(rawDefaultPolicy as Record<string, unknown> | undefined),
+    hosts: parseHosts(rawHotspot),
+    whoamiMac: parseWhoami(rawWhoami).mac,
+  };
+}
+
+/**
+ * Собирает состояние одного устройства.
+ *
+ * `requestedMac` — устройство, выбранное в списке попапа; без него берётся то,
+ * что задано настройками: MAC от роутера (`whoami`) либо выбранный вручную.
+ */
+export function resolveDevice(
+  raw: RawState,
+  settings: Settings,
+  requestedMac?: string,
+): DeviceState {
+  const requested = normalizeMac(requestedMac);
+  const mac =
+    requested || (settings.autoDetectDevice ? raw.whoamiMac : normalizeMac(settings.deviceMac));
 
   if (!mac) {
     throw new KeeneticError(
@@ -424,20 +493,51 @@ export async function fetchDeviceState(settings: Settings): Promise<DeviceState>
     );
   }
 
-  const hosts = parseHosts(rawHotspot);
-  const host = hosts.find((item) => item.mac === mac);
-  const hostConfig = findHostConfig(rawHostConfig, mac);
+  const host = raw.hosts.find((item) => item.mac === mac);
+  const hostConfig = findHostConfig(raw.hostConfigs, mac);
 
   return {
     mac,
-    label: host?.label || settings.deviceLabel || mac,
+    label: host?.label || (mac === normalizeMac(settings.deviceMac) ? settings.deviceLabel : '') || mac,
     ip: host?.ip ?? '',
     known: host !== undefined,
-    detectedBy,
-    policies: parsePolicies(rawPolicies),
-    defaultPolicyId: readPolicyId(rawDefaultPolicy as Record<string, unknown> | undefined),
+    // Своё устройство остаётся «своим», даже если его выбрали в списке руками.
+    detectedBy: mac === raw.whoamiMac ? 'whoami' : requested ? 'picked' : 'manual',
+    policies: raw.policies,
+    defaultPolicyId: raw.defaultPolicyId,
     currentPolicyId: readPolicyId(hostConfig),
     blocked: hostConfig?.deny === true,
+  };
+}
+
+export async function fetchDeviceState(
+  settings: Settings,
+  requestedMac?: string,
+): Promise<DeviceState> {
+  return resolveDevice(await fetchRawState(settings), settings, requestedMac);
+}
+
+export interface PopupState {
+  device: DeviceState;
+  /** Устройства для выпадающего списка: активные плюс само выбранное. */
+  devices: HostSummary[];
+  whoamiMac: string;
+}
+
+/**
+ * Состояние попапа целиком — одним обращением к роутеру. Отдельными запросами
+ * делать нельзя: параллельные вызовы устроили бы гонку за сессию роутера.
+ */
+export async function fetchPopupState(
+  settings: Settings,
+  requestedMac?: string,
+): Promise<PopupState> {
+  const raw = await fetchRawState(settings);
+  const device = resolveDevice(raw, settings, requestedMac);
+  return {
+    device,
+    devices: selectableHosts(raw.hosts, device.mac),
+    whoamiMac: raw.whoamiMac,
   };
 }
 
@@ -466,7 +566,7 @@ export async function setDevicePolicy(
 
   // Перечитываем состояние с роутера: единственный честный способ убедиться,
   // что политика действительно применилась.
-  const state = await fetchDeviceState(settings);
+  const state = await fetchDeviceState(settings, mac);
   if (state.currentPolicyId !== policyId) {
     throw new KeeneticError('rci', 'errPolicyNotApplied', {
       detailKey: 'errPolicyNotAppliedDetail',

@@ -8,6 +8,8 @@ import {
   loadSettings,
   normalizeBaseUrl,
   originPattern,
+  removeAllRouterPermissions,
+  removeUnusedRouterPermissions,
   saveSettings,
   type Settings,
 } from '../lib/settings';
@@ -16,6 +18,9 @@ const baseUrlInput = document.querySelector<HTMLInputElement>('#base-url')!;
 const loginInput = document.querySelector<HTMLInputElement>('#login')!;
 const passwordInput = document.querySelector<HTMLInputElement>('#password')!;
 const passwordToggle = document.querySelector<HTMLButtonElement>('#toggle-password')!;
+const passwordSession = document.querySelector<HTMLInputElement>('#password-session')!;
+const passwordLocal = document.querySelector<HTMLInputElement>('#password-local')!;
+const passwordWarning = document.querySelector<HTMLElement>('#password-warning')!;
 const modeAuto = document.querySelector<HTMLInputElement>('#mode-auto')!;
 const modeManual = document.querySelector<HTMLInputElement>('#mode-manual')!;
 const deviceSelect = document.querySelector<HTMLSelectElement>('#device')!;
@@ -27,8 +32,14 @@ const testResult = document.querySelector<HTMLSpanElement>('#test-result')!;
 const saveForm = document.querySelector<HTMLFormElement>('#settings-form')!;
 const saveButton = document.querySelector<HTMLButtonElement>('#save')!;
 const saveResult = document.querySelector<HTMLSpanElement>('#save-result')!;
+const demoActive = document.querySelector<HTMLElement>('#demo-active')!;
+const demoEntry = document.querySelector<HTMLElement>('#demo-entry')!;
+const startDemoButton = document.querySelector<HTMLButtonElement>('#start-demo')!;
+const leaveDemoButton = document.querySelector<HTMLButtonElement>('#leave-demo')!;
+const demoResult = document.querySelector<HTMLSpanElement>('#demo-result')!;
 
 let knownHosts: HostSummary[] = [];
+let connectionVerified = false;
 
 /** Возвращает '' вместо исключения, если в поле адреса что-то нечитаемое. */
 function safeBaseUrl(): string {
@@ -44,10 +55,17 @@ function readForm(): Settings {
     baseUrl: safeBaseUrl(),
     login: loginInput.value.trim() || DEFAULT_SETTINGS.login,
     password: passwordInput.value,
+    passwordStorage: passwordLocal.checked ? 'local' : 'session',
     autoDetectDevice: modeAuto.checked,
     deviceMac: deviceSelect.value,
     deviceLabel: knownHosts.find((host) => host.mac === deviceSelect.value)?.label ?? '',
+    demoMode: false,
+    setupComplete: connectionVerified,
   };
+}
+
+function syncPasswordStorage(): void {
+  passwordWarning.hidden = !passwordLocal.checked;
 }
 
 type Tone = 'error' | 'ok' | 'muted';
@@ -147,6 +165,10 @@ passwordToggle.addEventListener('click', () => {
   syncPasswordToggle(passwordInput.type === 'password');
 });
 
+for (const radio of [passwordSession, passwordLocal]) {
+  radio.addEventListener('change', syncPasswordStorage);
+}
+
 testButton.addEventListener('click', () => {
   const baseUrl = safeBaseUrl();
 
@@ -180,20 +202,53 @@ testButton.addEventListener('click', () => {
       renderHosts(result.hosts, settings.deviceMac, result.whoamiMac);
 
       const whoamiHost = result.hosts.find((host) => host.mac === result.whoamiMac);
+      // Сводка по устройствам — отдельный ключ: она подставляется в обе итоговые
+      // фразы, и дублировать её в каждой было бы лишней работой переводчику.
+      const deviceSummary = result.whoamiMac
+        ? t('testDevicesWhoami', [
+            String(result.hosts.length),
+            whoamiHost?.label ?? result.whoamiMac,
+          ])
+        : t('testDevicesNoWhoami', String(result.hosts.length));
       setFeedback(
         testResult,
-        result.whoamiMac
-          ? t('testOkWhoami', [
-              String(result.hosts.length),
-              whoamiHost?.label ?? result.whoamiMac,
-            ])
-          : t('testOkNoWhoami', String(result.hosts.length)),
-        'ok',
+        result.credentialsVerified
+          ? t('testOkVerified', deviceSummary)
+          : t('testOkSession', deviceSummary),
+        result.credentialsVerified ? 'ok' : 'muted',
       );
+      connectionVerified = true;
+      demoEntry.hidden = true;
     })
     .catch((error: unknown) => setFeedback(testResult, describeError(error), 'error'))
     .finally(() => {
       testButton.disabled = false;
+    });
+});
+
+startDemoButton.addEventListener('click', () => {
+  startDemoButton.disabled = true;
+  setPending(demoResult, t('demoStarting'));
+
+  saveSettings({ ...DEFAULT_SETTINGS, demoMode: true, setupComplete: true })
+    .then(() => removeAllRouterPermissions())
+    .then(() => {
+      saveForm.hidden = true;
+      demoActive.hidden = false;
+    })
+    .catch((error: unknown) => setFeedback(demoResult, describeError(error), 'error'))
+    .finally(() => {
+      startDemoButton.disabled = false;
+    });
+});
+
+leaveDemoButton.addEventListener('click', () => {
+  leaveDemoButton.disabled = true;
+  saveSettings({ ...DEFAULT_SETTINGS, demoMode: false, setupComplete: false })
+    .then(() => location.reload())
+    .catch((error: unknown) => {
+      leaveDemoButton.disabled = false;
+      window.alert(describeError(error));
     });
 });
 
@@ -216,6 +271,7 @@ saveForm.addEventListener('submit', (event) => {
   setPending(saveResult, t('saving'));
 
   saveSettings(settings)
+    .then(() => removeUnusedRouterPermissions(settings.baseUrl))
     .then(() => refreshPermissionState(settings.baseUrl))
     .then(() => setFeedback(saveResult, t('saved'), 'ok'))
     .catch((error: unknown) => setFeedback(saveResult, describeError(error), 'error'))
@@ -243,9 +299,19 @@ async function init(): Promise<void> {
   syncPasswordToggle(false);
 
   const settings = await loadSettings();
+  connectionVerified = settings.setupComplete;
+  if (settings.demoMode) {
+    saveForm.hidden = true;
+    demoActive.hidden = false;
+    return;
+  }
+  demoEntry.hidden = connectionVerified;
   baseUrlInput.value = settings.baseUrl;
   loginInput.value = settings.login;
   passwordInput.value = settings.password;
+  passwordSession.checked = settings.passwordStorage === 'session';
+  passwordLocal.checked = settings.passwordStorage === 'local';
+  syncPasswordStorage();
   modeAuto.checked = settings.autoDetectDevice;
   modeManual.checked = !settings.autoDetectDevice;
 

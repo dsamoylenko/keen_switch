@@ -12,7 +12,11 @@ import {
   readPolicyId,
 } from '../src/lib/keenetic';
 import { md5Hex } from '../src/lib/md5';
-import { normalizeBaseUrl, originPattern } from '../src/lib/settings';
+import {
+  normalizeBaseUrl,
+  originPattern,
+  removeUnusedRouterPermissions,
+} from '../src/lib/settings';
 
 test('md5Hex совпадает с эталонной реализацией', () => {
   for (const input of ['', 'abc', 'admin:Keenetic Giga:s3cret', 'пароль'.repeat(40)]) {
@@ -100,4 +104,31 @@ test('normalizeBaseUrl и originPattern дают узкое host permission', ()
   assert.equal(normalizeBaseUrl('http://192.168.2.1/admin/'), 'http://192.168.2.1');
   assert.equal(normalizeBaseUrl('https://router.keenetic.link:8443'), 'https://router.keenetic.link:8443');
   assert.equal(originPattern('http://192.168.2.1'), 'http://192.168.2.1/*');
+});
+
+test('после сохранения остаётся разрешение только для выбранного роутера', async () => {
+  let removedOrigins: string[] = [];
+  const originalChrome = globalThis.chrome;
+  globalThis.chrome = {
+    permissions: {
+      getAll: async () => ({
+        permissions: ['storage'],
+        origins: ['http://192.168.1.1/*', 'https://abandoned.test/*', 'https://router.local/*'],
+      }),
+      remove: async ({ origins }) => {
+        removedOrigins = origins ?? [];
+        return true;
+      },
+    },
+  } as typeof chrome;
+
+  try {
+    assert.equal(
+      await removeUnusedRouterPermissions('https://router.local'),
+      true,
+    );
+    assert.deepEqual(removedOrigins, ['http://192.168.1.1/*', 'https://abandoned.test/*']);
+  } finally {
+    globalThis.chrome = originalChrome;
+  }
 });

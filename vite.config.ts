@@ -1,9 +1,9 @@
 import { defineConfig } from 'vite';
 import { crx } from '@crxjs/vite-plugin';
-import manifest from './manifest.config';
+import { createManifest } from './manifest.config';
 
-export default defineConfig({
-  plugins: [crx({ manifest })],
+export default defineConfig(({ mode }) => ({
+  plugins: [crx({ manifest: createManifest(mode) })],
   build: {
     target: 'esnext',
     emptyOutDir: true,
@@ -12,4 +12,4 @@ export default defineConfig({
     port: 5173,
     strictPort: true,
   },
-});
+}));

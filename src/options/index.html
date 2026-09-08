@@ -33,6 +33,26 @@
       </p>
     </header>
 
+    <main id="demo-active" hidden>
+      <section class="card">
+        <div class="card-head">
+          <h2 data-i18n="demoTitle">Demo mode</h2>
+          <p class="card-sub" data-i18n="demoSub">KeenSwitch runs on a sample local network without connecting to a router.</p>
+        </div>
+        <div class="card-body">
+          <p class="note">
+            <span data-i18n="demoNote">
+              Open KeenSwitch from the Chrome toolbar to pick test devices and switch their
+              policies. All data is fictional and stays in your browser.
+            </span>
+          </p>
+        </div>
+        <div class="card-foot">
+          <button id="leave-demo" class="secondary" type="button" data-i18n="leaveDemo">Connect a real router</button>
+        </div>
+      </section>
+    </main>
+
     <form id="settings-form" novalidate>
       <main>
         <section class="card">
@@ -69,9 +89,42 @@
                   title="Show password"
                 ></button>
               </div>
+              <span class="hint" data-i18n="fieldPasswordHint">The password is used only to sign in to your router.</span>
             </div>
 
-            <p class="note">
+            <fieldset class="field choice-field">
+              <legend data-i18n="passwordStorageLegend">How to remember the password</legend>
+              <div class="choices" role="radiogroup">
+                <label class="choice">
+                  <input
+                    id="password-session"
+                    type="radio"
+                    name="password-storage"
+                    value="session"
+                    checked
+                  />
+                  <span class="choice-body">
+                    <span class="choice-title" data-i18n="passwordSessionTitle">Remember until the browser closes</span>
+                    <span class="hint" data-i18n="passwordSessionHint">Safer. The password is deleted when the browser closes.</span>
+                  </span>
+                </label>
+
+                <label class="choice">
+                  <input
+                    id="password-local"
+                    type="radio"
+                    name="password-storage"
+                    value="local"
+                  />
+                  <span class="choice-body">
+                    <span class="choice-title" data-i18n="passwordLocalTitle">Remember permanently</span>
+                    <span class="hint" data-i18n="passwordLocalHint">The password will be filled in after a browser restart.</span>
+                  </span>
+                </label>
+              </div>
+            </fieldset>
+
+            <p id="password-warning" class="note" data-tone="warn" hidden>
               <svg
                 viewBox="0 0 24 24"
                 fill="none"
@@ -86,9 +139,8 @@
                 <path d="M7.5 10V7a4.5 4.5 0 0 1 9 0v3" />
               </svg>
               <span>
-                <strong data-i18n="passwordWarnTitle">The password is stored in plain text</strong>
-                <code>chrome.storage.local</code>
-                <span data-i18n="passwordWarnBody">is readable by anyone with access to your Chrome profile. The password is sent only to the address you specified, and only as a hash (SHA-256 of the challenge).</span>
+                <strong data-i18n="passwordWarnTitle">This is less secure</strong>
+                <span data-i18n="passwordWarnBody">The password is stored unencrypted in your Chrome profile. Choose this only on your own trusted computer.</span>
               </span>
             </p>
           </div>
@@ -96,6 +148,17 @@
           <div class="card-foot">
             <button id="test" class="secondary" type="button" data-i18n="testConnection">Test connection</button>
             <span id="test-result" class="feedback" role="status" aria-live="polite"></span>
+          </div>
+        </section>
+
+        <section id="demo-entry" class="card">
+          <div class="card-head">
+            <h2 data-i18n="demoEntryTitle">No router at hand?</h2>
+            <p class="card-sub" data-i18n="demoEntrySub">Take a look at the interface using safe test data.</p>
+          </div>
+          <div class="card-foot">
+            <button id="start-demo" class="secondary" type="button" data-i18n="startDemo">Start the demo without a router</button>
+            <span id="demo-result" class="feedback" role="status" aria-live="polite"></span>
           </div>
         </section>
 

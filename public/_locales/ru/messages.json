@@ -2,147 +2,438 @@
   "appDesc": {
     "message": "Переключение текущего устройства между политиками доступа (Policy) на роутере Keenetic в один клик."
   },
-  "errRouterUnreachable": { "message": "Роутер недоступен" },
+  "errRouterUnreachable": {
+    "message": "Роутер недоступен"
+  },
   "errAuthUnexpectedStatus": {
     "message": "Неожиданный ответ на /auth: HTTP $status$",
-    "placeholders": { "status": { "content": "$1" } }
+    "placeholders": {
+      "status": {
+        "content": "$1"
+      }
+    }
   },
-  "errNoChallenge": { "message": "Роутер не прислал challenge для авторизации" },
+  "errNoChallenge": {
+    "message": "Роутер не прислал challenge для авторизации"
+  },
   "errNoChallengeDetail": {
     "message": "Похоже, по этому адресу отвечает не веб-интерфейс KeeneticOS."
   },
-  "errPasswordNotSet": { "message": "Не задан пароль роутера" },
+  "errPasswordNotSet": {
+    "message": "Не задан пароль роутера"
+  },
   "errAuthFailedStatus": {
     "message": "Авторизация не прошла: HTTP $status$",
-    "placeholders": { "status": { "content": "$1" } }
+    "placeholders": {
+      "status": {
+        "content": "$1"
+      }
+    }
   },
-  "errSessionNotStored": { "message": "Роутер принял пароль, но сессия не сохранилась" },
+  "errSessionNotStored": {
+    "message": "Роутер принял пароль, но сессия не сохранилась"
+  },
   "errSessionNotStoredDetail": {
     "message": "Браузер не отдаёт сессионную cookie роутера. Проверьте, что для адреса роутера выдано разрешение в настройках расширения."
   },
-  "errAuthRejected": { "message": "Роутер отклонил логин и пароль" },
+  "errAuthRejected": {
+    "message": "Роутер отклонил логин и пароль"
+  },
   "errAuthRejectedDetail": {
     "message": "Если логин и пароль точно верные, закройте вкладку с веб-панелью роутера: она обновляет сессию и мешает расширению авторизоваться."
   },
   "errRciAction": {
     "message": "$action$: роутер вернул ошибку",
-    "placeholders": { "action": { "content": "$1" } }
+    "placeholders": {
+      "action": {
+        "content": "$1"
+      }
+    }
   },
-  "actionSetPolicy": { "message": "Смена политики" },
-  "actionSaveConfig": { "message": "Сохранение конфигурации" },
-  "errSessionExpired": { "message": "Сессия роутера истекла" },
-  "errForbidden": { "message": "Роутер отклонил запрос (403)" },
+  "actionSetPolicy": {
+    "message": "Смена политики"
+  },
+  "actionSaveConfig": {
+    "message": "Сохранение конфигурации"
+  },
+  "errSessionExpired": {
+    "message": "Сессия роутера истекла"
+  },
+  "errForbidden": {
+    "message": "Роутер отклонил запрос (403)"
+  },
   "errForbiddenDetail": {
     "message": "KeeneticOS пропускает запросы к /rci/ только со своим собственным Origin. Расширение подменяет заголовок правилом declarativeNetRequest — проверьте, что в chrome://extensions выдано разрешение на адрес роутера, и перезагрузите расширение."
   },
   "errRciHttp": {
     "message": "Запрос к роутеру не прошёл: HTTP $status$",
-    "placeholders": { "status": { "content": "$1" } }
+    "placeholders": {
+      "status": {
+        "content": "$1"
+      }
+    }
   },
-  "errBadResponse": { "message": "Неожиданный формат ответа роутера" },
-  "errWhoamiFailed": { "message": "Роутер не смог определить это устройство" },
-  "errNoDeviceSelected": { "message": "Устройство не выбрано в настройках" },
-  "errPolicyNotApplied": { "message": "Роутер не применил новую политику" },
+  "errBadResponse": {
+    "message": "Неожиданный формат ответа роутера"
+  },
+  "errWhoamiFailed": {
+    "message": "Роутер не смог определить это устройство"
+  },
+  "errNoDeviceSelected": {
+    "message": "Устройство не выбрано в настройках"
+  },
+  "errPolicyNotApplied": {
+    "message": "Роутер не применил новую политику"
+  },
   "errPolicyNotAppliedDetail": {
     "message": "Ожидалось «$expected$», после записи роутер сообщает «$actual$».",
-    "placeholders": { "expected": { "content": "$1" }, "actual": { "content": "$2" } }
+    "placeholders": {
+      "expected": {
+        "content": "$1"
+      },
+      "actual": {
+        "content": "$2"
+      }
+    }
   },
-  "policyNoneInline": { "message": "без политики" },
+  "policyNoneInline": {
+    "message": "без политики"
+  },
   "errOriginRule": {
     "message": "Не удалось установить правило подмены Origin: $reason$",
-    "placeholders": { "reason": { "content": "$1" } }
+    "placeholders": {
+      "reason": {
+        "content": "$1"
+      }
+    }
   },
-  "errNoBackgroundResponse": { "message": "Фоновый скрипт расширения не ответил" },
-  "errBaseUrlNotSet": { "message": "Не указан адрес роутера" },
-  "errNoPermission": { "message": "Нет доступа к адресу роутера" },
+  "errNoBackgroundResponse": {
+    "message": "Фоновый скрипт расширения не ответил"
+  },
+  "errBaseUrlNotSet": {
+    "message": "Не указан адрес роутера"
+  },
+  "errNoPermission": {
+    "message": "Нет доступа к адресу роутера"
+  },
   "errNoPermissionDetail": {
     "message": "Откройте настройки расширения и выдайте разрешение для $url$.",
-    "placeholders": { "url": { "content": "$1" } }
+    "placeholders": {
+      "url": {
+        "content": "$1"
+      }
+    }
   },
-  "optionsButton": { "message": "Настройки" },
-  "popupConnecting": { "message": "Подключаюсь к роутеру…" },
-  "popupPoliciesTitle": { "message": "Политика доступа" },
-  "openOptions": { "message": "Открыть настройки" },
-  "chipBlocked": { "message": "доступ запрещён" },
-  "chipOffline": { "message": "нет в сети" },
-  "chipManual": { "message": "вручную" },
-  "policyNone": { "message": "Без политики" },
+  "optionsButton": {
+    "message": "Настройки"
+  },
+  "popupConnecting": {
+    "message": "Подключаюсь к роутеру…"
+  },
+  "popupPoliciesTitle": {
+    "message": "Политика доступа"
+  },
+  "openOptions": {
+    "message": "Открыть настройки"
+  },
+  "chipBlocked": {
+    "message": "доступ запрещён"
+  },
+  "chipOffline": {
+    "message": "нет в сети"
+  },
+  "chipManual": {
+    "message": "вручную"
+  },
+  "policyNone": {
+    "message": "Без политики"
+  },
   "policyDefaultSub": {
     "message": "политика по умолчанию: $policy$",
-    "placeholders": { "policy": { "content": "$1" } }
+    "placeholders": {
+      "policy": {
+        "content": "$1"
+      }
+    }
   },
-  "policyNoneSub": { "message": "общий доступ, как у остальных устройств" },
+  "policyNoneSub": {
+    "message": "общий доступ, как у остальных устройств"
+  },
   "statusSwitching": {
     "message": "Переключаю на «$policy$»…",
-    "placeholders": { "policy": { "content": "$1" } }
+    "placeholders": {
+      "policy": {
+        "content": "$1"
+      }
+    }
   },
   "statusSwitched": {
     "message": "Готово: «$policy$»",
-    "placeholders": { "policy": { "content": "$1" } }
+    "placeholders": {
+      "policy": {
+        "content": "$1"
+      }
+    }
   },
   "noPolicies": {
     "message": "На роутере не настроено ни одной политики доступа — создайте её в панели Keenetic."
   },
-  "deviceBlocked": { "message": "Этому устройству запрещён доступ в интернет в настройках роутера." },
-  "noRouterConnection": { "message": "Нет связи с роутером" },
-  "optionsTitle": { "message": "Настройки KeenSwitch" },
+  "deviceBlocked": {
+    "message": "Этому устройству запрещён доступ в интернет в настройках роутера."
+  },
+  "noRouterConnection": {
+    "message": "Нет связи с роутером"
+  },
+  "optionsTitle": {
+    "message": "Настройки KeenSwitch"
+  },
   "optionsIntro": {
     "message": "Два шага: подключиться к роутеру и указать, какое устройство переключать."
   },
-  "sectionRouterTitle": { "message": "1. Роутер" },
-  "sectionRouterSub": { "message": "Данные для входа в веб-панель Keenetic." },
-  "fieldBaseUrl": { "message": "Адрес веб-интерфейса" },
-  "fieldBaseUrlHint": { "message": "Тот же адрес, по которому вы открываете панель Keenetic." },
-  "fieldLogin": { "message": "Логин" },
-  "fieldPassword": { "message": "Пароль" },
-  "passwordShow": { "message": "Показать пароль" },
-  "passwordHide": { "message": "Скрыть пароль" },
-  "passwordWarnTitle": { "message": "Пароль хранится в открытом виде" },
-  "passwordWarnBody": {
-    "message": "доступен любому, у кого есть доступ к вашему профилю Chrome. На роутер пароль уходит только по указанному адресу и только в виде хеша (SHA-256 от challenge)."
+  "sectionRouterTitle": {
+    "message": "1. Роутер"
   },
-  "testConnection": { "message": "Проверить подключение" },
-  "sectionDeviceTitle": { "message": "2. Моё устройство" },
-  "sectionDeviceSub": { "message": "Политику будем переключать именно для него." },
-  "modeAutoTitle": { "message": "Определять автоматически" },
+  "sectionRouterSub": {
+    "message": "Данные для входа в веб-панель Keenetic."
+  },
+  "fieldBaseUrl": {
+    "message": "Адрес веб-интерфейса"
+  },
+  "fieldBaseUrlHint": {
+    "message": "Тот же адрес, по которому вы открываете панель Keenetic."
+  },
+  "fieldLogin": {
+    "message": "Логин"
+  },
+  "fieldPassword": {
+    "message": "Пароль"
+  },
+  "passwordShow": {
+    "message": "Показать пароль"
+  },
+  "passwordHide": {
+    "message": "Скрыть пароль"
+  },
+  "passwordWarnTitle": {
+    "message": "Это менее безопасно"
+  },
+  "passwordWarnBody": {
+    "message": "Пароль сохранится в профиле Chrome без шифрования. Выбирайте этот вариант только на своём защищённом компьютере."
+  },
+  "testConnection": {
+    "message": "Проверить подключение"
+  },
+  "sectionDeviceTitle": {
+    "message": "2. Моё устройство"
+  },
+  "sectionDeviceSub": {
+    "message": "Политику будем переключать именно для него."
+  },
+  "modeAutoTitle": {
+    "message": "Определять автоматически"
+  },
   "modeAutoHint": {
     "message": "Роутер сам сообщает MAC устройства, с которого пришёл запрос (RCI whoami). Работает, пока браузер ходит к роутеру напрямую."
   },
-  "modeManualTitle": { "message": "Выбрать вручную из списка" },
+  "modeManualTitle": {
+    "message": "Выбрать вручную из списка"
+  },
   "modeManualHint": {
     "message": "Нужно, если автоопределение даёт не тот MAC (VPN, мосты, докстанции)."
   },
-  "fieldDevice": { "message": "Устройство" },
-  "deviceListPlaceholder": { "message": "— список загружается после проверки подключения —" },
-  "save": { "message": "Сохранить" },
+  "fieldDevice": {
+    "message": "Устройство"
+  },
+  "deviceListPlaceholder": {
+    "message": "— список загружается после проверки подключения —"
+  },
+  "save": {
+    "message": "Сохранить"
+  },
   "deviceHintNeedTest": {
     "message": "Нажмите «Проверить подключение», чтобы загрузить устройства с роутера."
   },
-  "deviceListEmpty": { "message": "— роутер не вернул ни одного устройства —" },
-  "markThisDevice": { "message": "это устройство" },
-  "markOffline": { "message": "не в сети" },
-  "permNeedUrl": { "message": "Укажите адрес роутера." },
+  "deviceListEmpty": {
+    "message": "— роутер не вернул ни одного устройства —"
+  },
+  "markThisDevice": {
+    "message": "это устройство"
+  },
+  "markOffline": {
+    "message": "не в сети"
+  },
+  "permNeedUrl": {
+    "message": "Укажите адрес роутера."
+  },
   "permGranted": {
     "message": "Доступ к $url$ разрешён.",
-    "placeholders": { "url": { "content": "$1" } }
+    "placeholders": {
+      "url": {
+        "content": "$1"
+      }
+    }
   },
   "permNotGranted": {
     "message": "Доступ к $url$ ещё не разрешён — нажмите «Проверить подключение».",
-    "placeholders": { "url": { "content": "$1" } }
+    "placeholders": {
+      "url": {
+        "content": "$1"
+      }
+    }
   },
-  "badUrl": { "message": "Не понимаю адрес роутера." },
-  "needPassword": { "message": "Введите пароль роутера." },
-  "testing": { "message": "Проверяю…" },
-  "permDenied": { "message": "Без доступа к адресу роутера расширение работать не сможет." },
-  "testOkWhoami": {
-    "message": "Связь есть. Устройств: $count$. Это устройство: $device$.",
-    "placeholders": { "count": { "content": "$1" }, "device": { "content": "$2" } }
+  "badUrl": {
+    "message": "Не понимаю адрес роутера."
   },
-  "testOkNoWhoami": {
-    "message": "Связь есть. Устройств: $count$. Автоопределение не сработало — выберите устройство вручную.",
-    "placeholders": { "count": { "content": "$1" } }
+  "needPassword": {
+    "message": "Введите пароль роутера."
   },
-  "needDevice": { "message": "Выберите устройство или включите автоопределение." },
-  "saving": { "message": "Сохраняю…" },
-  "saved": { "message": "Сохранено." }
+  "testing": {
+    "message": "Проверяю…"
+  },
+  "permDenied": {
+    "message": "Без доступа к адресу роутера расширение работать не сможет."
+  },
+  "needDevice": {
+    "message": "Выберите устройство или включите автоопределение."
+  },
+  "saving": {
+    "message": "Сохраняю…"
+  },
+  "saved": {
+    "message": "Сохранено."
+  },
+  "demoBadge": {
+    "message": "Демо"
+  },
+  "devicePickerLabel": {
+    "message": "Выбор устройства"
+  },
+  "demoTitle": {
+    "message": "Демонстрационный режим"
+  },
+  "demoSub": {
+    "message": "KeenSwitch работает на примере локальной сети без подключения к роутеру."
+  },
+  "demoNote": {
+    "message": "Откройте KeenSwitch в панели Chrome, чтобы выбирать тестовые устройства и переключать их политики. Все данные вымышлены и остаются в браузере."
+  },
+  "leaveDemo": {
+    "message": "Подключить настоящий роутер"
+  },
+  "demoEntryTitle": {
+    "message": "Нет роутера под рукой?"
+  },
+  "demoEntrySub": {
+    "message": "Посмотрите интерфейс на безопасных тестовых данных."
+  },
+  "startDemo": {
+    "message": "Запустить демо без роутера"
+  },
+  "demoStarting": {
+    "message": "Запускаю демо…"
+  },
+  "demoPolicyMain": {
+    "message": "Основная"
+  },
+  "demoPolicyKids": {
+    "message": "Детская"
+  },
+  "demoPolicyGuest": {
+    "message": "Гостевая"
+  },
+  "fieldPasswordHint": {
+    "message": "Пароль используется только для входа в ваш роутер."
+  },
+  "passwordStorageLegend": {
+    "message": "Как запомнить пароль"
+  },
+  "passwordSessionTitle": {
+    "message": "Запомнить до закрытия браузера"
+  },
+  "passwordSessionHint": {
+    "message": "Безопаснее. После закрытия браузера пароль удалится."
+  },
+  "passwordLocalTitle": {
+    "message": "Запомнить навсегда"
+  },
+  "passwordLocalHint": {
+    "message": "Пароль будет подставляться после перезапуска браузера."
+  },
+  "deviceGroupFavorites": {
+    "message": "Избранные"
+  },
+  "deviceGroupOthers": {
+    "message": "Остальные"
+  },
+  "deviceGroupAll": {
+    "message": "Устройства"
+  },
+  "noActiveDevices": {
+    "message": "Роутер не видит ни одного активного устройства."
+  },
+  "favoriteRemove": {
+    "message": "Убрать «$device$» из избранного",
+    "placeholders": {
+      "device": {
+        "content": "$1"
+      }
+    }
+  },
+  "favoriteAdd": {
+    "message": "Добавить «$device$» в избранное",
+    "placeholders": {
+      "device": {
+        "content": "$1"
+      }
+    }
+  },
+  "loadingDevicePolicies": {
+    "message": "Загружаю политики устройства…"
+  },
+  "testDevicesWhoami": {
+    "message": "Устройств: $count$. Это устройство: $device$.",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      },
+      "device": {
+        "content": "$2"
+      }
+    }
+  },
+  "testDevicesNoWhoami": {
+    "message": "Устройств: $count$. Автоопределение не сработало — выберите устройство вручную.",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "testOkVerified": {
+    "message": "Связь есть, логин и пароль проверены. $summary$",
+    "placeholders": {
+      "summary": {
+        "content": "$1"
+      }
+    }
+  },
+  "testOkSession": {
+    "message": "Связь есть по уже активной сессии роутера. Введённые логин и пароль не проверялись. $summary$",
+    "placeholders": {
+      "summary": {
+        "content": "$1"
+      }
+    }
+  },
+  "errRouterTimeout": {
+    "message": "Роутер не ответил вовремя"
+  },
+  "errRouterTimeoutDetail": {
+    "message": "Ожидание ответа — $seconds$ с. Проверьте адрес роутера и подключение к его сети.",
+    "placeholders": {
+      "seconds": {
+        "content": "$1"
+      }
+    }
+  }
 }

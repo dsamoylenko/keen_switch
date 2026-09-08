@@ -26,6 +26,7 @@
           <path d="M6.2 3.4a9 9 0 0 1 11.6 0" />
         </svg>
         <h1>KeenSwitch</h1>
+        <span id="demo-badge" class="mode-badge" data-i18n="demoBadge" hidden>Demo</span>
       </div>
 
       <button
@@ -58,13 +59,32 @@
     </header>
 
     <!-- Первый кадр: скелетон вместо пустоты, пока идёт запрос к роутеру. -->
-    <div id="device" class="device" aria-busy="true">
-      <span class="device-icon skeleton" aria-hidden="true"></span>
-      <span class="device-text">
-        <span class="skeleton skeleton-line" style="width: 45%" aria-hidden="true"></span>
-        <span class="skeleton skeleton-line" style="width: 70%; height: 8px" aria-hidden="true"></span>
-      </span>
-      <span class="visually-hidden" data-i18n="popupConnecting">Connecting to the router…</span>
+    <div class="device-picker">
+      <button
+        id="device"
+        class="device"
+        type="button"
+        aria-haspopup="true"
+        aria-expanded="false"
+        aria-controls="device-menu"
+        aria-busy="true"
+        disabled
+      >
+        <span class="device-icon skeleton" aria-hidden="true"></span>
+        <span class="device-text">
+          <span class="skeleton skeleton-line" style="width: 45%" aria-hidden="true"></span>
+          <span class="skeleton skeleton-line" style="width: 70%; height: 8px" aria-hidden="true"></span>
+        </span>
+        <span class="visually-hidden" data-i18n="popupConnecting">Connecting to the router…</span>
+      </button>
+
+      <div
+        id="device-menu"
+        class="device-menu"
+        data-i18n-aria-label="devicePickerLabel"
+        aria-label="Choose a device"
+        hidden
+      ></div>
     </div>
 
     <div class="section-head">
