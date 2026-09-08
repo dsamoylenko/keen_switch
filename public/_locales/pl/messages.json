@@ -97,9 +97,9 @@
   "fieldPassword": { "message": "Hasło" },
   "passwordShow": { "message": "Pokaż hasło" },
   "passwordHide": { "message": "Ukryj hasło" },
-  "passwordWarnTitle": { "message": "Hasło jest przechowywane w postaci jawnej" },
+  "passwordWarnTitle": { "message": "To jest mniej bezpieczne" },
   "passwordWarnBody": {
-    "message": "jest widoczne dla każdego, kto ma dostęp do twojego profilu Chrome. Hasło trafia tylko pod podany adres i tylko jako hash (SHA-256 z challenge)."
+    "message": "Hasło jest przechowywane bez szyfrowania w twoim profilu Chrome. Wybierz tę opcję tylko na własnym, zaufanym komputerze."
   },
   "testConnection": { "message": "Testuj połączenie" },
   "sectionDeviceTitle": { "message": "2. Moje urządzenie" },
@@ -134,15 +134,68 @@
   "needPassword": { "message": "Podaj hasło routera." },
   "testing": { "message": "Testowanie…" },
   "permDenied": { "message": "Bez dostępu do adresu routera rozszerzenie nie może działać." },
-  "testOkWhoami": {
-    "message": "Połączono. Urządzenia: $count$. To urządzenie: $device$.",
-    "placeholders": { "count": { "content": "$1" }, "device": { "content": "$2" } }
-  },
-  "testOkNoWhoami": {
-    "message": "Połączono. Urządzenia: $count$. Automatyczne wykrywanie nie zadziałało — wybierz urządzenie ręcznie.",
-    "placeholders": { "count": { "content": "$1" } }
-  },
   "needDevice": { "message": "Wybierz urządzenie albo włącz automatyczne wykrywanie." },
   "saving": { "message": "Zapisywanie…" },
-  "saved": { "message": "Zapisano." }
+  "saved": { "message": "Zapisano." },
+  "demoBadge": { "message": "Demo" },
+  "devicePickerLabel": { "message": "Wybierz urządzenie" },
+  "demoTitle": { "message": "Tryb demonstracyjny" },
+  "demoSub": {
+    "message": "KeenSwitch działa na przykładowej sieci lokalnej bez łączenia się z routerem."
+  },
+  "demoNote": {
+    "message": "Otwórz KeenSwitch z paska narzędzi Chrome, aby wybierać testowe urządzenia i przełączać ich polityki. Wszystkie dane są fikcyjne i pozostają w przeglądarce."
+  },
+  "leaveDemo": { "message": "Połącz prawdziwy router" },
+  "demoEntryTitle": { "message": "Nie masz routera pod ręką?" },
+  "demoEntrySub": { "message": "Obejrzyj interfejs na bezpiecznych danych testowych." },
+  "startDemo": { "message": "Uruchom demo bez routera" },
+  "demoStarting": { "message": "Uruchamianie demo…" },
+  "demoPolicyMain": { "message": "Główna" },
+  "demoPolicyKids": { "message": "Dziecięca" },
+  "demoPolicyGuest": { "message": "Gościnna" },
+  "fieldPasswordHint": { "message": "Hasło jest używane tylko do logowania się do twojego routera." },
+  "passwordStorageLegend": { "message": "Jak zapamiętać hasło" },
+  "passwordSessionTitle": { "message": "Zapamiętaj do zamknięcia przeglądarki" },
+  "passwordSessionHint": {
+    "message": "Bezpieczniej. Hasło zostanie usunięte po zamknięciu przeglądarki."
+  },
+  "passwordLocalTitle": { "message": "Zapamiętaj na stałe" },
+  "passwordLocalHint": {
+    "message": "Hasło będzie uzupełniane po ponownym uruchomieniu przeglądarki."
+  },
+  "deviceGroupFavorites": { "message": "Ulubione" },
+  "deviceGroupOthers": { "message": "Pozostałe" },
+  "deviceGroupAll": { "message": "Urządzenia" },
+  "noActiveDevices": { "message": "Router nie widzi żadnych aktywnych urządzeń." },
+  "favoriteRemove": {
+    "message": "Usuń „$device$” z ulubionych",
+    "placeholders": { "device": { "content": "$1" } }
+  },
+  "favoriteAdd": {
+    "message": "Dodaj „$device$” do ulubionych",
+    "placeholders": { "device": { "content": "$1" } }
+  },
+  "loadingDevicePolicies": { "message": "Wczytywanie polityk urządzenia…" },
+  "testDevicesWhoami": {
+    "message": "Urządzenia: $count$. To urządzenie: $device$.",
+    "placeholders": { "count": { "content": "$1" }, "device": { "content": "$2" } }
+  },
+  "testDevicesNoWhoami": {
+    "message": "Urządzenia: $count$. Automatyczne wykrywanie nie zadziałało — wybierz urządzenie ręcznie.",
+    "placeholders": { "count": { "content": "$1" } }
+  },
+  "testOkVerified": {
+    "message": "Połączono, login i hasło zweryfikowane. $summary$",
+    "placeholders": { "summary": { "content": "$1" } }
+  },
+  "testOkSession": {
+    "message": "Połączono przez już aktywną sesję routera. Wprowadzone login i hasło nie zostały zweryfikowane. $summary$",
+    "placeholders": { "summary": { "content": "$1" } }
+  },
+  "errRouterTimeout": { "message": "Router nie odpowiedział na czas" },
+  "errRouterTimeoutDetail": {
+    "message": "Czekano na odpowiedź $seconds$ s. Sprawdź adres routera i połączenie z jego siecią.",
+    "placeholders": { "seconds": { "content": "$1" } }
+  }
 }

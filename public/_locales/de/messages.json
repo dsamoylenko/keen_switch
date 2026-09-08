@@ -97,9 +97,9 @@
   "fieldPassword": { "message": "Passwort" },
   "passwordShow": { "message": "Passwort anzeigen" },
   "passwordHide": { "message": "Passwort verbergen" },
-  "passwordWarnTitle": { "message": "Das Passwort wird im Klartext gespeichert" },
+  "passwordWarnTitle": { "message": "Das ist weniger sicher" },
   "passwordWarnBody": {
-    "message": "ist für jeden lesbar, der Zugriff auf Ihr Chrome-Profil hat. Das Passwort geht nur an die angegebene Adresse und nur als Hash (SHA-256 der Challenge)."
+    "message": "Das Passwort wird unverschlüsselt in Ihrem Chrome-Profil gespeichert. Wählen Sie diese Option nur auf Ihrem eigenen, vertrauenswürdigen Computer."
   },
   "testConnection": { "message": "Verbindung testen" },
   "sectionDeviceTitle": { "message": "2. Mein Gerät" },
@@ -132,15 +132,68 @@
   "needPassword": { "message": "Geben Sie das Router-Passwort ein." },
   "testing": { "message": "Teste…" },
   "permDenied": { "message": "Ohne Zugriff auf die Router-Adresse kann die Erweiterung nicht funktionieren." },
-  "testOkWhoami": {
-    "message": "Verbindung steht. Geräte: $count$. Dieses Gerät: $device$.",
-    "placeholders": { "count": { "content": "$1" }, "device": { "content": "$2" } }
-  },
-  "testOkNoWhoami": {
-    "message": "Verbindung steht. Geräte: $count$. Die automatische Erkennung hat nicht funktioniert — wählen Sie das Gerät manuell.",
-    "placeholders": { "count": { "content": "$1" } }
-  },
   "needDevice": { "message": "Wählen Sie ein Gerät oder aktivieren Sie die automatische Erkennung." },
   "saving": { "message": "Speichere…" },
-  "saved": { "message": "Gespeichert." }
+  "saved": { "message": "Gespeichert." },
+  "demoBadge": { "message": "Demo" },
+  "devicePickerLabel": { "message": "Gerät wählen" },
+  "demoTitle": { "message": "Demo-Modus" },
+  "demoSub": {
+    "message": "KeenSwitch läuft mit einem Beispielnetzwerk, ohne sich mit einem Router zu verbinden."
+  },
+  "demoNote": {
+    "message": "Öffnen Sie KeenSwitch über die Chrome-Symbolleiste, um Testgeräte auszuwählen und deren Richtlinien zu wechseln. Alle Daten sind fiktiv und bleiben in Ihrem Browser."
+  },
+  "leaveDemo": { "message": "Echten Router verbinden" },
+  "demoEntryTitle": { "message": "Kein Router zur Hand?" },
+  "demoEntrySub": { "message": "Werfen Sie mit sicheren Testdaten einen Blick auf die Oberfläche." },
+  "startDemo": { "message": "Demo ohne Router starten" },
+  "demoStarting": { "message": "Demo wird gestartet…" },
+  "demoPolicyMain": { "message": "Haupt" },
+  "demoPolicyKids": { "message": "Kinder" },
+  "demoPolicyGuest": { "message": "Gast" },
+  "fieldPasswordHint": { "message": "Das Passwort wird nur verwendet, um sich bei Ihrem Router anzumelden." },
+  "passwordStorageLegend": { "message": "Wie soll das Passwort gespeichert werden?" },
+  "passwordSessionTitle": { "message": "Bis zum Schließen des Browsers merken" },
+  "passwordSessionHint": {
+    "message": "Sicherer. Das Passwort wird beim Schließen des Browsers gelöscht."
+  },
+  "passwordLocalTitle": { "message": "Dauerhaft merken" },
+  "passwordLocalHint": {
+    "message": "Das Passwort wird nach einem Neustart des Browsers automatisch eingetragen."
+  },
+  "deviceGroupFavorites": { "message": "Favoriten" },
+  "deviceGroupOthers": { "message": "Andere" },
+  "deviceGroupAll": { "message": "Geräte" },
+  "noActiveDevices": { "message": "Der Router sieht keine aktiven Geräte." },
+  "favoriteRemove": {
+    "message": "„$device$“ aus den Favoriten entfernen",
+    "placeholders": { "device": { "content": "$1" } }
+  },
+  "favoriteAdd": {
+    "message": "„$device$“ zu den Favoriten hinzufügen",
+    "placeholders": { "device": { "content": "$1" } }
+  },
+  "loadingDevicePolicies": { "message": "Richtlinien des Geräts werden geladen…" },
+  "testDevicesWhoami": {
+    "message": "Geräte: $count$. Dieses Gerät: $device$.",
+    "placeholders": { "count": { "content": "$1" }, "device": { "content": "$2" } }
+  },
+  "testDevicesNoWhoami": {
+    "message": "Geräte: $count$. Die automatische Erkennung hat nicht funktioniert — wählen Sie das Gerät manuell.",
+    "placeholders": { "count": { "content": "$1" } }
+  },
+  "testOkVerified": {
+    "message": "Verbunden, Benutzername und Passwort wurden bestätigt. $summary$",
+    "placeholders": { "summary": { "content": "$1" } }
+  },
+  "testOkSession": {
+    "message": "Verbunden über eine bereits aktive Router-Sitzung. Der eingegebene Benutzername und das Passwort wurden nicht überprüft. $summary$",
+    "placeholders": { "summary": { "content": "$1" } }
+  },
+  "errRouterTimeout": { "message": "Der Router hat nicht rechtzeitig geantwortet" },
+  "errRouterTimeoutDetail": {
+    "message": "$seconds$ s auf eine Antwort gewartet. Prüfen Sie die Router-Adresse und die Verbindung zu seinem Netzwerk.",
+    "placeholders": { "seconds": { "content": "$1" } }
+  }
 }

@@ -97,9 +97,9 @@
   "fieldPassword": { "message": "Пароль" },
   "passwordShow": { "message": "Показати пароль" },
   "passwordHide": { "message": "Приховати пароль" },
-  "passwordWarnTitle": { "message": "Пароль зберігається у відкритому вигляді" },
+  "passwordWarnTitle": { "message": "Це менш безпечно" },
   "passwordWarnBody": {
-    "message": "доступний будь-кому, хто має доступ до вашого профілю Chrome. На роутер пароль надсилається лише на вказану адресу і лише у вигляді хеша (SHA-256 від challenge)."
+    "message": "Пароль зберігається у профілі Chrome без шифрування. Обирайте цей варіант лише на своєму захищеному комп’ютері."
   },
   "testConnection": { "message": "Перевірити підключення" },
   "sectionDeviceTitle": { "message": "2. Мій пристрій" },
@@ -134,15 +134,64 @@
   "needPassword": { "message": "Введіть пароль роутера." },
   "testing": { "message": "Перевіряю…" },
   "permDenied": { "message": "Без доступу до адреси роутера розширення не зможе працювати." },
-  "testOkWhoami": {
-    "message": "Зв’язок є. Пристроїв: $count$. Цей пристрій: $device$.",
-    "placeholders": { "count": { "content": "$1" }, "device": { "content": "$2" } }
-  },
-  "testOkNoWhoami": {
-    "message": "Зв’язок є. Пристроїв: $count$. Автовизначення не спрацювало — виберіть пристрій вручну.",
-    "placeholders": { "count": { "content": "$1" } }
-  },
   "needDevice": { "message": "Виберіть пристрій або увімкніть автовизначення." },
   "saving": { "message": "Зберігаю…" },
-  "saved": { "message": "Збережено." }
+  "saved": { "message": "Збережено." },
+  "demoBadge": { "message": "Демо" },
+  "devicePickerLabel": { "message": "Вибір пристрою" },
+  "demoTitle": { "message": "Демонстраційний режим" },
+  "demoSub": {
+    "message": "KeenSwitch працює на прикладі локальної мережі без підключення до роутера."
+  },
+  "demoNote": {
+    "message": "Відкрийте KeenSwitch на панелі Chrome, щоб вибирати тестові пристрої та перемикати їхні політики. Усі дані вигадані та залишаються у браузері."
+  },
+  "leaveDemo": { "message": "Підключити справжній роутер" },
+  "demoEntryTitle": { "message": "Немає роутера під рукою?" },
+  "demoEntrySub": { "message": "Погляньте на інтерфейс на безпечних тестових даних." },
+  "startDemo": { "message": "Запустити демо без роутера" },
+  "demoStarting": { "message": "Запускаю демо…" },
+  "demoPolicyMain": { "message": "Основна" },
+  "demoPolicyKids": { "message": "Дитяча" },
+  "demoPolicyGuest": { "message": "Гостьова" },
+  "fieldPasswordHint": { "message": "Пароль використовується лише для входу у ваш роутер." },
+  "passwordStorageLegend": { "message": "Як запам’ятати пароль" },
+  "passwordSessionTitle": { "message": "Запам’ятати до закриття браузера" },
+  "passwordSessionHint": { "message": "Безпечніше. Після закриття браузера пароль видалиться." },
+  "passwordLocalTitle": { "message": "Запам’ятати назавжди" },
+  "passwordLocalHint": { "message": "Пароль буде підставлятися після перезапуску браузера." },
+  "deviceGroupFavorites": { "message": "Обране" },
+  "deviceGroupOthers": { "message": "Інші" },
+  "deviceGroupAll": { "message": "Пристрої" },
+  "noActiveDevices": { "message": "Роутер не бачить жодного активного пристрою." },
+  "favoriteRemove": {
+    "message": "Прибрати «$device$» з обраного",
+    "placeholders": { "device": { "content": "$1" } }
+  },
+  "favoriteAdd": {
+    "message": "Додати «$device$» в обране",
+    "placeholders": { "device": { "content": "$1" } }
+  },
+  "loadingDevicePolicies": { "message": "Завантажую політики пристрою…" },
+  "testDevicesWhoami": {
+    "message": "Пристроїв: $count$. Цей пристрій: $device$.",
+    "placeholders": { "count": { "content": "$1" }, "device": { "content": "$2" } }
+  },
+  "testDevicesNoWhoami": {
+    "message": "Пристроїв: $count$. Автовизначення не спрацювало — виберіть пристрій вручну.",
+    "placeholders": { "count": { "content": "$1" } }
+  },
+  "testOkVerified": {
+    "message": "Зв’язок є, логін і пароль перевірено. $summary$",
+    "placeholders": { "summary": { "content": "$1" } }
+  },
+  "testOkSession": {
+    "message": "Зв’язок є за вже активним сеансом роутера. Введені логін і пароль не перевірялися. $summary$",
+    "placeholders": { "summary": { "content": "$1" } }
+  },
+  "errRouterTimeout": { "message": "Роутер не відповів вчасно" },
+  "errRouterTimeoutDetail": {
+    "message": "Очікування відповіді — $seconds$ с. Перевірте адресу роутера та підключення до його мережі.",
+    "placeholders": { "seconds": { "content": "$1" } }
+  }
 }

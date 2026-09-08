@@ -97,9 +97,9 @@
   "fieldPassword": { "message": "Parola" },
   "passwordShow": { "message": "Parolayı göster" },
   "passwordHide": { "message": "Parolayı gizle" },
-  "passwordWarnTitle": { "message": "Parola düz metin olarak saklanıyor" },
+  "passwordWarnTitle": { "message": "Bu daha az güvenli" },
   "passwordWarnBody": {
-    "message": "içeriği, Chrome profilinize erişimi olan herkes tarafından okunabilir. Parola yalnızca belirttiğiniz adrese ve yalnızca hash olarak (challenge'ın SHA-256'sı) gönderilir."
+    "message": "Parola, Chrome profilinizde şifrelenmeden saklanır. Bu seçeneği yalnızca kendi güvendiğiniz bilgisayarınızda seçiniz."
   },
   "testConnection": { "message": "Bağlantıyı test et" },
   "sectionDeviceTitle": { "message": "2. Cihazım" },
@@ -134,15 +134,66 @@
   "needPassword": { "message": "Yönlendirici parolasını giriniz." },
   "testing": { "message": "Test ediliyor…" },
   "permDenied": { "message": "Yönlendirici adresine erişim olmadan uzantı çalışamaz." },
-  "testOkWhoami": {
-    "message": "Bağlantı kuruldu. Cihazlar: $count$. Bu cihaz: $device$.",
-    "placeholders": { "count": { "content": "$1" }, "device": { "content": "$2" } }
-  },
-  "testOkNoWhoami": {
-    "message": "Bağlantı kuruldu. Cihazlar: $count$. Otomatik algılama çalışmadı — cihazı manuel seçiniz.",
-    "placeholders": { "count": { "content": "$1" } }
-  },
   "needDevice": { "message": "Bir cihaz seçiniz veya otomatik algılamayı açınız." },
   "saving": { "message": "Kaydediliyor…" },
-  "saved": { "message": "Kaydedildi." }
+  "saved": { "message": "Kaydedildi." },
+  "demoBadge": { "message": "Demo" },
+  "devicePickerLabel": { "message": "Cihaz seç" },
+  "demoTitle": { "message": "Demo modu" },
+  "demoSub": {
+    "message": "KeenSwitch, bir yönlendiriciye bağlanmadan örnek bir yerel ağ üzerinde çalışır."
+  },
+  "demoNote": {
+    "message": "Test cihazlarını seçmek ve politikalarını değiştirmek için KeenSwitch'i Chrome araç çubuğundan açınız. Tüm veriler kurgusaldır ve tarayıcınızda kalır."
+  },
+  "leaveDemo": { "message": "Gerçek bir yönlendirici bağla" },
+  "demoEntryTitle": { "message": "Elinizde yönlendirici yok mu?" },
+  "demoEntrySub": { "message": "Güvenli test verileriyle arayüze göz atınız." },
+  "startDemo": { "message": "Yönlendirici olmadan demoyu başlat" },
+  "demoStarting": { "message": "Demo başlatılıyor…" },
+  "demoPolicyMain": { "message": "Ana" },
+  "demoPolicyKids": { "message": "Çocuk" },
+  "demoPolicyGuest": { "message": "Misafir" },
+  "fieldPasswordHint": { "message": "Parola yalnızca yönlendiricinizde oturum açmak için kullanılır." },
+  "passwordStorageLegend": { "message": "Parolayı hatırlama biçimi" },
+  "passwordSessionTitle": { "message": "Tarayıcı kapanana kadar hatırla" },
+  "passwordSessionHint": { "message": "Daha güvenli. Tarayıcı kapandığında parola silinir." },
+  "passwordLocalTitle": { "message": "Kalıcı olarak hatırla" },
+  "passwordLocalHint": {
+    "message": "Parola, tarayıcı yeniden başlatıldıktan sonra otomatik doldurulur."
+  },
+  "deviceGroupFavorites": { "message": "Favoriler" },
+  "deviceGroupOthers": { "message": "Diğerleri" },
+  "deviceGroupAll": { "message": "Cihazlar" },
+  "noActiveDevices": { "message": "Yönlendirici hiçbir aktif cihaz görmüyor." },
+  "favoriteRemove": {
+    "message": "“$device$” cihazını favorilerden kaldır",
+    "placeholders": { "device": { "content": "$1" } }
+  },
+  "favoriteAdd": {
+    "message": "“$device$” cihazını favorilere ekle",
+    "placeholders": { "device": { "content": "$1" } }
+  },
+  "loadingDevicePolicies": { "message": "Cihazın politikaları yükleniyor…" },
+  "testDevicesWhoami": {
+    "message": "Cihazlar: $count$. Bu cihaz: $device$.",
+    "placeholders": { "count": { "content": "$1" }, "device": { "content": "$2" } }
+  },
+  "testDevicesNoWhoami": {
+    "message": "Cihazlar: $count$. Otomatik algılama çalışmadı — cihazı manuel seçiniz.",
+    "placeholders": { "count": { "content": "$1" } }
+  },
+  "testOkVerified": {
+    "message": "Bağlantı kuruldu, kullanıcı adı ve parola doğrulandı. $summary$",
+    "placeholders": { "summary": { "content": "$1" } }
+  },
+  "testOkSession": {
+    "message": "Yönlendiricinin zaten etkin olan oturumu üzerinden bağlanıldı. Girilen kullanıcı adı ve parola doğrulanmadı. $summary$",
+    "placeholders": { "summary": { "content": "$1" } }
+  },
+  "errRouterTimeout": { "message": "Yönlendirici zamanında yanıt vermedi" },
+  "errRouterTimeoutDetail": {
+    "message": "Yanıt için $seconds$ sn beklendi. Yönlendirici adresini ve ağına olan bağlantınızı kontrol ediniz.",
+    "placeholders": { "seconds": { "content": "$1" } }
+  }
 }
