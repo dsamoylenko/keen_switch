@@ -68,3 +68,31 @@ test('appDesc укладывается в лимит Chrome Web Store во вс�
     );
   }
 });
+
+test('все data-i18n* атрибуты в HTML соответствуют ключам в каталоге', async () => {
+  // Проверяет, что никакой тайпо в data-i18n="fieldPasword" не пройдёт в продакшн.
+  const catalog = await readCatalog('en');
+  const catalogKeys = new Set(Object.keys(catalog));
+
+  const htmlFiles = ['src/popup/index.html', 'src/options/index.html'];
+
+  for (const htmlFile of htmlFiles) {
+    const html = await readFile(htmlFile, 'utf8');
+
+    // Извлекаём все data-i18n* атрибуты (data-i18n, data-i18n-title, data-i18n-aria-label и т.д.).
+    const attrMatches = html.matchAll(/data-i18n[a-zA-Z-]*="([^"]+)"/g);
+    const foundKeys: string[] = [];
+
+    for (const match of attrMatches) {
+      const key = match[1];
+      foundKeys.push(key);
+      assert.ok(
+        catalogKeys.has(key),
+        `В файле ${htmlFile} атрибут с ключом "${key}" не найден в каталоге`,
+      );
+    }
+
+    // Убеждаемся, что парсинг не упал молча (вернул пустой результат).
+    assert.ok(foundKeys.length > 0, `В файле ${htmlFile} не найдено ни одного data-i18n* атрибута`);
+  }
+});
