@@ -22,7 +22,7 @@ export type DeviceKind =
  * совпадение. Только английские ключевые слова — см. дизайн-спеку.
  */
 const KIND_KEYWORDS: readonly (readonly [DeviceKind, readonly string[]])[] = [
-  ['phone', ['iphone', 'android', 'galaxy', 'pixel', 'xiaomi', 'redmi', 'poco', 'huawei', 'honor', 'oneplus', 'realme', 'oppo', 'vivo']],
+  ['phone', ['iphone', 'galaxy', 'pixel', 'redmi', 'poco', 'oneplus', 'realme', 'oppo', 'vivo']],
   ['tablet', ['ipad', 'tablet', 'matepad', 'tab']],
   ['laptop', ['macbook', 'notebook', 'thinkpad', 'laptop']],
   ['tv', ['smart-tv', 'smarttv', 'android tv', 'apple tv', 'chromecast']],

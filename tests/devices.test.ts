@@ -124,6 +124,8 @@ test('guessDeviceKind различает категории по ключевы�
   assert.equal(guessDeviceKind('PS5'), 'console');
   assert.equal(guessDeviceKind('HP Printer'), 'printer');
   assert.equal(guessDeviceKind('Desktop-PC'), 'computer');
+  assert.equal(guessDeviceKind('Xiaomi Android TV'), 'tv');
+  assert.equal(guessDeviceKind('Huawei MatePad 11'), 'tablet');
 });
 
 test('guessDeviceKind отдаёт unknown для нераспознанных и пустых имён', () => {
