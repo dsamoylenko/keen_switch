@@ -1,0 +1,88 @@
+# Иконки по типу устройства — дизайн
+
+Дата: 2026-09-09
+
+## Проблема
+
+Сейчас в попапе у всех устройств одна и та же иконка (`monitor`), вне
+зависимости от того, телефон это, ноутбук, ТВ или приставка. Пользователь
+хочет, чтобы иконка отражала тип устройства — как в мобильном приложении
+Keenetic.
+
+## Почему не «взять иконку у Keenetic»
+
+Проверили на живом роутере (KeeneticOS 5.01): выбор типа/иконки устройства
+есть только в мобильном приложении Keenetic, хранится в приложении или
+облаке My.Keenetic. Локальный RCI (`show.ip.hotspot`, `ip.hotspot.host`) эту
+информацию не отдаёт — в ответе только `mac`, `name`, `ip`, сетевые метрики,
+`policy`, `active`/`link`. Значит тип устройства придётся угадывать
+самостоятельно.
+
+Начинаем с эвристики по имени хоста (это уже видно в текущих данных, без
+дополнительных источников). База MAC-вендоров (OUI) и ручной выбор иконки
+пользователем — по решению после этого захода, если эвристики по имени не
+хватит.
+
+## Архитектура
+
+- Чистая функция `guessDeviceKind(label: string): DeviceKind` — новая, в
+  `src/lib/devices.ts` (тот же модуль, что уже отвечает за
+  `selectableHosts`/`groupDevices`: логика без DOM, юнит-тестируется
+  напрямую).
+- Иконка не хранится нигде — вычисляется на лету в `src/popup/popup.ts` из
+  уже готового `label` (для карточки текущего устройства — `state.label`, для
+  строки списка — `option.label`). `keenetic.ts` и `DeviceState` не меняются.
+- Маппинг `DeviceKind -> IconName` — константа в `popup.ts`, рядом с
+  `STATUS_ICON`.
+- В `renderDevice` (свёрнутая карточка) и `renderOption` (строка списка)
+  `icon('monitor')` заменяется на `icon(kindToIcon(guessDeviceKind(label)))`.
+  Для заблокированного устройства приоритет остаётся за `shield-off`, как
+  сейчас — тип устройства для него не показывается.
+- Страницы `options` не касаемся: там нативный `<select>` без картинок.
+
+## Категории и эвристика
+
+```ts
+type DeviceKind = 'phone' | 'tablet' | 'laptop' | 'tv' | 'console' | 'printer' | 'computer' | 'unknown';
+```
+
+Матчинг: `label.toLowerCase().includes(keyword)`, первое совпадение по
+списку категорий сверху вниз побеждает (порядок ниже). Только английские
+ключевые слова.
+
+| Категория  | Иконка       | Ключевые слова |
+|------------|--------------|----------------|
+| `phone`    | `smartphone` (новая) | iphone, android, galaxy, pixel, xiaomi, redmi, poco, huawei, honor, oneplus, realme, oppo, vivo |
+| `tablet`   | `tablet` (новая)      | ipad, tablet, matepad, tab |
+| `laptop`   | `laptop` (новая)      | macbook, notebook, thinkpad, laptop |
+| `tv`       | `tv` (новая)          | smart-tv, smarttv, android tv, apple tv, chromecast |
+| `console`  | `gamepad` (новая)     | playstation, xbox, nintendo, switch, ps4, ps5 |
+| `printer`  | `printer` (новая)     | printer |
+| `computer` | `monitor` (существующая) | pc, desktop, imac |
+| `unknown`  | `monitor` (существующая, поведение не меняется) | — (fallback) |
+
+Пустая строка и нераспознанные имена (например «Haier AS35S2SF1FA» —
+кондиционер) → `unknown`.
+
+## Иконки
+
+Шесть новых SVG в `src/lib/icons.ts`, в том же стиле, что и остальные
+(`viewBox 0 0 24 24`, `stroke-width 1.75`, `currentColor`, Lucide-like):
+`smartphone`, `tablet`, `laptop`, `tv`, `gamepad`, `printer`. `IconName`
+расширяется этими шестью значениями.
+
+## Тестирование
+
+Юнит-тесты `guessDeviceKind` в `tests/devices.test.ts`, по существующему
+паттерну модуля (без DOM): по одному кейсу на категорию плюс нераспознанное
+имя и пустая строка → `unknown`. Ручная проверка попапа в браузере — типы
+через `smartphone`/`tablet`/`laptop`/`tv`/`console`/`printer`/`computer`,
+плюс что заблокированное устройство по-прежнему показывает `shield-off`.
+
+## Вне охвата
+
+- Определение типа по MAC-вендору (OUI).
+- Ручной выбор/переопределение иконки пользователем.
+
+Оба — кандидаты на отдельный заход, если эвристика по имени окажется
+недостаточной на практике.
