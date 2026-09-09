@@ -1,4 +1,4 @@
-import { groupDevices, type DeviceOption } from '../lib/devices';
+import { groupDevices, guessDeviceKind, type DeviceKind, type DeviceOption } from '../lib/devices';
 import { loadFavorites, toggleFavorite } from '../lib/favorites';
 import { icon, type IconName } from '../lib/icons';
 import type { DeviceState, HostSummary } from '../lib/keenetic';
@@ -35,6 +35,17 @@ const STATUS_ICON: Record<Tone, IconName> = {
   error: 'alert-circle',
   ok: 'check-circle',
   muted: 'info',
+};
+
+const DEVICE_ICON: Record<DeviceKind, IconName> = {
+  phone: 'smartphone',
+  tablet: 'tablet',
+  laptop: 'laptop',
+  tv: 'tv',
+  console: 'gamepad',
+  printer: 'printer',
+  computer: 'monitor',
+  unknown: 'monitor',
 };
 
 function setStatus(message: string, tone: Tone, detail?: string): void {
@@ -120,7 +131,7 @@ function renderDevice(state: DeviceState): void {
 
   const badge = document.createElement('span');
   badge.className = 'device-icon';
-  badge.append(icon(state.blocked ? 'shield-off' : 'monitor'));
+  badge.append(icon(state.blocked ? 'shield-off' : DEVICE_ICON[guessDeviceKind(state.label)]));
 
   const text = document.createElement('span');
   text.className = 'device-text';
@@ -210,7 +221,7 @@ function renderOption(option: DeviceOption): HTMLLIElement {
 
   const badge = document.createElement('span');
   badge.className = 'device-icon';
-  badge.append(icon('monitor'));
+  badge.append(icon(DEVICE_ICON[guessDeviceKind(option.label)]));
 
   const text = document.createElement('span');
   text.className = 'device-text';
