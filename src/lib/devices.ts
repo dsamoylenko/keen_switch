@@ -25,7 +25,7 @@ const KIND_KEYWORDS: readonly (readonly [DeviceKind, readonly string[]])[] = [
   ['phone', ['iphone', 'galaxy', 'pixel', 'redmi', 'poco', 'oneplus', 'realme', 'oppo', 'vivo']],
   ['tablet', ['ipad', 'tablet', 'matepad', 'tab']],
   ['laptop', ['macbook', 'notebook', 'thinkpad', 'laptop']],
-  ['tv', ['smart-tv', 'smarttv', 'android tv', 'apple tv', 'chromecast']],
+  ['tv', ['smart-tv', 'smarttv', 'smart tv', 'android tv', 'apple tv', 'chromecast']],
   ['console', ['playstation', 'xbox', 'nintendo', 'switch', 'ps4', 'ps5']],
   ['printer', ['printer']],
   ['computer', ['pc', 'desktop', 'imac']],
