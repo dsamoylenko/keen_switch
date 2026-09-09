@@ -19,6 +19,9 @@
 
 Полная спека: [docs/superpowers/specs/2026-09-09-device-icons-design.md](../specs/2026-09-09-device-icons-design.md).
 
+Известное ограничение эвристики (`galaxy`/`pixel` перекрывают `tablet`) —
+см. раздел «Известные ограничения» в спеке выше, здесь не дублируется.
+
 ---
 
 ### Task 1: `guessDeviceKind` — эвристика типа устройства
@@ -92,11 +95,11 @@ export type DeviceKind =
  * совпадение. Только английские ключевые слова — см. дизайн-спеку.
  */
 const KIND_KEYWORDS: readonly (readonly [DeviceKind, readonly string[]])[] = [
-  ['phone', ['iphone', 'android', 'galaxy', 'pixel', 'xiaomi', 'redmi', 'poco', 'huawei', 'honor', 'oneplus', 'realme', 'oppo', 'vivo']],
+  ['phone', ['iphone', 'galaxy', 'pixel', 'redmi', 'poco', 'oneplus', 'realme', 'oppo', 'vivo']],
   ['tablet', ['ipad', 'tablet', 'matepad', 'tab']],
   ['laptop', ['macbook', 'notebook', 'thinkpad', 'laptop']],
-  ['tv', ['smart-tv', 'smarttv', 'android tv', 'apple tv', 'chromecast']],
-  ['console', ['playstation', 'xbox', 'nintendo', 'switch', 'ps4', 'ps5']],
+  ['tv', ['smart-tv', 'smarttv', 'smart tv', 'android tv', 'apple tv', 'chromecast']],
+  ['console', ['playstation', 'xbox', 'nintendo', 'ps4', 'ps5']],
   ['printer', ['printer']],
   ['computer', ['pc', 'desktop', 'imac']],
 ];

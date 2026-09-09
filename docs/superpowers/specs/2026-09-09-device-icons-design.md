@@ -52,11 +52,11 @@ type DeviceKind = 'phone' | 'tablet' | 'laptop' | 'tv' | 'console' | 'printer' |
 
 | Категория  | Иконка       | Ключевые слова |
 |------------|--------------|----------------|
-| `phone`    | `smartphone` (новая) | iphone, android, galaxy, pixel, xiaomi, redmi, poco, huawei, honor, oneplus, realme, oppo, vivo |
+| `phone`    | `smartphone` (новая) | iphone, galaxy, pixel, redmi, poco, oneplus, realme, oppo, vivo |
 | `tablet`   | `tablet` (новая)      | ipad, tablet, matepad, tab |
 | `laptop`   | `laptop` (новая)      | macbook, notebook, thinkpad, laptop |
-| `tv`       | `tv` (новая)          | smart-tv, smarttv, android tv, apple tv, chromecast |
-| `console`  | `gamepad` (новая)     | playstation, xbox, nintendo, switch, ps4, ps5 |
+| `tv`       | `tv` (новая)          | smart-tv, smarttv, smart tv, android tv, apple tv, chromecast |
+| `console`  | `gamepad` (новая)     | playstation, xbox, nintendo, ps4, ps5 |
 | `printer`  | `printer` (новая)     | printer |
 | `computer` | `monitor` (существующая) | pc, desktop, imac |
 | `unknown`  | `monitor` (существующая, поведение не меняется) | — (fallback) |
@@ -78,6 +78,16 @@ type DeviceKind = 'phone' | 'tablet' | 'laptop' | 'tv' | 'console' | 'printer' |
 имя и пустая строка → `unknown`. Ручная проверка попапа в браузере — типы
 через `smartphone`/`tablet`/`laptop`/`tv`/`console`/`printer`/`computer`,
 плюс что заблокированное устройство по-прежнему показывает `shield-off`.
+
+## Известные ограничения
+
+Ключевые слова `galaxy` и `pixel` остаются в категории `phone` и перекрывают
+`tablet` для имён вида «Samsung Galaxy Tab S8» или «Google Pixel Tablet» — оба
+попадут в `phone` и покажут иконку смартфона вместо планшета. Это осознанное
+и принятое ограничение эвристики v1 (подстрока + порядок категорий), а не
+баг, который нужно чинить реактивно. Будущий передел мог бы решить это,
+проверяя составные/многословные ключевые слова во всех категориях раньше
+однословных брендовых ключевых слов, но это вне охвата текущего захода.
 
 ## Вне охвата
 

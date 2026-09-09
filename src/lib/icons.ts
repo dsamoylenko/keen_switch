@@ -35,12 +35,12 @@ const PATHS: Record<IconName, string> = {
   check: '<path d="M20 6.5 9.5 17 4 11.5"/>',
   monitor:
     '<rect x="2" y="4" width="20" height="13" rx="2.5"/><path d="M8.5 21h7"/><path d="M12 17v4"/>',
-  'smartphone':
+  smartphone:
     '<rect x="7" y="2" width="10" height="20" rx="2.5"/><path d="M11 18.3h2"/>',
   tablet:
     '<rect x="3" y="3" width="18" height="18" rx="2.5"/><path d="M12 17.5h.01"/>',
   laptop:
-    '<rect x="4" y="4.5" width="16" height="10.5" rx="1.5"/><path d="M2 19.5h20"/>',
+    '<rect x="4" y="4.5" width="16" height="10.5" rx="1.5"/><path d="M2 17.5h20"/>',
   tv:
     '<rect x="2" y="6.5" width="20" height="13.5" rx="2.5"/><path d="m8 3 4 3.5 4-3.5"/><path d="M9.5 22h5"/>',
   gamepad:
