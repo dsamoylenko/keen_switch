@@ -10,6 +10,12 @@ export type IconName =
   | 'sliders'
   | 'check'
   | 'monitor'
+  | 'smartphone'
+  | 'tablet'
+  | 'laptop'
+  | 'tv'
+  | 'gamepad'
+  | 'printer'
   | 'alert-circle'
   | 'alert-triangle'
   | 'check-circle'
@@ -29,6 +35,18 @@ const PATHS: Record<IconName, string> = {
   check: '<path d="M20 6.5 9.5 17 4 11.5"/>',
   monitor:
     '<rect x="2" y="4" width="20" height="13" rx="2.5"/><path d="M8.5 21h7"/><path d="M12 17v4"/>',
+  'smartphone':
+    '<rect x="7" y="2" width="10" height="20" rx="2.5"/><path d="M11 18.3h2"/>',
+  tablet:
+    '<rect x="3" y="3" width="18" height="18" rx="2.5"/><path d="M12 17.5h.01"/>',
+  laptop:
+    '<rect x="4" y="4.5" width="16" height="10.5" rx="1.5"/><path d="M2 19.5h20"/>',
+  tv:
+    '<rect x="2" y="6.5" width="20" height="13.5" rx="2.5"/><path d="m8 3 4 3.5 4-3.5"/><path d="M9.5 22h5"/>',
+  gamepad:
+    '<path d="M8 9v4"/><path d="M6 11h4"/><circle cx="16.5" cy="10" r="1"/><circle cx="14.5" cy="12.5" r="1"/><path d="M6.5 6h11a4.5 4.5 0 0 1 4.4 5.4l-1 5a3 3 0 0 1-5.3 1.3L14 16h-4l-1.6 1.7A3 3 0 0 1 3 16.4l-1-5A4.5 4.5 0 0 1 6.5 6Z"/>',
+  printer:
+    '<path d="M7 8V3h10v5"/><rect x="3" y="8" width="18" height="8" rx="2"/><path d="M7 16v5h10v-5"/><path d="M17 11h.01"/>',
   'alert-circle': '<circle cx="12" cy="12" r="9"/><path d="M12 7.5v5"/><path d="M12 16.2h.01"/>',
   'alert-triangle':
     '<path d="M10.3 3.9 1.9 18a2 2 0 0 0 1.7 3h16.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
