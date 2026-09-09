@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import { groupDevices, selectableHosts } from '../src/lib/devices';
+import { groupDevices, guessDeviceKind, selectableHosts } from '../src/lib/devices';
 import { KeeneticError, resolveDevice, type RawState } from '../src/lib/keenetic';
 import { DEFAULT_SETTINGS, type Settings } from '../src/lib/settings';
 
@@ -113,4 +113,25 @@ test('resolveDevice сообщает, когда устройство опред
     () => resolveDevice(blind, settings({ autoDetectDevice: false, deviceMac: '' })),
     (error: unknown) => error instanceof KeeneticError && error.kind === 'config',
   );
+});
+
+test('guessDeviceKind различает категории по ключевым словам в имени', () => {
+  assert.equal(guessDeviceKind('Dmitrys-iPhone'), 'phone');
+  assert.equal(guessDeviceKind('Samsung Galaxy S23'), 'phone');
+  assert.equal(guessDeviceKind('iPad Pro'), 'tablet');
+  assert.equal(guessDeviceKind('MacBook Pro'), 'laptop');
+  assert.equal(guessDeviceKind('Living Room Smart-TV'), 'tv');
+  assert.equal(guessDeviceKind('PS5'), 'console');
+  assert.equal(guessDeviceKind('HP Printer'), 'printer');
+  assert.equal(guessDeviceKind('Desktop-PC'), 'computer');
+});
+
+test('guessDeviceKind отдаёт unknown для нераспознанных и пустых имён', () => {
+  assert.equal(guessDeviceKind('Haier AS35S2SF1FA'), 'unknown');
+  assert.equal(guessDeviceKind(''), 'unknown');
+});
+
+test('guessDeviceKind не чувствителен к регистру', () => {
+  assert.equal(guessDeviceKind('IPHONE 15'), 'phone');
+  assert.equal(guessDeviceKind('macbook air'), 'laptop');
 });

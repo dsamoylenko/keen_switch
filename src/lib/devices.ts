@@ -7,6 +7,39 @@
 
 import type { HostSummary } from './keenetic';
 
+export type DeviceKind =
+  | 'phone'
+  | 'tablet'
+  | 'laptop'
+  | 'tv'
+  | 'console'
+  | 'printer'
+  | 'computer'
+  | 'unknown';
+
+/**
+ * Порядок категорий важен: проверяются сверху вниз, побеждает первое
+ * совпадение. Только английские ключевые слова — см. дизайн-спеку.
+ */
+const KIND_KEYWORDS: readonly (readonly [DeviceKind, readonly string[]])[] = [
+  ['phone', ['iphone', 'android', 'galaxy', 'pixel', 'xiaomi', 'redmi', 'poco', 'huawei', 'honor', 'oneplus', 'realme', 'oppo', 'vivo']],
+  ['tablet', ['ipad', 'tablet', 'matepad', 'tab']],
+  ['laptop', ['macbook', 'notebook', 'thinkpad', 'laptop']],
+  ['tv', ['smart-tv', 'smarttv', 'android tv', 'apple tv', 'chromecast']],
+  ['console', ['playstation', 'xbox', 'nintendo', 'switch', 'ps4', 'ps5']],
+  ['printer', ['printer']],
+  ['computer', ['pc', 'desktop', 'imac']],
+];
+
+/** Угадывает тип устройства по имени хоста — для выбора иконки в попапе. */
+export function guessDeviceKind(label: string): DeviceKind {
+  const value = label.toLowerCase();
+  for (const [kind, keywords] of KIND_KEYWORDS) {
+    if (keywords.some((keyword) => value.includes(keyword))) return kind;
+  }
+  return 'unknown';
+}
+
 export interface DeviceOption extends HostSummary {
   /** Отмечено звездой — попадает в верхнюю группу списка. */
   favorite: boolean;
