@@ -232,7 +232,7 @@ node scripts/probe-router.mjs --url http://192.168.1.1 --login admin
 | --- | --- |
 | `npm run build` | Type checking plus a development build in `dist/` (`KeenSwitch Dev` with a badged icon), for local testing |
 | `npm run build:release` | Type checking plus a production build in `dist/` (`KeenSwitch` with the regular icon) |
-| `npm run package` | Production build (`build:release`) plus a Chrome Web Store ZIP; the only way to create a publication artifact |
+| `npm run package` | Bumps `package.json` version (patch by default, `BUMP=minor` or `BUMP=major` to override), then `build:release` plus a Chrome Web Store ZIP; the only way to create a publication artifact |
 | `npm run dev` | Vite in watch mode (HMR for popup and settings), using the development appearance |
 | `npm run icons:dev` | Regenerate `public/icons-dev/*.png` from `public/icons/*.png`; needed only after source icons change |
 | `npm test` | Tests for router-response parsing, MD5, and manifest selection |
